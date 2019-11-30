@@ -1,0 +1,18 @@
+version: '3'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    expose:
+      - 18000
+    image: egortensin/math-server
+    ports:
+      - 18000:18000
+    restart: always
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    entrypoint: ["/tmp/build/client/client", "-H", "server"]
+    image: egortensin/math-client
