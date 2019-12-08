@@ -1,0 +1,16 @@
+language: cpp
+os: linux
+dist: bionic
+
+env:
+  global:
+    - boost_version=1.71.0
+  matrix:
+    - build_type=debug   arch=x64
+    - build_type=release arch=x64
+
+before_script:
+  - ./.travis/build_boost.sh
+
+script:
+  - ./.travis/build.sh
