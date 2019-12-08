@@ -1,0 +1,23 @@
+version: '{build}'
+
+image: Visual Studio 2019
+
+platform:
+  - x64
+
+configuration:
+  - Debug
+  - Release
+
+build_script:
+  - ps: .\.appveyor\build.ps1
+
+test_script:
+  - ps: .\.appveyor\test.ps1
+
+for:
+- matrix:
+    only:
+      - image: Visual Studio 2019
+  environment:
+    appveyor_boost_version: 1.71.0
