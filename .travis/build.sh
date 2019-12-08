@@ -17,8 +17,10 @@ main() {
         -D "BOOST_ROOT=$boost_dir"                  \
         -D "BOOST_LIBRARYDIR=$boost_librarydir"     \
         -D Boost_USE_STATIC_LIBS=ON                 \
+        -D ENABLE_TESTS=ON                          \
         "$TRAVIS_BUILD_DIR"
     cmake --build . -- -j
+    ./test/unit_tests/unit_tests --log_level=all
 }
 
 main

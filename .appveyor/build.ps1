@@ -99,6 +99,7 @@ function Build-Project {
         -D "BOOST_LIBRARYDIR=$BoostLibraryDir" `
         -D Boost_USE_STATIC_LIBS=ON            `
         -D Boost_USE_STATIC_RUNTIME=ON         `
+        -D ENABLE_TESTS=ON                     `
         $ProjectDir
     }
     
