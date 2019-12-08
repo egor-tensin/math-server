@@ -7,6 +7,7 @@ target_link_libraries(server PRIVATE common parser)
 
 target_include_directories(server SYSTEM PRIVATE ${Boost_INCLUDE_DIRS})
 target_link_libraries(server PRIVATE ${Boost_LIBRARIES})
+target_compile_definitions(server PRIVATE BOOST_DATE_TIME_NO_LIB BOOST_REGEX_NO_LIB)
 
 if(DEBUG_ASIO)
     target_compile_definitions(server PRIVATE BOOST_ASIO_ENABLE_HANDLER_TRACKING)
