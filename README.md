@@ -1,6 +1,9 @@
 math-server
 ===========
 
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/egortensin/math-server?label=Docker%2Fserver)](https://hub.docker.com/repository/docker/egortensin/math-server/builds)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/egortensin/math-client?label=Docker%2Fclient)](https://hub.docker.com/repository/docker/egortensin/math-client/builds)
+
 Development
 -----------
 
