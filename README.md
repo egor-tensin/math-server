@@ -3,6 +3,7 @@ math-server
 
 [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/egortensin/math-server?label=Docker%2Fserver)](https://hub.docker.com/repository/docker/egortensin/math-server/builds)
 [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/egortensin/math-client?label=Docker%2Fclient)](https://hub.docker.com/repository/docker/egortensin/math-client/builds)
+[![Travis (.com) branch](https://img.shields.io/travis/com/egor-tensin/math-server/master?label=Travis)](https://travis-ci.com/egor-tensin/math-server)
 
 Development
 -----------
