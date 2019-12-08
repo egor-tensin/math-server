@@ -19,11 +19,11 @@
 namespace math::server {
 namespace {
 
-boost::asio::ip::tcp::endpoint make_endpoint(unsigned port) {
+boost::asio::ip::tcp::endpoint make_endpoint(unsigned short port) {
     return {boost::asio::ip::tcp::v4(), port};
 }
 
-void configure_acceptor(boost::asio::ip::tcp::acceptor& acceptor, unsigned port) {
+void configure_acceptor(boost::asio::ip::tcp::acceptor& acceptor, unsigned short port) {
     try {
         const auto endpoint = make_endpoint(port);
         acceptor.open(endpoint.protocol());
@@ -41,7 +41,7 @@ Server::Server(const Settings& settings)
     : Server{settings.m_port, settings.m_threads}
 { }
 
-Server::Server(unsigned port, unsigned threads)
+Server::Server(unsigned short port, std::size_t threads)
     : m_numof_threads{threads}
     , m_signals{m_io_context}
     , m_acceptor{m_io_context} {

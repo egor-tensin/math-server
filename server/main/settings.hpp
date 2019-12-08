@@ -3,6 +3,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
+#include <cstddef>
+
 #include <exception>
 #include <iostream>
 #include <string>
@@ -12,12 +14,12 @@
 namespace math::server {
 
 struct Settings {
-    static constexpr unsigned DEFAULT_PORT = 18000;
+    static constexpr unsigned short DEFAULT_PORT = 18000;
 
-    static unsigned default_threads() { return std::thread::hardware_concurrency(); }
+    static std::size_t default_threads() { return std::thread::hardware_concurrency(); }
 
-    unsigned m_port;
-    unsigned m_threads;
+    unsigned short m_port;
+    std::size_t m_threads;
 
     bool exit_with_usage() const { return m_vm.count("help"); }
 
