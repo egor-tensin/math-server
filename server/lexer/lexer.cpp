@@ -24,8 +24,12 @@ std::string_view match_number(const std::string_view& input) {
     static const std::regex number_regex{R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX", flags};
 
     std::cmatch match;
-    if (!std::regex_search(input.cbegin(), input.cend(), match, number_regex)) {
-        return {};
+    {
+        const auto begin = input.data();
+        const auto end = begin + input.length();
+        if (!std::regex_search(begin, end, match, number_regex)) {
+            return {};
+        }
     }
     {
         // If we have the numeric part of a number followed by 'e' and no digits,
@@ -37,7 +41,7 @@ std::string_view match_number(const std::string_view& input) {
             throw LexerError{"exponent has no digits: " + match[0].str()};
         }
     }
-    return {match[0].first, match[0].length()};
+    return {match[0].first, static_cast<std::size_t>(match[0].length())};
 }
 
 std::optional<double> parse_number(const std::string_view& input, std::string_view& token) {
@@ -49,7 +53,7 @@ std::optional<double> parse_number(const std::string_view& input, std::string_vi
         const auto result = std::stod(std::string{view});
         token = view;
         return result;
-    } catch (const std::exception& e) {
+    } catch (const std::exception&) {
         throw LexerError{"internal: couldn't parse number from: " + std::string{view}};
     }
     return {};
@@ -64,7 +68,7 @@ std::optional<token::Type> parse_const_token(const std::string_view& input, std:
     for (const auto type : token::const_tokens()) {
         const auto str = token::type_to_string(type);
         if (starts_with(input, str)) {
-            token = {input.cbegin(), str.length()};
+            token = std::string_view(input.data(), str.length());
             return {type};
         }
     }
@@ -89,8 +93,12 @@ std::string_view parse_whitespace(const std::string_view& input) {
     static const std::regex ws_regex{R"(^\s+)"};
 
     std::cmatch match;
-    if (std::regex_search(input.cbegin(), input.cend(), match, ws_regex)) {
-        return {match[0].first, match[0].length()};
+    {
+        const auto begin = input.data();
+        const auto end = begin + input.length();
+        if (std::regex_search(begin, end, match, ws_regex)) {
+            return std::string_view(match[0].first, match[0].length());
+        }
     }
     return {};
 }
