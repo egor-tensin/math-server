@@ -26,4 +26,4 @@ RUN cmake -G "Unix Makefiles"                       \
     ./test/unit_tests/unit_tests --log_level=all && \
     cmake --build server
 
-CMD ["./server/server"]
+CMD ["./server/main/server"]
