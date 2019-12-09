@@ -80,3 +80,11 @@ Connect to localhost:18000 to query it or run the client:
     144
     asdf
     server error: lexer error: invalid input at: asdf
+
+License
+-------
+
+Distributed under the MIT License.
+See [LICENSE.txt] for details.
+
+[LICENSE.txt]: LICENSE.txt
