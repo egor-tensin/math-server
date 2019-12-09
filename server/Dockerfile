@@ -20,12 +20,13 @@ COPY [".", "/tmp/src/"]
 
 WORKDIR /tmp/build
 
-RUN cmake -G "Unix Makefiles"                       \
-        -D CMAKE_BUILD_TYPE=Release                 \
-        -D ENABLE_TESTS=ON                          \
-        /tmp/src &&                                 \
-    cmake --build test &&                           \
-    ./test/unit_tests/unit_tests --log_level=all && \
+RUN cmake -G "Unix Makefiles"              \
+        -D CMAKE_BUILD_TYPE=Release        \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D ENABLE_TESTS=ON                 \
+        /tmp/src &&                        \
+    cmake --build . --config Release --target install && \
+    /usr/local/bin/unit_tests --log_level=all
     cmake --build server
 
-CMD ["./server/main/server"]
+CMD ["/usr/local/bin/server"]
