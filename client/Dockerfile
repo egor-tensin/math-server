@@ -16,15 +16,18 @@ RUN apt-get update -yq && \
         libboost-program-options-dev \
         libboost-test-dev
 
-COPY [".", "/tmp/src/"]
+ENV src_dir=/tmp/src \
+    build_dir=/tmp/build
 
-WORKDIR /tmp/build
+COPY [".", "$src_dir"]
+
+WORKDIR $build_dir
 
 RUN cmake -G "Unix Makefiles"              \
         -D CMAKE_BUILD_TYPE=Release        \
         -D CMAKE_INSTALL_PREFIX=/usr/local \
         -D ENABLE_TESTS=ON                 \
-        /tmp/src &&                        \
+        "$src_dir" &&                      \
     cmake --build . --config Release --target install && \
     /usr/local/bin/unit_tests --log_level=all
 
