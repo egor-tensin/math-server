@@ -1,5 +1,6 @@
 param(
     [string] $BuildDir = $null,
+    [string] $InstallDir = $null,
     [string] $ProjectDir = $null,
     [string] $Platform = $null,
     [string] $Generator = $null,
@@ -37,6 +38,7 @@ function Test-AppVeyor {
 function Set-AppVeyorDefaults {
     $script:ProjectDir = $env:APPVEYOR_BUILD_FOLDER
     $script:BuildDir = 'C:\Projects\build'
+    $script:InstallDir = 'C:\Projects\install'
     $script:Generator = switch ($env:APPVEYOR_BUILD_WORKER_IMAGE) {
         'Visual Studio 2017' { 'Visual Studio 15 2017' }
         'Visual Studio 2019' { 'Visual Studio 16 2019' }
@@ -54,6 +56,8 @@ function Build-Project {
         [string] $ProjectDir,
         [Parameter(Mandatory=$true)]
         [string] $BuildDir,
+        [Parameter(Mandatory=$true)]
+        [string] $InstallDir,
         [Parameter(Mandatory=$true)]
         [string] $Generator,
         [Parameter(Mandatory=$true)]
@@ -74,13 +78,18 @@ function Build-Project {
 
     Invoke-Exe { cmake.exe                     `
         -G $Generator -A $Platform             `
+        -D "CMAKE_INSTALL_PREFIX=$InstallDir"  `
         -D "BOOST_ROOT=$BoostDir"              `
         -D "BOOST_LIBRARYDIR=$BoostLibraryDir" `
         -D ENABLE_TESTS=ON                     `
         $ProjectDir
     }
     
-    Invoke-Exe { cmake.exe --build . --config $Configuration -- /m }
+    Invoke-Exe { cmake.exe --build . --config $Configuration --target install -- /m }
+
+    cd $InstallDir
+
+    Invoke-Exe { .\bin\unit_tests.exe --log_level=all }
 }
 
 function Build-ProjectAppVeyor {
@@ -93,6 +102,7 @@ function Build-ProjectAppVeyor {
         Build-Project                                `
             -ProjectDir $script:ProjectDir           `
             -BuildDir $script:BuildDir               `
+            -InstallDir $script:InstallDir           `
             -Generator $script:Generator             `
             -Platform $script:Platform               `
             -Configuration $script:Configuration     `

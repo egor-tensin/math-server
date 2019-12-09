@@ -12,3 +12,5 @@ target_compile_definitions(server PRIVATE BOOST_DATE_TIME_NO_LIB BOOST_REGEX_NO_
 if(DEBUG_ASIO)
     target_compile_definitions(server PRIVATE BOOST_ASIO_ENABLE_HANDLER_TRACKING)
 endif()
+
+install(TARGETS server RUNTIME DESTINATION bin)

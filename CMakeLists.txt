@@ -11,6 +11,7 @@ include(cmake/common.cmake)
 
 add_subdirectory(client)
 add_subdirectory(server)
+
 if(ENABLE_TESTS)
     add_subdirectory(test)
 endif()

@@ -18,9 +18,6 @@ install:
 build_script:
   - ps: .\.appveyor\build.ps1
 
-test_script:
-  - ps: .\.appveyor\test.ps1
-
 for:
 - matrix:
     only:
