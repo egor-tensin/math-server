@@ -29,13 +29,13 @@ bootstrap() {
 build() {
     trap clean RETURN
     cd -- "$boost_dir"
-    ./b2                                      \
-        "address-model=$address_model"        \
-        link=static                           \
-        variant="$build_type"                 \
-        "--stagedir=stage/$arch/$build_type"  \
-        --with-filesystem                     \
-        --with-program_options                \
+    ./b2                                     \
+        "address-model=$address_model"       \
+        link=static                          \
+        variant="$build_type"                \
+        "--stagedir=stage/$arch/$build_type" \
+        --with-filesystem                    \
+        --with-program_options               \
         --with-test
 }
 
