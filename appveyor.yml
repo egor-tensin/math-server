@@ -1,6 +1,8 @@
 version: '{build}'
 
-image: Visual Studio 2019
+image:
+  - Visual Studio 2017
+  - Visual Studio 2019
 
 platform:
   - Win32
@@ -22,6 +24,29 @@ test_script:
 for:
 - matrix:
     only:
-      - image: Visual Studio 2019
+      - image: Visual Studio 2017
+        platform: Win32
   environment:
-    appveyor_boost_version: 1.71.0
+    appveyor_boost_root: C:\Libraries\boost_1_69_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_69_0\lib32-msvc-14.1
+- matrix:
+    only:
+      - image: Visual Studio 2017
+        platform: x64
+  environment:
+    appveyor_boost_root: C:\Libraries\boost_1_69_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_69_0\lib64-msvc-14.1
+- matrix:
+    only:
+      - image: Visual Studio 2019
+        platform: Win32
+  environment:
+    appveyor_boost_root: C:\Libraries\boost_1_71_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_71_0\lib32-msvc-14.2
+- matrix:
+    only:
+      - image: Visual Studio 2019
+        platform: x64
+  environment:
+    appveyor_boost_root: C:\Libraries\boost_1_71_0
+    appveyor_boost_librarydir: C:\Libraries\boost_1_71_0\lib64-msvc-14.2
