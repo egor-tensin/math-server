@@ -9,7 +9,7 @@ LABEL maintainer="Egor Tensin <Egor.Tensin@gmail.com>"
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -yq && \
-    apt-get install -yq --no-install-recommmends \
+    apt-get install -yq --no-install-recommends \
         build-essential              \
         cmake                        \
         libboost-filesystem-dev      \
