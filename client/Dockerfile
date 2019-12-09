@@ -22,7 +22,6 @@ WORKDIR /tmp/build
 
 RUN cmake -G "Unix Makefiles"                       \
         -D CMAKE_BUILD_TYPE=RelWithDebInfo          \
-        -D CMAKE_CXX_STANDARD_LIBRARIES="-lpthread" \
         -D ENABLE_TESTS=ON                          \
         /tmp/src &&                                 \
     cmake --build test &&                           \

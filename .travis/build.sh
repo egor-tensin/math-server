@@ -14,7 +14,6 @@ main() {
     cd -- "$build_dir"
     cmake                                           \
         -D "CMAKE_BUILD_TYPE=$build_type"           \
-        -D "CMAKE_CXX_STANDARD_LIBRARIES=-lpthread" \
         -D "CMAKE_INSTALL_PREFIX=$install_dir"      \
         -D "BOOST_ROOT=$boost_dir"                  \
         -D "BOOST_LIBRARYDIR=$boost_librarydir"     \
