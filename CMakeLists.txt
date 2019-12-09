@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.1)
+
 project(math_server CXX)
 
 option(ENABLE_TESTS "build the tests")
