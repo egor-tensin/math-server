@@ -2,7 +2,7 @@ project(math_server CXX)
 
 option(ENABLE_TESTS "build the tests")
 
-include(common.cmake)
+include(cmake/common.cmake)
 
 add_subdirectory(client)
 add_subdirectory(server)
