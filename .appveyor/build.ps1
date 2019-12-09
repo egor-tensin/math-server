@@ -97,6 +97,7 @@ function Build-Project {
         -G $Generator -A $Platform             `
         -D "BOOST_ROOT=$BoostDir"              `
         -D "BOOST_LIBRARYDIR=$BoostLibraryDir" `
+        -D CC_CXX_STANDARD=17                  `
         -D ENABLE_TESTS=ON                     `
         $ProjectDir
     }

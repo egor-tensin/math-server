@@ -16,6 +16,7 @@ main() {
         -D "CMAKE_CXX_STANDARD_LIBRARIES=-lpthread" \
         -D "BOOST_ROOT=$boost_dir"                  \
         -D "BOOST_LIBRARYDIR=$boost_librarydir"     \
+        -D CC_CXX_STANDARD=17                       \
         -D ENABLE_TESTS=ON                          \
         "$TRAVIS_BUILD_DIR"
     cmake --build . -- -j
