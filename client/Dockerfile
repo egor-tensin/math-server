@@ -27,7 +27,7 @@ RUN "$src_dir/cmake/build/build.py" \
         --clean                     \
         --configuration Release     \
         -- -DENABLE_TESTS=ON        \
-    && /usr/local/bin/unit_tests --log_level=all
+    && /usr/local/bin/test/unit_tests --log_level=all
 
 ENTRYPOINT ["/usr/local/bin/client"]
 CMD ["-c", "2 * 2"]

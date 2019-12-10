@@ -23,7 +23,7 @@ build_script:
   - '"%python_exe%" cmake\build\build_appveyor.py --install "%install_dir%" --boost "%appveyor_boost_root%" --boost-librarydir "%appveyor_boost_librarydir%" -- -DENABLE_TESTS=ON'
 
 test_script:
-  - '"%install_dir%\bin\unit_tests.exe"'
+  - '"%install_dir%\bin\test\unit_tests.exe"'
 
 for:
 # Only build Release builds for master to speed things up:
