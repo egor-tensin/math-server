@@ -8,27 +8,25 @@ LABEL maintainer="Egor Tensin <Egor.Tensin@gmail.com>"
 # Don't prompt:
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update -yq && \
-    apt-get install -yq --no-install-recommends \
+RUN apt-get update -yq \
+    && apt-get install -yq --no-install-recommends \
         build-essential              \
         cmake                        \
         libboost-filesystem-dev      \
         libboost-program-options-dev \
-        libboost-test-dev
+        libboost-test-dev            \
+        python3
 
-ENV src_dir=/tmp/src \
-    build_dir=/tmp/build
+ENV src_dir=/usr/src/app
 
 COPY [".", "$src_dir"]
 
-WORKDIR $build_dir
-
-RUN cmake -G "Unix Makefiles"              \
-        -D CMAKE_BUILD_TYPE=Release        \
-        -D CMAKE_INSTALL_PREFIX=/usr/local \
-        -D ENABLE_TESTS=ON                 \
-        "$src_dir" &&                      \
-    cmake --build . --config Release --target install && \
-    /usr/local/bin/unit_tests --log_level=all
+RUN "$src_dir/cmake/build/build.py" \
+        --src "$src_dir"            \
+        --install /usr/local        \
+        --clean                     \
+        --configuration Release     \
+        -- -DENABLE_TESTS=ON        \
+    && /usr/local/bin/unit_tests --log_level=all
 
 CMD ["/usr/local/bin/server"]

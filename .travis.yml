@@ -4,13 +4,20 @@ dist: bionic
 
 env:
   global:
-    - boost_version=1.71.0
+    - travis_boost_version=1.71.0
   matrix:
-    - build_type=debug   arch=x64
-    - build_type=release arch=x64
+    - configuration=Debug   platform=x64
+    - configuration=Release platform=x64
 
 before_script:
-  - ./.travis/build_boost.sh
+  - ./cmake/build/boost/build_travis.sh --with-filesystem --with-program_options --with-test
 
 script:
-  - ./.travis/build.sh
+  - |-
+    ./cmake/build/build_travis.py        \
+        --configuration "$configuration" \
+        --install "$HOME/install"        \
+        --boost "$HOME/boost_1_71_0"     \
+        --boost-librarydir "$HOME/boost_1_71_0/stage/$platform/${configuration,,}/lib" \
+        -- -DENABLE_TESTS=ON
+  - "$HOME/install/bin/unit_tests"
