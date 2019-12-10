@@ -10,7 +10,8 @@ Development
 -----------
 
 Build using CMake.
-Depends on Boost.{Asio,Filesystem,Program_options,Test}.
+Depends on Boost.{Filesystem,Program_options,Test}.
+Boost version 1.66 or higher is required.
 
 Usage
 -----
