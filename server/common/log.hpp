@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/format.hpp>
 #include <boost/system/error_code.hpp>
 
@@ -20,9 +21,10 @@ namespace details {
 inline std::thread::id get_tid() { return std::this_thread::get_id(); }
 
 inline std::string get_timestamp() {
-    const auto tt = std::time(nullptr);
+    const auto now = boost::posix_time::second_clock::universal_time();
+    const auto tm = boost::posix_time::to_tm(now);
     std::ostringstream oss;
-    oss << std::put_time(std::gmtime(&tt), "%Y-%m-%d %H:%M:%S");
+    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
     return oss.str();
 }
 
