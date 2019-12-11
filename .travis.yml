@@ -2,10 +2,18 @@ language: cpp
 os: linux
 dist: bionic
 
+addons:
+  apt:
+    update: true
+    packages:
+      - g++-multilib
+
 env:
   global:
     - travis_boost_version=1.71.0
   matrix:
+    - configuration=Debug   platform=x86
+    - configuration=Release platform=x86
     - configuration=Debug   platform=x64
     - configuration=Release platform=x64
 
@@ -17,6 +25,7 @@ script:
     ./cmake/build/build_travis.py        \
         --configuration "$configuration" \
         --install "$HOME/install"        \
+        --toolchain ./cmake/toolchains/gcc-$platform.cmake \
         --boost "$HOME/boost_1_71_0"     \
         --boost-librarydir "$HOME/boost_1_71_0/stage/$platform/${configuration,,}/lib" \
         -- -DENABLE_TESTS=ON
