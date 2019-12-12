@@ -33,3 +33,5 @@ add_subdirectory(server)
 if(ENABLE_TESTS)
     add_subdirectory(test)
 endif()
+
+install(FILES README.md LICENSE.txt DESTINATION share)
