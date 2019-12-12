@@ -6,7 +6,7 @@ image:
 
 environment:
   python_exe: C:\Python36-x64\python.exe
-  install_dir: C:\Projects\install
+  install_dir: C:\Projects\install\math-server
 
 platform:
   - Win32
@@ -21,6 +21,10 @@ install:
 
 build_script:
   - '"%python_exe%" cmake\build\build_appveyor.py --install "%install_dir%" --boost "%appveyor_boost_root%" --boost-librarydir "%appveyor_boost_librarydir%" -- -DENABLE_TESTS=ON'
+
+after_build:
+  - 7z.exe a "math-server-%PLATFORM%-%CONFIGURATION%.zip" "%install_dir%"
+  - appveyor.exe PushArtifact "math-server-%PLATFORM%-%CONFIGURATION%.zip"
 
 test_script:
   - '"%install_dir%\bin\test\unit_tests.exe"'
