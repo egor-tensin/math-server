@@ -35,7 +35,9 @@ def timer(description):
 def run_client(i, client, stdin):
     with timer(f"Invocation #{i}"):
         cmd = client.get_command_line()
-        return subprocess.run(cmd, text=True, input=stdin, capture_output=True)
+        result = subprocess.run(cmd, text=True, input=stdin, capture_output=True)
+        result.check_returncode()
+        return result
 
 OPERATORS = '+', '-', '*', '/'
 MIN_OPERATORS = 10
