@@ -29,4 +29,4 @@ script:
         --boost "$HOME/boost_1_71_0"     \
         --boost-librarydir "$HOME/boost_1_71_0/stage/$platform/${configuration,,}/lib" \
         -- -DENABLE_TESTS=ON
-  - "$HOME/install/bin/test/unit_tests"
+  - "$HOME/install/bin/math-server-unit-tests"

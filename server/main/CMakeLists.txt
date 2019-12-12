@@ -18,4 +18,6 @@ if(DEBUG_ASIO)
     target_compile_definitions(server PRIVATE BOOST_ASIO_ENABLE_HANDLER_TRACKING)
 endif()
 
+set_target_properties(server PROPERTIES OUTPUT_NAME math-server)
+
 install(TARGETS server RUNTIME DESTINATION bin)

@@ -27,6 +27,6 @@ RUN "$src_dir/cmake/build/build.py" \
         --clean                     \
         --configuration Release     \
         -- -DENABLE_TESTS=ON        \
-    && /usr/local/bin/test/unit_tests --log_level=all
+    && /usr/local/bin/math-server-unit-tests --log_level=all
 
-CMD ["/usr/local/bin/server"]
+CMD ["/usr/local/bin/math-server"]

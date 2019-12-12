@@ -14,5 +14,5 @@ services:
     build:
       context: .
       dockerfile: client/Dockerfile
-    entrypoint: ["/usr/local/bin/client", "-H", "server"]
+    entrypoint: ["/usr/local/bin/math-client", "-H", "server"]
     image: egortensin/math-client
