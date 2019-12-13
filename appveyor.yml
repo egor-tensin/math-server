@@ -20,7 +20,7 @@ install:
   - git submodule update --init --recursive
 
 build_script:
-  - '"%python_exe%" cmake\build\build_appveyor.py --install "%install_dir%" --boost "%appveyor_boost_root%" --boost-librarydir "%appveyor_boost_librarydir%" -- -DENABLE_TESTS=ON'
+  - '"%python_exe%" cmake\ci\build_appveyor.py --install "%install_dir%" --boost "%appveyor_boost_root%" --boost-librarydir "%appveyor_boost_librarydir%" -- -DENABLE_TESTS=ON'
 
 after_build:
   - 7z.exe a "math-server-%PLATFORM%-%CONFIGURATION%.zip" "%install_dir%"

@@ -21,12 +21,12 @@ ENV src_dir=/usr/src/app
 
 COPY [".", "$src_dir"]
 
-RUN "$src_dir/cmake/build/build.py" \
-        --src "$src_dir"            \
-        --install /usr/local        \
-        --clean                     \
-        --configuration Release     \
-        -- -DENABLE_TESTS=ON        \
+RUN "$src_dir/cmake/ci/build.py" \
+        --src "$src_dir"         \
+        --install /usr/local     \
+        --clean                  \
+        --configuration Release  \
+        -- -DENABLE_TESTS=ON     \
     && /usr/local/bin/math-server-unit-tests --log_level=all
 
 ENTRYPOINT ["/usr/local/bin/math-client"]
