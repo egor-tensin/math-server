@@ -16,9 +16,9 @@ Boost version 1.66 or higher is required.
 Usage
 -----
 
-### `server`
+### `math-server`
 
-If you just run `server`, it'll start a server on port 18000.
+If you just run `math-server`, it'll start a server on port 18000.
 You can `telnet` to it, type in arithmetic expressions, and it'll give you the
 results:
 
@@ -31,9 +31,9 @@ results:
     1 / (-3 - -3)
     server error: parser error: division by zero
 
-Consult `server --help` for more info.
+Consult `math-server --help` for more info.
 
-### `client`
+### `math-client`
 
 A `telnet`-like client for the server.
 It'll try to connect to the server on localhost:18000.
@@ -42,18 +42,18 @@ Supports reading input from:
 
 * the command line,
 
-      > client -c "2 * 2"
+      > math-client -c "2 * 2"
       4
 
 * a file(s),
 
-      > client test.txt
+      > math-client test.txt
       result1
       result2
 
 * stdin.
 
-      > client
+      > math-client
       1
       1
       2 * 2
@@ -63,7 +63,7 @@ Supports reading input from:
       1 / (-3 - -3)
       server error: parser error: division by zero
 
-Consult `client --help` for more info.
+Consult `math-client --help` for more info.
 
 ### Docker
 
