@@ -25,7 +25,7 @@ private:
     void close();
 
     void read();
-    void write(std::string);
+    void write(const std::string&);
 
     void handle_read(const boost::system::error_code&, std::size_t);
     void handle_write(const boost::system::error_code&, std::size_t);

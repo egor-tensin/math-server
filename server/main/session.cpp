@@ -87,15 +87,14 @@ std::string Session::consume_input(std::size_t bytes) {
     return input;
 }
 
-void Session::write(std::string output) {
+void Session::write(const std::string& output) {
     const auto self = shared_from_this();
 
+    std::ostream os(&m_buffer);
     // Include CR (so that Windows' telnet client works)
-    output += "\r\n";
+    os << output << "\r\n";
 
-    boost::asio::const_buffer buffer{output.c_str(), output.length()};
-
-    boost::asio::async_write(m_socket, std::move(buffer), boost::asio::bind_executor(m_strand,
+    boost::asio::async_write(m_socket, m_buffer, boost::asio::bind_executor(m_strand,
         [this, self] (const boost::system::error_code& ec, std::size_t bytes) {
             handle_write(ec, bytes);
         }));
