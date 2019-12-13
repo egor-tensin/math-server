@@ -73,7 +73,7 @@ def run_stress_test(args):
     with Pool(args.processes) as pool:
         results = pool.starmap(run_client, [(i, client, stdin) for i in range(args.processes)])
         assert results
-        # It's assumed every invocation gives the same output, yikes.
+        assert all((results[0].stdout == other.stdout for other in results[1:]))
         actual_output = list(map(float, results[0].stdout.split('\n')[:-1]))
         assert len(expected_output) == len(actual_output)
         for i in range(len(expected_output)):
