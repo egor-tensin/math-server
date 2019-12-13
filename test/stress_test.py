@@ -5,6 +5,7 @@ import math
 from multiprocessing import Pool
 import random
 import subprocess
+from subprocess import PIPE
 import sys
 from timeit import default_timer
 
@@ -35,7 +36,8 @@ def timer(description):
 def run_client(i, client, stdin):
     with timer(f"Invocation #{i}"):
         cmd = client.get_command_line()
-        result = subprocess.run(cmd, text=True, input=stdin, capture_output=True)
+        result = subprocess.run(cmd, stdout=PIPE, stderr=PIPE, input=stdin,
+                                universal_newlines=True)
         result.check_returncode()
         return result
 
@@ -72,7 +74,7 @@ def run_stress_test(args):
         results = pool.starmap(run_client, [(i, client, stdin) for i in range(args.processes)])
         assert results
         # It's assumed every invocation gives the same output, yikes.
-        actual_output = list(map(float, results[0].stdout.split('\n\n')[:-1]))
+        actual_output = list(map(float, results[0].stdout.split('\n')[:-1]))
         assert len(expected_output) == len(actual_output)
         for i in range(len(expected_output)):
             if math.isclose(expected_output[i], actual_output[i]):
