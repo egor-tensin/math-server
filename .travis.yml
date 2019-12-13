@@ -18,7 +18,7 @@ env:
     - configuration=Release platform=x64
 
 before_script:
-  - ./cmake/ci/boost/build_travis.py --with filesystem program_options test --link=static
+  - ./cmake/ci/boost/build_travis.py link=static --with-filesystem --with-program_options --with-test
 
 script:
   - |-
@@ -27,7 +27,7 @@ script:
         --install "$HOME/install"        \
         --toolchain ./cmake/toolchains/gcc-$platform.cmake \
         --boost "$HOME/boost_1_71_0"     \
-        --boost-librarydir "$HOME/boost_1_71_0/stage/$platform/${configuration,,}/lib" \
+        --boost-librarydir "$HOME/boost_1_71_0/stage/$platform/$configuration/lib" \
         -- \
         -DENABLE_TESTS=ON
   - "$HOME/install/bin/math-server-unit-tests"
