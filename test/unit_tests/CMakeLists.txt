@@ -10,3 +10,6 @@ target_link_libraries(unit_tests PRIVATE ${Boost_LIBRARIES})
 set_target_properties(unit_tests PROPERTIES OUTPUT_NAME math-server-unit-tests)
 
 install(TARGETS unit_tests RUNTIME DESTINATION bin)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    install(FILES "$<TARGET_PDB_FILE:unit_tests>" DESTINATION bin OPTIONAL)
+endif()

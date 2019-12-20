@@ -21,3 +21,6 @@ endif()
 set_target_properties(server PROPERTIES OUTPUT_NAME math-server)
 
 install(TARGETS server RUNTIME DESTINATION bin)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    install(FILES "$<TARGET_PDB_FILE:server>" DESTINATION bin OPTIONAL)
+endif()

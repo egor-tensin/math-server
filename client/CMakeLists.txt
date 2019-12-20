@@ -14,3 +14,6 @@ target_link_libraries(client PRIVATE Threads::Threads)
 set_target_properties(client PROPERTIES OUTPUT_NAME math-client)
 
 install(TARGETS client RUNTIME DESTINATION bin)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    install(FILES "$<TARGET_PDB_FILE:client>" DESTINATION bin OPTIONAL)
+endif()
