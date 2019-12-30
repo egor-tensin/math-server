@@ -18,6 +18,7 @@ enum class Type {
     MINUS,
     ASTERISK,
     SLASH,
+    CARET,
     LEFT_PAREN,
     RIGHT_PAREN,
     NUMBER,

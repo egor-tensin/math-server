@@ -53,6 +53,7 @@ BOOST_AUTO_TEST_CASE(test_parse_const_token) {
     // parse_* functions only consume a single token:
     BOOST_TEST(details::parse_const_token("+/*").value() == Type::PLUS);
     BOOST_TEST(details::parse_const_token("-").value() == Type::MINUS);
+    BOOST_TEST(details::parse_const_token("^^").value() == Type::CARET);
     BOOST_TEST(!details::parse_const_token("&+").has_value());
 }
 
@@ -63,6 +64,7 @@ const std::vector<std::string_view> input{
     "",
     " + - ",
     "1+2",
+    ".5^-1 ^ 4",
     "1+2 *  (3- 4e-2)",
     " 2 * (1 + 3 * (1 - -3)) ",
 };
@@ -91,6 +93,14 @@ const std::vector<Expected> expected{
         Token{1},
         Token{Type::PLUS},
         Token{2},
+    }},
+    {{
+        Token{.5},
+        Token{Type::CARET},
+        Token{Type::MINUS},
+        Token{1},
+        Token{Type::CARET},
+        Token{4},
     }},
     {{
         Token{1},

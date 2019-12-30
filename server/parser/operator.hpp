@@ -10,6 +10,8 @@
 #include "../lexer/token.hpp"
 #include "../lexer/token_type.hpp"
 
+#include <cmath>
+
 namespace math::server::parser {
 
 class BinaryOp {
@@ -23,6 +25,7 @@ public:
             case Type::MINUS:
             case Type::ASTERISK:
             case Type::SLASH:
+            case Type::CARET:
                 return true;
 
             default:
@@ -49,25 +52,49 @@ public:
             case Type::SLASH:
                 return min_precedence() + 1;
 
+            case Type::CARET:
+                return min_precedence() + 2;
+
             default:
                 throw ParserError{"internal: undefined operator precedence"};
         }
+    }
+
+    bool is_right_associative() const {
+        switch (m_type) {
+            case Type::CARET:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    bool is_left_associative() const {
+        return !is_right_associative();
     }
 
     double exec(double lhs, double rhs) const {
         switch (m_type) {
             case Type::PLUS:
                 return lhs + rhs;
+
             case Type::MINUS:
                 return lhs - rhs;
+
             case Type::ASTERISK:
                 return lhs * rhs;
+
             case Type::SLASH:
                 // Trapping the CPU would be better?
                 if (rhs == 0.) {
                     throw ParserError{"division by zero"};
                 }
                 return lhs / rhs;
+
+            case Type::CARET:
+                return std::pow(lhs, rhs);
+
             default:
                 throw ParserError{"internal: unsupported operator"};
         }

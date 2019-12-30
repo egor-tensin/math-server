@@ -30,6 +30,10 @@ const std::vector<std::string_view> input{
     " 2 * (1 + 3) ",
     " 2 * (1 + 3 * (1 - -3)) ",
     " -2 * ---- (3 + -100e-1)  ", // Looks weird, but also works in e.g. Python
+    "2 ^ 3 ^ 3",
+    "(2 ^ 3) ^ 3", // Power operator is right-associative
+    "(.5 ^ -1) ^ 4",
+    ".5 ^ -1 ^ 4", // Power operator has higher precedence than the unary minus
 };
 
 const std::vector<double> expected{
@@ -39,6 +43,10 @@ const std::vector<double> expected{
     8,
     26,
     14,
+    134217728,
+    512,
+    16,
+    2,
 };
 
 }

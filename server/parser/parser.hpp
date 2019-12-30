@@ -45,7 +45,17 @@ private:
             m_lexer.drop_token();
             auto rhs = exec_primary();
 
-            for (op = peek_operator(); op.has_value() && op->get_precedence() > lhs_op.get_precedence(); op = peek_operator()) {
+            for (op = peek_operator(); op.has_value(); op = peek_operator()) {
+                const auto op_prec = op->get_precedence();
+                const auto lhs_prec = lhs_op.get_precedence();
+                const auto ok_left_assoc = op->is_left_associative() && op_prec > lhs_prec;
+                const auto ok_right_assoc = op->is_right_associative() && op_prec == lhs_prec;
+                const auto ok = ok_left_assoc || ok_right_assoc;
+
+                if (!ok) {
+                    break;
+                }
+
                 rhs = exec_expr(rhs, op->get_precedence());
             }
 

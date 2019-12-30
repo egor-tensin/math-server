@@ -35,6 +35,7 @@ private:
             {Type::MINUS, "-"},
             {Type::ASTERISK, "*"},
             {Type::SLASH, "/"},
+            {Type::CARET, "^"},
             {Type::LEFT_PAREN, "("},
             {Type::RIGHT_PAREN, ")"},
             {Type::NUMBER, "number"},
