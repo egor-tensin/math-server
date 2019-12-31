@@ -36,7 +36,7 @@ public:
 
 private:
     double exec_expr() {
-        return exec_expr(exec_primary(), parser::BinaryOp::min_precedence());
+        return exec_expr(exec_factor(), parser::BinaryOp::min_precedence());
     }
 
     double exec_expr(double lhs, unsigned min_prec) {
@@ -45,7 +45,7 @@ private:
             const auto prev_prec = prev.get_precedence();
 
             m_lexer.drop_token();
-            auto rhs = exec_primary();
+            auto rhs = exec_factor();
 
             for (op = peek_operator(); op.has_value(); op = peek_operator()) {
                 const auto next = *op;
@@ -77,16 +77,28 @@ private:
         return parser::BinaryOp::from_token(*token);
     }
 
-    double exec_primary() {
+    double exec_factor() {
         if (!m_lexer.has_token()) {
-            throw ParserError{"expected '-', '(' or a number"};
+            throw ParserError{"expected '-', '+', '(' or a number"};
         }
 
         using Type = lexer::Token::Type;
 
         if (m_lexer.drop_token_of_type(Type::MINUS).has_value()) {
-            return -exec_primary();
+            return -exec_factor();
         }
+        if (m_lexer.drop_token_of_type(Type::PLUS).has_value()) {
+            return exec_factor();
+        }
+        return exec_atom();
+    }
+
+    double exec_atom() {
+        if (!m_lexer.has_token()) {
+            throw ParserError{"expected '-', '+', '(' or a number"};
+        }
+
+        using Type = lexer::Token::Type;
 
         if (m_lexer.drop_token_of_type(Type::LEFT_PAREN).has_value()) {
             const auto inner = exec_expr();
@@ -100,7 +112,7 @@ private:
             return token.value().as_number();
         }
 
-        throw ParserError{"expected '-', '(' or a number"};
+        throw ParserError{"expected '-', '+', '(' or a number"};
     }
 
     Lexer m_lexer;

@@ -24,20 +24,31 @@ namespace {
 namespace exec::valid {
 
 const std::vector<std::string_view> input{
+    // Constants and unary operators:
     "1",
+    "-1",
+    "--1",
+    "+--+-2",
+    // Basic binary operators:
     " 1 + 2 ",
     " 2 * 1 + 3 ",
     " 2 * (1 + 3) ",
     " 2 * (1 + 3 * (1 - -3)) ",
-    " -2 * ---- (3 + -100e-1)  ", // Looks weird, but also works in e.g. Python
+    // Looks weird, but also works in e.g. Python:
+    " -2 * -+--- (3 + -100e-1)  ",
+    // Power operator is right-associative:
     "2 ^ 3 ^ 3",
-    "(2 ^ 3) ^ 3", // Power operator is right-associative
+    "(2 ^ 3) ^ 3",
+    // Power operator has higher precedence than the unary minus:
     "(.5 ^ -1) ^ 4",
-    ".5 ^ -1 ^ 4", // Power operator has higher precedence than the unary minus
+    ".5 ^ -1 ^ 4",
 };
 
 const std::vector<double> expected{
     1,
+    -1,
+    1,
+    -2,
     3,
     5,
     8,
@@ -55,14 +66,16 @@ namespace exec::invalid {
 
 const std::vector<std::string_view> input{
     "",
+    // Missing operand:
     " 1 + ",
+    // Unmatched parentheses:
     " 2 * (1 + 3 ",
     " 2 * (1 + 3) )",
 };
 
 const std::vector<std::string> error_msg{
-    "server error: parser error: expected '-', '(' or a number",
-    "server error: parser error: expected '-', '(' or a number",
+    "server error: parser error: expected '-', '+', '(' or a number",
+    "server error: parser error: expected '-', '+', '(' or a number",
     "server error: parser error: missing closing ')'",
     "server error: parser error: expected a binary operator",
 };
