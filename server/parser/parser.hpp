@@ -41,25 +41,30 @@ private:
 
     double exec_expr(double lhs, unsigned min_prec) {
         for (auto op = peek_operator(); op.has_value() && op->get_precedence() >= min_prec;) {
-            const auto lhs_op = *op;
+            const auto prev = *op;
+            const auto prev_prec = prev.get_precedence();
+
             m_lexer.drop_token();
             auto rhs = exec_primary();
 
             for (op = peek_operator(); op.has_value(); op = peek_operator()) {
-                const auto op_prec = op->get_precedence();
-                const auto lhs_prec = lhs_op.get_precedence();
-                const auto ok_left_assoc = op->is_left_associative() && op_prec > lhs_prec;
-                const auto ok_right_assoc = op->is_right_associative() && op_prec == lhs_prec;
-                const auto ok = ok_left_assoc || ok_right_assoc;
+                const auto next = *op;
+                const auto next_prec = next.get_precedence();
 
-                if (!ok) {
-                    break;
+                {
+                    const auto acc_left_assoc = next.is_left_associative() && next_prec > prev_prec;
+                    const auto acc_right_assoc = next.is_right_associative() && next_prec == prev_prec;
+                    const auto acc = acc_left_assoc || acc_right_assoc;
+
+                    if (!acc) {
+                        break;
+                    }
                 }
 
-                rhs = exec_expr(rhs, op->get_precedence());
+                rhs = exec_expr(rhs, next_prec);
             }
 
-            lhs = lhs_op.exec(lhs, rhs);
+            lhs = prev.exec(lhs, rhs);
         }
         return lhs;
     }
