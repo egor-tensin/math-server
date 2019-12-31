@@ -42,8 +42,8 @@ public:
 
     static constexpr unsigned min_precedence() { return 0; }
 
-    unsigned get_precedence() const {
-        switch (m_type) {
+    static unsigned get_precedence(Type type) {
+        switch (type) {
             case Type::PLUS:
             case Type::MINUS:
                 return min_precedence();
@@ -53,12 +53,14 @@ public:
                 return min_precedence() + 1;
 
             case Type::CARET:
-                return min_precedence() + 2;
+                return min_precedence() + 3;
 
             default:
                 throw ParserError{"internal: undefined operator precedence"};
         }
     }
+
+    unsigned get_precedence() const { return get_precedence(m_type); }
 
     bool is_right_associative() const {
         switch (m_type) {

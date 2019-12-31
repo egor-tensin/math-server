@@ -17,6 +17,8 @@ namespace math::server {
 
 class Parser {
 public:
+    using Type = lexer::Token::Type;
+
     // I did simple recursive descent parsing a long time ago (see
     // https://github.com/egor-tensin/simple-interpreter), this appears to be
     // a finer algorithm for parsing arithmetic expressions.
@@ -27,7 +29,7 @@ public:
     { }
 
     double exec() {
-        const auto result = exec_expr();
+        const auto result = exec_dmas();
         if (m_lexer.has_token()) {
             throw ParserError{"expected a binary operator"};
         }
@@ -35,19 +37,25 @@ public:
     }
 
 private:
-    double exec_expr() {
-        return exec_expr(exec_factor(), parser::BinaryOp::min_precedence());
+    // DMAS as in Division, Multiplication, Addition and Subtraction
+    double exec_dmas() {
+        return exec_binary_op(exec_factor(), parser::BinaryOp::min_precedence());
     }
 
-    double exec_expr(double lhs, unsigned min_prec) {
-        for (auto op = peek_operator(); op.has_value() && op->get_precedence() >= min_prec;) {
+    // Exponentiation operator
+    double exec_exp() {
+        return exec_binary_op(exec_atom(), parser::BinaryOp::get_precedence(Type::CARET));
+    }
+
+    double exec_binary_op(double lhs, unsigned min_prec) {
+        for (auto op = peek_operator(min_prec); op.has_value();) {
             const auto prev = *op;
             const auto prev_prec = prev.get_precedence();
 
             m_lexer.drop_token();
             auto rhs = exec_factor();
 
-            for (op = peek_operator(); op.has_value(); op = peek_operator()) {
+            for (op = peek_operator(min_prec); op.has_value(); op = peek_operator(min_prec)) {
                 const auto next = *op;
                 const auto next_prec = next.get_precedence();
 
@@ -61,7 +69,7 @@ private:
                     }
                 }
 
-                rhs = exec_expr(rhs, next_prec);
+                rhs = exec_binary_op(rhs, next_prec);
             }
 
             lhs = prev.exec(lhs, rhs);
@@ -69,28 +77,29 @@ private:
         return lhs;
     }
 
-    std::optional<parser::BinaryOp> peek_operator() {
+    std::optional<parser::BinaryOp> peek_operator(unsigned min_prec) {
         const auto token = m_lexer.peek_token();
         if (!token.has_value() || !parser::BinaryOp::is(*token)) {
             return {};
         }
-        return parser::BinaryOp::from_token(*token);
+        const auto op = parser::BinaryOp::from_token(*token);
+        if (op.get_precedence() < min_prec) {
+            return {};
+        }
+        return op;
     }
 
     double exec_factor() {
         if (!m_lexer.has_token()) {
             throw ParserError{"expected '-', '+', '(' or a number"};
         }
-
-        using Type = lexer::Token::Type;
-
         if (m_lexer.drop_token_of_type(Type::MINUS).has_value()) {
             return -exec_factor();
         }
         if (m_lexer.drop_token_of_type(Type::PLUS).has_value()) {
             return exec_factor();
         }
-        return exec_atom();
+        return exec_exp();
     }
 
     double exec_atom() {
@@ -98,10 +107,8 @@ private:
             throw ParserError{"expected '-', '+', '(' or a number"};
         }
 
-        using Type = lexer::Token::Type;
-
         if (m_lexer.drop_token_of_type(Type::LEFT_PAREN).has_value()) {
-            const auto inner = exec_expr();
+            const auto inner = exec_dmas();
             if (!m_lexer.has_token() || !m_lexer.drop_token_of_type(Type::RIGHT_PAREN).has_value()) {
                 throw ParserError{"missing closing ')'"};
             }
