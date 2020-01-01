@@ -29,35 +29,58 @@ const std::vector<std::string_view> input{
     "-1",
     "--1",
     "+--+-2",
+    // Basic exponentiation:
+    "0^0",
+    "4^.5",
+    " 4 ^ ---0.5 ",
+    // Exponentiation is right-associative:
+    "2 ^ 3 ^ 3",
+    "(2 ^ 3) ^ 3",
+    // Exponentiation has higher precedence than the unary minus:
+    "(-2) ^ 2",
+    "-2 ^ 2",
+    "(.5 ^ -1) ^ 4",
+    ".5 ^ -1 ^ 4",
     // Basic binary operators:
     " 1 + 2 ",
     " 2 * 1 + 3 ",
     " 2 * (1 + 3) ",
     " 2 * (1 + 3 * (1 - -3)) ",
+    " -2 * (1 + --3 * (1 - -3)) ",
     // Looks weird, but also works in e.g. Python:
     " -2 * -+--- (3 + -100e-1)  ",
-    // Power operator is right-associative:
-    "2 ^ 3 ^ 3",
-    "(2 ^ 3) ^ 3",
-    // Power operator has higher precedence than the unary minus:
-    "(.5 ^ -1) ^ 4",
-    ".5 ^ -1 ^ 4",
+    " -2^2 --+- -3^0 / (4 + +12) ^.5^2 ",
+    " -2^2 --+- -3^0 / ((4 + +12) ^.5)^2 ",
 };
 
 const std::vector<double> expected{
+    // Constants and unary operators:
     1,
     -1,
     1,
     -2,
+    // Basic exponentiation:
+    1,
+    2,
+    0.5,
+    // Exponentiation is right-associative:
+    134217728,
+    512,
+    // Exponentiation has higher precedence than the unary minus:
+    4,
+    -4,
+    16,
+    2,
+    // Basic binary operators:
     3,
     5,
     8,
     26,
+    -26,
+    // Looks weird, but also works in e.g. Python:
     14,
-    134217728,
-    512,
-    16,
-    2,
+    -3.5,
+    -3.9375,
 };
 
 }
@@ -66,8 +89,11 @@ namespace exec::invalid {
 
 const std::vector<std::string_view> input{
     "",
+    "-",
+    "-+-",
     // Missing operand:
     " 1 + ",
+    "-2 + 3 ^ -",
     // Unmatched parentheses:
     " 2 * (1 + 3 ",
     " 2 * (1 + 3) )",
@@ -76,6 +102,11 @@ const std::vector<std::string_view> input{
 const std::vector<std::string> error_msg{
     "server error: parser error: expected '-', '+', '(' or a number",
     "server error: parser error: expected '-', '+', '(' or a number",
+    "server error: parser error: expected '-', '+', '(' or a number",
+    // Missing operand:
+    "server error: parser error: expected '-', '+', '(' or a number",
+    "server error: parser error: expected '-', '+', '(' or a number",
+    // Unmatched parentheses:
     "server error: parser error: missing closing ')'",
     "server error: parser error: expected a binary operator",
 };
