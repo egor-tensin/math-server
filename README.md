@@ -30,6 +30,10 @@ results:
     0.16666666666666666
     1 / (-3 - -3)
     server error: parser error: division by zero
+    -4 ^ 2
+    -16
+    (-4) ^ 2
+    16
 
 Consult `math-server --help` for more info.
 
@@ -62,6 +66,10 @@ Supports reading input from:
       0.16666666666666666
       1 / (-3 - -3)
       server error: parser error: division by zero
+      -4 ^ 2
+      -16
+      (-4) ^ 2
+      16
 
 Consult `math-client --help` for more info.
 
