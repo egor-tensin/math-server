@@ -3,6 +3,7 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
+#include <server/lexer/details/parse.hpp>
 #include <server/lexer/error.hpp>
 #include <server/lexer/lexer.hpp>
 #include <server/lexer/token.hpp>

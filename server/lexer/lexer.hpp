@@ -15,14 +15,6 @@
 #include <vector>
 
 namespace math::server {
-namespace lexer::details {
-
-// Exposed for testing:
-std::string_view parse_whitespace(const std::string_view&);
-std::optional<double> parse_number(const std::string_view&);
-std::optional<token::Type> parse_const_token(const std::string_view&);
-
-}
 
 class Lexer {
 public:
