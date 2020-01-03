@@ -157,7 +157,7 @@ std::optional<double> boost_parse_number(const std::string_view& input) {
 }
 
 std::optional<double> parse_number(const std::string_view& input, std::string_view& token) {
-    return impl::std_parse_number(input, token);
+    return impl::boost_parse_number(input, token);
 }
 
 std::optional<double> parse_number(const std::string_view& input) {
@@ -182,15 +182,12 @@ std::optional<token::Type> parse_const_token(const std::string_view& input) {
 }
 
 std::string_view parse_whitespace(const std::string_view& input) {
-    static const std::regex ws_regex{R"(^\s+)"};
+    static const boost::regex ws_regex{R"(^\s+)"};
 
-    std::cmatch match;
-    {
-        const auto begin = input.data();
-        const auto end = begin + input.length();
-        if (std::regex_search(begin, end, match, ws_regex)) {
-            return std::string_view(match[0].first, match[0].length());
-        }
+    boost::match_results<std::string_view::const_iterator> match;
+    if (boost::regex_search(input.cbegin(), input.cend(), match, ws_regex)) {
+        return {&*match[0].first, static_cast<std::size_t>(match[0].length())};
+        //      ^ Still fucking hate C++.
     }
     return {};
 }
