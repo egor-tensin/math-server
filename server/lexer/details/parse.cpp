@@ -23,7 +23,7 @@ namespace {
 class RegexNumberMatcher {
 public:
     bool match(const std::string_view& input) {
-        if (!basic_match(input)) {
+        if (!match_regex(input)) {
             return false;
         }
         // If we have the numeric part of a number followed by 'e' and no
@@ -36,7 +36,7 @@ public:
         return true;
     }
 
-    virtual std::string_view get() const = 0;
+    virtual std::string_view to_view() const = 0;
 
 protected:
     // This is a hacky attempt to describe a C-like grammar for floating-point
@@ -45,7 +45,7 @@ protected:
     static constexpr std::string_view NUMBER_REGEX{R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX"};
 
 private:
-    virtual bool basic_match(const std::string_view& input) = 0;
+    virtual bool match_regex(const std::string_view& input) = 0;
 
     virtual std::string to_str() const = 0;
 
@@ -56,15 +56,14 @@ private:
 
 class StdNumberMatcher : public RegexNumberMatcher {
 public:
-    std::string_view get() const override {
-        return {m_match[0].first, static_cast<std::size_t>(m_match[0].length())};
+    std::string_view to_view() const override {
+        return {&*m_match[0].first, static_cast<std::size_t>(m_match[0].length())};
+        //      ^ I fucking hate C++.
     }
 
 private:
-    bool basic_match(const std::string_view& input) override {
-        const auto begin = input.data();
-        const auto end = begin + input.length();
-        return std::regex_search(begin, end, m_match, get_regex());
+    bool match_regex(const std::string_view& input) override {
+        return std::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
     }
 
     static const std::regex& get_regex() {
@@ -81,20 +80,19 @@ private:
 
     bool matched_e_power() const override { return m_match[2].matched && m_match[2].length() != 0; }
 
-    std::cmatch m_match;
+    std::match_results<std::string_view::const_iterator> m_match;
 };
 
 class BoostNumberMatcher : public RegexNumberMatcher {
 public:
-    std::string_view get() const override {
-        return {m_match[0].first, static_cast<std::size_t>(m_match[0].length())};
+    std::string_view to_view() const override {
+        return {&*m_match[0].first, static_cast<std::size_t>(m_match[0].length())};
+        //      ^ I fucking hate C++.
     }
 
 private:
-    bool basic_match(const std::string_view& input) override {
-        const auto begin = input.data();
-        const auto end = begin + input.length();
-        return boost::regex_search(begin, end, m_match, get_regex());
+    bool match_regex(const std::string_view& input) override {
+        return boost::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
     }
 
     static const boost::regex& get_regex() {
@@ -111,14 +109,14 @@ private:
 
     bool matched_e_power() const override { return m_match[2].matched && m_match[2].length() != 0; }
 
-    boost::cmatch m_match;
+    boost::match_results<std::string_view::const_iterator> m_match;
 };
 
 std::optional<double> parse_number(const std::string_view& input, RegexNumberMatcher&& matcher, std::string_view& token) {
     if (!matcher.match(input)) {
         return {};
     }
-    const auto view = matcher.get();
+    const auto view = matcher.to_view();
     try {
         const auto result = std::stod(std::string{view});
         token = view;
