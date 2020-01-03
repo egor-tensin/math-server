@@ -32,6 +32,7 @@ add_subdirectory(server)
 
 if(ENABLE_TESTS)
     set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Suppressing benchmark's tests" FORCE)
+    set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "Don't install benchmark the library" FORCE)
     add_subdirectory("3rdparty/google/benchmark")
 
     add_subdirectory(test)
