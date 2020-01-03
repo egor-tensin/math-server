@@ -19,7 +19,7 @@ RUN build_deps='boost-dev cmake g++ make python3' && \
         -- -D Boost_USE_STATIC_LIBS=OFF && \
     rm -rf -- "$src_dir" && \
     apk del --purge --rdepends $build_deps && \
-    runtime_deps='boost-filesystem boost-program_options boost-unit_test_framework libstdc++' && \
+    runtime_deps='boost-filesystem boost-program_options boost-regex boost-unit_test_framework libstdc++' && \
     apk add $runtime_deps && \
     /usr/local/bin/math-server-unit-tests --log_level=all
 
