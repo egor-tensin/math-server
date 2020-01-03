@@ -15,11 +15,20 @@ protected:
     };
 };
 
-BENCHMARK_F(SelectionOfNumbers, ParseStdRegex)(benchmark::State &state) {
+BENCHMARK_F(SelectionOfNumbers, ParseStdRegex)(benchmark::State& state) {
     using namespace math::server::lexer::details;
     for (auto _ : state) {
         for (const auto& src : m_numbers) {
-            parse_number(src);
+            impl::std_parse_number(src);
+        }
+    }
+}
+
+BENCHMARK_F(SelectionOfNumbers, ParseBoostRegex)(benchmark::State& state) {
+    using namespace math::server::lexer::details;
+    for (auto _ : state) {
+        for (const auto& src : m_numbers) {
+            impl::boost_parse_number(src);
         }
     }
 }

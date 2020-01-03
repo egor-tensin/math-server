@@ -11,6 +11,14 @@
 #include <string_view>
 
 namespace math::server::lexer::details {
+namespace impl {
+
+std::optional<double> std_parse_number(const std::string_view&, std::string_view&);
+std::optional<double> std_parse_number(const std::string_view&);
+std::optional<double> boost_parse_number(const std::string_view&, std::string_view&);
+std::optional<double> boost_parse_number(const std::string_view&);
+
+}
 
 // Exposed for testing:
 std::string_view parse_whitespace(const std::string_view&);
