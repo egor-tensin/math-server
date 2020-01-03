@@ -28,6 +28,7 @@ after_build:
 
 test_script:
   - '"%install_dir%\bin\math-server-unit-tests.exe"'
+  - '"%install_dir%\bin\math-server-benchmarks.exe"'
 
 for:
 # Only build Release builds for master to speed things up:
