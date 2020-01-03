@@ -31,6 +31,9 @@ add_subdirectory(client)
 add_subdirectory(server)
 
 if(ENABLE_TESTS)
+    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Suppressing benchmark's tests" FORCE)
+    add_subdirectory("3rdparty/google/benchmark")
+
     add_subdirectory(test)
 endif()
 
