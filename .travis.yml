@@ -22,7 +22,7 @@ env:
     - configuration=Release platform=x64
 
 before_script:
-  - ./cmake/ci/boost/build_travis.py -- link=static --with-filesystem --with-program_options --with-test
+  - ./cmake/ci/boost/build_travis.py -- link=static --with-filesystem --with-program_options --with-regex --with-test
 
 script:
   - |-
