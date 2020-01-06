@@ -20,11 +20,12 @@
 namespace math::server::lexer::details {
 namespace {
 
-template <template<typename> typename MatchResultsT>
+// This approach gives GCC on Travis an "internal compiler error":
+//template <template <typename> class MatchResultsT>
+
+template <typename MatchResultsT>
 class RegexMatcher {
 public:
-    using MatchResults = MatchResultsT<std::string_view::const_iterator>;
-
     virtual ~RegexMatcher() = default;
 
     virtual bool match_regex(const std::string_view& input) = 0;
@@ -37,14 +38,14 @@ public:
     std::string to_str() const { return m_match[0].str(); }
 
 protected:
-    MatchResults m_match;
+    MatchResultsT m_match;
 };
 
-template <template<typename> typename MatchResultsT>
+template <typename MatchResultsT>
 class RegexNumberMatcher : public RegexMatcher<MatchResultsT> {
 public:
     bool match(const std::string_view& input) {
-        if (!match_regex(input)) {
+        if (!this->match_regex(input)) {
             return false;
         }
         // If we have the numeric part of a number followed by 'e' and no
@@ -52,7 +53,7 @@ public:
         // 1) that 'e' definitely belongs to this number token,
         // 2) the user forgot to type in the required digits.
         if (matched_e() && !matched_e_power()) {
-            throw LexerError{"exponent has no digits: " + to_str()};
+            throw LexerError{"exponent has no digits: " + this->to_str()};
         }
         return true;
     }
@@ -64,12 +65,15 @@ protected:
     static constexpr std::string_view NUMBER_REGEX{R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX"};
 
 private:
-    bool matched_e() const { return m_match[1].matched; }
+    bool matched_e() const { return this->m_match[1].matched; }
 
-    bool matched_e_power() const { return m_match[2].matched && m_match[2].length() != 0; }
+    bool matched_e_power() const {
+        return this->m_match[2].matched && this->m_match[2].length() != 0;
+    }
 };
 
-class StdNumberMatcher : public RegexNumberMatcher<std::match_results> {
+class StdNumberMatcher
+    : public RegexNumberMatcher<std::match_results<std::string_view::const_iterator>> {
 public:
     bool match_regex(const std::string_view& input) override {
         return std::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
@@ -85,7 +89,8 @@ private:
     }
 };
 
-class BoostNumberMatcher : public RegexNumberMatcher<boost::match_results> {
+class BoostNumberMatcher
+    : public RegexNumberMatcher<boost::match_results<std::string_view::const_iterator>> {
 public:
     bool match_regex(const std::string_view& input) override {
         return boost::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
@@ -101,8 +106,12 @@ private:
     }
 };
 
-template <template<typename> typename MatchResultsT>
-std::optional<double> parse_number(const std::string_view& input, RegexNumberMatcher<MatchResultsT>&& matcher, std::string_view& token) {
+template <typename MatchResultsT>
+std::optional<double> parse_number(
+    const std::string_view& input,
+    RegexNumberMatcher<MatchResultsT>&& matcher,
+    std::string_view& token) {
+
     if (!matcher.match(input)) {
         return {};
     }
@@ -117,16 +126,14 @@ std::optional<double> parse_number(const std::string_view& input, RegexNumberMat
     return {};
 }
 
-template <template<typename> typename MatchResultsT>
+template <typename MatchResultsT>
 class RegexWhitespaceMatcher : public RegexMatcher<MatchResultsT> {
 protected:
-    // This is a hacky attempt to describe a C-like grammar for floating-point
-    // numbers using a regex (the tests seem to pass though).
-    // A proper NFA would be better, I guess.
     static constexpr std::string_view WS_REGEX{R"(^\s+)"};
 };
 
-class StdWhitespaceMatcher : public RegexWhitespaceMatcher<std::match_results> {
+class StdWhitespaceMatcher
+    : public RegexWhitespaceMatcher<std::match_results<std::string_view::const_iterator>> {
 public:
     bool match_regex(const std::string_view& input) override {
         return std::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
@@ -140,7 +147,8 @@ private:
     }
 };
 
-class BoostWhitespaceMatcher : public RegexWhitespaceMatcher<boost::match_results> {
+class BoostWhitespaceMatcher
+    : public RegexWhitespaceMatcher<boost::match_results<std::string_view::const_iterator>> {
 public:
     bool match_regex(const std::string_view& input) override {
         return boost::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
@@ -154,8 +162,11 @@ private:
     }
 };
 
-template <template<typename> typename MatchResultsT>
-std::string_view parse_whitespace(const std::string_view& input, RegexWhitespaceMatcher<MatchResultsT>&& matcher) {
+template <typename MatchResultsT>
+std::string_view parse_whitespace(
+    const std::string_view& input,
+    RegexWhitespaceMatcher<MatchResultsT>&& matcher) {
+
     if (matcher.match_regex(input)) {
         return matcher.to_view();
     }
