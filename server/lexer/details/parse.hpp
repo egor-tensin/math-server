@@ -13,10 +13,15 @@
 namespace math::server::lexer::details {
 namespace impl {
 
+// Exposed for benchmarking:
+
 std::optional<double> std_parse_number(const std::string_view&, std::string_view&);
 std::optional<double> std_parse_number(const std::string_view&);
 std::optional<double> boost_parse_number(const std::string_view&, std::string_view&);
 std::optional<double> boost_parse_number(const std::string_view&);
+
+std::string_view std_parse_whitespace(const std::string_view&);
+std::string_view boost_parse_whitespace(const std::string_view&);
 
 }
 

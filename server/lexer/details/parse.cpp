@@ -20,7 +20,28 @@
 namespace math::server::lexer::details {
 namespace {
 
-class RegexNumberMatcher {
+template <template<typename> typename MatchResultsT>
+class RegexMatcher {
+public:
+    using MatchResults = MatchResultsT<std::string_view::const_iterator>;
+
+    virtual ~RegexMatcher() = default;
+
+    virtual bool match_regex(const std::string_view& input) = 0;
+
+    std::string_view to_view() const {
+        return {&*m_match[0].first, static_cast<std::size_t>(m_match[0].length())};
+        //      ^ I fucking hate C++.
+    }
+
+    std::string to_str() const { return m_match[0].str(); }
+
+protected:
+    MatchResults m_match;
+};
+
+template <template<typename> typename MatchResultsT>
+class RegexNumberMatcher : public RegexMatcher<MatchResultsT> {
 public:
     bool match(const std::string_view& input) {
         if (!match_regex(input)) {
@@ -36,8 +57,6 @@ public:
         return true;
     }
 
-    virtual std::string_view to_view() const = 0;
-
 protected:
     // This is a hacky attempt to describe a C-like grammar for floating-point
     // numbers using a regex (the tests seem to pass though).
@@ -45,27 +64,18 @@ protected:
     static constexpr std::string_view NUMBER_REGEX{R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX"};
 
 private:
-    virtual bool match_regex(const std::string_view& input) = 0;
+    bool matched_e() const { return m_match[1].matched; }
 
-    virtual std::string to_str() const = 0;
-
-    virtual bool matched_e() const = 0;
-
-    virtual bool matched_e_power() const = 0;
+    bool matched_e_power() const { return m_match[2].matched && m_match[2].length() != 0; }
 };
 
-class StdNumberMatcher : public RegexNumberMatcher {
+class StdNumberMatcher : public RegexNumberMatcher<std::match_results> {
 public:
-    std::string_view to_view() const override {
-        return {&*m_match[0].first, static_cast<std::size_t>(m_match[0].length())};
-        //      ^ I fucking hate C++.
-    }
-
-private:
     bool match_regex(const std::string_view& input) override {
         return std::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
     }
 
+private:
     static const std::regex& get_regex() {
         static constexpr auto flags =
             std::regex_constants::ECMAScript |
@@ -73,28 +83,15 @@ private:
         static const std::regex regex{NUMBER_REGEX.data(), NUMBER_REGEX.length(), flags};
         return regex;
     }
-
-    std::string to_str() const override { return m_match[0].str(); }
-
-    bool matched_e() const override { return m_match[1].matched; }
-
-    bool matched_e_power() const override { return m_match[2].matched && m_match[2].length() != 0; }
-
-    std::match_results<std::string_view::const_iterator> m_match;
 };
 
-class BoostNumberMatcher : public RegexNumberMatcher {
+class BoostNumberMatcher : public RegexNumberMatcher<boost::match_results> {
 public:
-    std::string_view to_view() const override {
-        return {&*m_match[0].first, static_cast<std::size_t>(m_match[0].length())};
-        //      ^ I fucking hate C++.
-    }
-
-private:
     bool match_regex(const std::string_view& input) override {
         return boost::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
     }
 
+private:
     static const boost::regex& get_regex() {
         static constexpr boost::regex::flag_type flags =
             boost::regex::ECMAScript |
@@ -102,17 +99,10 @@ private:
         static const boost::regex regex{NUMBER_REGEX.data(), NUMBER_REGEX.length(), flags};
         return regex;
     }
-
-    std::string to_str() const override { return m_match[0].str(); }
-
-    bool matched_e() const override { return m_match[1].matched; }
-
-    bool matched_e_power() const override { return m_match[2].matched && m_match[2].length() != 0; }
-
-    boost::match_results<std::string_view::const_iterator> m_match;
 };
 
-std::optional<double> parse_number(const std::string_view& input, RegexNumberMatcher&& matcher, std::string_view& token) {
+template <template<typename> typename MatchResultsT>
+std::optional<double> parse_number(const std::string_view& input, RegexNumberMatcher<MatchResultsT>&& matcher, std::string_view& token) {
     if (!matcher.match(input)) {
         return {};
     }
@@ -123,6 +113,51 @@ std::optional<double> parse_number(const std::string_view& input, RegexNumberMat
         return result;
     } catch (const std::exception&) {
         throw LexerError{"internal: couldn't parse number from: " + std::string{view}};
+    }
+    return {};
+}
+
+template <template<typename> typename MatchResultsT>
+class RegexWhitespaceMatcher : public RegexMatcher<MatchResultsT> {
+protected:
+    // This is a hacky attempt to describe a C-like grammar for floating-point
+    // numbers using a regex (the tests seem to pass though).
+    // A proper NFA would be better, I guess.
+    static constexpr std::string_view WS_REGEX{R"(^\s+)"};
+};
+
+class StdWhitespaceMatcher : public RegexWhitespaceMatcher<std::match_results> {
+public:
+    bool match_regex(const std::string_view& input) override {
+        return std::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
+    }
+
+private:
+    static const std::regex& get_regex() {
+        static constexpr auto flags = std::regex_constants::ECMAScript;
+        static const std::regex regex{WS_REGEX.data(), WS_REGEX.length(), flags};
+        return regex;
+    }
+};
+
+class BoostWhitespaceMatcher : public RegexWhitespaceMatcher<boost::match_results> {
+public:
+    bool match_regex(const std::string_view& input) override {
+        return boost::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
+    }
+
+private:
+    static const boost::regex& get_regex() {
+        static constexpr boost::regex::flag_type flags = boost::regex::ECMAScript;
+        static const boost::regex regex{WS_REGEX.data(), WS_REGEX.length(), flags};
+        return regex;
+    }
+};
+
+template <template<typename> typename MatchResultsT>
+std::string_view parse_whitespace(const std::string_view& input, RegexWhitespaceMatcher<MatchResultsT>&& matcher) {
+    if (matcher.match_regex(input)) {
+        return matcher.to_view();
     }
     return {};
 }
@@ -154,6 +189,14 @@ std::optional<double> boost_parse_number(const std::string_view& input) {
     return boost_parse_number(input, token);
 }
 
+std::string_view std_parse_whitespace(const std::string_view& input) {
+    return parse_whitespace(input, StdWhitespaceMatcher{});
+}
+
+std::string_view boost_parse_whitespace(const std::string_view& input) {
+    return parse_whitespace(input, BoostWhitespaceMatcher{});
+}
+
 }
 
 std::optional<double> parse_number(const std::string_view& input, std::string_view& token) {
@@ -182,14 +225,7 @@ std::optional<token::Type> parse_const_token(const std::string_view& input) {
 }
 
 std::string_view parse_whitespace(const std::string_view& input) {
-    static const boost::regex ws_regex{R"(^\s+)"};
-
-    boost::match_results<std::string_view::const_iterator> match;
-    if (boost::regex_search(input.cbegin(), input.cend(), match, ws_regex)) {
-        return {&*match[0].first, static_cast<std::size_t>(match[0].length())};
-        //      ^ Still fucking hate C++.
-    }
-    return {};
+    return impl::boost_parse_whitespace(input);
 }
 
 }

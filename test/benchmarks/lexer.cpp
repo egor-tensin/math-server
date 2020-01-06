@@ -2,7 +2,7 @@
 
 #include <benchmark/benchmark.h>
 
-class SelectionOfNumbers : public benchmark::Fixture {
+class NumberExamples : public benchmark::Fixture {
 protected:
     std::vector<std::string_view> m_numbers{
         "0",
@@ -15,7 +15,16 @@ protected:
     };
 };
 
-BENCHMARK_F(SelectionOfNumbers, ParseStdRegex)(benchmark::State& state) {
+class WhitespaceExamples : public benchmark::Fixture {
+protected:
+    std::vector<std::string_view> m_whitespace{
+        "",
+        "  1",
+        "                                                                                                                                123",
+    };
+};
+
+BENCHMARK_F(NumberExamples, StdParseNumber)(benchmark::State& state) {
     using namespace math::server::lexer::details;
     for (auto _ : state) {
         for (const auto& src : m_numbers) {
@@ -24,11 +33,29 @@ BENCHMARK_F(SelectionOfNumbers, ParseStdRegex)(benchmark::State& state) {
     }
 }
 
-BENCHMARK_F(SelectionOfNumbers, ParseBoostRegex)(benchmark::State& state) {
+BENCHMARK_F(NumberExamples, BoostParseNumber)(benchmark::State& state) {
     using namespace math::server::lexer::details;
     for (auto _ : state) {
         for (const auto& src : m_numbers) {
             impl::boost_parse_number(src);
+        }
+    }
+}
+
+BENCHMARK_F(WhitespaceExamples, StdParseWhitespace)(benchmark::State& state) {
+    using namespace math::server::lexer::details;
+    for (auto _ : state) {
+        for (const auto& src : m_whitespace) {
+            impl::std_parse_whitespace(src);
+        }
+    }
+}
+
+BENCHMARK_F(WhitespaceExamples, BoostParseWhitespace)(benchmark::State& state) {
+    using namespace math::server::lexer::details;
+    for (auto _ : state) {
+        for (const auto& src : m_whitespace) {
+            impl::boost_parse_whitespace(src);
         }
     }
 }
