@@ -2,6 +2,16 @@
 
 #include <benchmark/benchmark.h>
 
+#include <string_view>
+#include <vector>
+
+// I noticed std::regex_search cropping up in profiling results.
+// Switching to boost::regex_search yielded a huge benefit: sometimes a 15x
+// increase in regex matching (on VS builds in particular).
+// Should be easily reproducible using these micro-benchmarks.
+
+namespace {
+
 class NumberExamples : public benchmark::Fixture {
 protected:
     std::vector<std::string_view> m_numbers{
@@ -23,6 +33,8 @@ protected:
         "                                                                                                                                123",
     };
 };
+
+}
 
 BENCHMARK_F(NumberExamples, StdParseNumber)(benchmark::State& state) {
     using namespace math::server::lexer::details;
