@@ -10,13 +10,13 @@ COPY [".", "$src_dir"]
 
 RUN build_deps='boost-dev cmake g++ make python3' && \
     apk add --no-cache $build_deps && \
-    "$src_dir/cmake/ci/build.py" \
-        --src "$src_dir" \
+    "$src_dir/cmake/cmake/build/build.py" \
         --install /usr/local \
-        --clean \
         --configuration Release \
-        -- -D ENABLE_TESTS=ON \
-        -- -D Boost_USE_STATIC_LIBS=OFF && \
+        -- \
+        "$src_dir" \
+        -D ENABLE_TESTS=ON \
+        -D Boost_USE_STATIC_LIBS=OFF && \
     rm -rf -- "$src_dir" && \
     apk del --purge --rdepends $build_deps && \
     runtime_deps='boost-filesystem boost-program_options boost-regex boost-unit_test_framework libstdc++' && \
