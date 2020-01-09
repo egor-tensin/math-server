@@ -40,3 +40,19 @@ script:
 
   - "$HOME/install/bin/math-server-unit-tests"
   - "$HOME/install/bin/math-server-benchmarks"
+
+jobs:
+  include:
+    - name: Build Docker images
+      language: minimal
+      # Don't install the unnecessary dependencies:
+      addons:
+        apt:
+          update: false
+      services:
+        - docker
+      # Clear before_script:
+      before_script:
+        - true
+      script:
+        - docker-compose build
