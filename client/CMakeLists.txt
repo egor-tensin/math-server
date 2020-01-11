@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED COMPONENTS filesystem program_options)
+find_package(Boost 1.66.0 REQUIRED COMPONENTS filesystem program_options)
 
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
