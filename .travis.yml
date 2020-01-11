@@ -15,7 +15,7 @@ addons:
 env:
   global:
     - travis_boost_version=1.71.0
-  matrix:
+  jobs:
     - configuration=Debug   platform=x86
     - configuration=Release platform=x86
     - configuration=Debug   platform=x64
@@ -42,6 +42,7 @@ script:
   - "$HOME/install/bin/math-server-benchmarks"
 
 jobs:
+  fast_finish: true
   include:
     - name: Build Docker images
       language: minimal
