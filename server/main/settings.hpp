@@ -36,15 +36,15 @@ public:
     explicit SettingsParser(const std::string& argv0)
         : m_prog_name{extract_filename(argv0)}
     {
-        m_visible.add_options()
-            ("help,h",
-                "show this message and exit")
-            ("port,p",
-                boost::program_options::value(&m_settings.m_port)->default_value(Settings::DEFAULT_PORT),
-                "server port number")
-            ("threads,n",
-                boost::program_options::value(&m_settings.m_threads)->default_value(Settings::default_threads()),
-                "number of threads");
+        m_visible.add_options()("help,h", "show this message and exit");
+        m_visible.add_options()(
+            "port,p",
+            boost::program_options::value(&m_settings.m_port)->default_value(Settings::DEFAULT_PORT),
+            "server port number");
+        m_visible.add_options()(
+            "threads,n",
+            boost::program_options::value(&m_settings.m_threads)->default_value(Settings::default_threads()),
+            "number of threads");
     }
 
     static const char* get_short_description() {
