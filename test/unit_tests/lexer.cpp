@@ -61,6 +61,8 @@ BOOST_AUTO_TEST_CASE(test_parse_const_token) {
 namespace {
 namespace get_tokens::valid {
 
+// clang-format off
+// wtf, don't binpack this
 const std::vector<std::string_view> input{
     "",
     " + - ",
@@ -69,6 +71,7 @@ const std::vector<std::string_view> input{
     "1+2 *  (3- 4e-2)",
     " 2 * (1 + 3 * (1 - -3)) ",
 };
+// clang-format on
 
 // Some black magic-fuckery to resolve operator<< for std::vector<Token>.
 // See https://stackoverflow.com/a/18817428/514684.
