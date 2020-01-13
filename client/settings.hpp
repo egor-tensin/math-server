@@ -25,42 +25,30 @@ struct Settings {
 
     bool exit_with_usage() const { return m_vm.count("help"); }
 
-    bool input_from_string() const {
-        return m_vm.count("command");
-    }
+    bool input_from_string() const { return m_vm.count("command"); }
 
-    bool input_from_files() const {
-        return !input_from_string() && !m_files.empty();
-    }
+    bool input_from_files() const { return !input_from_string() && !m_files.empty(); }
 
-    bool input_from_console() const {
-        return !input_from_string() && !input_from_files();
-    }
+    bool input_from_console() const { return !input_from_string() && !input_from_files(); }
 
     boost::program_options::variables_map m_vm;
 };
 
 class SettingsParser {
 public:
-    explicit SettingsParser(const std::string& argv0)
-        : m_prog_name{extract_filename(argv0)}
-    {
+    explicit SettingsParser(const std::string& argv0) : m_prog_name{extract_filename(argv0)} {
         m_visible.add_options()("help,h", "show this message and exit");
+        m_visible.add_options()("command,c", boost::program_options::value(&m_settings.m_input),
+                                "evaluate the argument expression and exit");
         m_visible.add_options()(
-            "command,c",
-            boost::program_options::value(&m_settings.m_input),
-            "evaluate the argument expression and exit");
-        m_visible.add_options()(
-            "host,H",
-            boost::program_options::value(&m_settings.m_host)->default_value("localhost"),
+            "host,H", boost::program_options::value(&m_settings.m_host)->default_value("localhost"),
             "server host address");
-        m_visible.add_options()(
-            "port,p",
-            boost::program_options::value(&m_settings.m_port)->default_value(NetworkTransport::DEFAULT_PORT),
-            "server port number");
+        m_visible.add_options()("port,p",
+                                boost::program_options::value(&m_settings.m_port)
+                                    ->default_value(NetworkTransport::DEFAULT_PORT),
+                                "server port number");
         m_hidden.add_options()(
-            "files",
-            boost::program_options::value<std::vector<std::string>>(&m_settings.m_files),
+            "files", boost::program_options::value<std::vector<std::string>>(&m_settings.m_files),
             "shouldn't be visible");
         m_positional.add("files", -1);
     }
@@ -72,12 +60,11 @@ public:
     Settings parse(int argc, char* argv[]) {
         boost::program_options::options_description all;
         all.add(m_hidden).add(m_visible);
-        boost::program_options::store(
-            boost::program_options::command_line_parser{argc, argv}
-                .options(all)
-                .positional(m_positional)
-                .run(),
-            m_settings.m_vm);
+        boost::program_options::store(boost::program_options::command_line_parser{argc, argv}
+                                          .options(all)
+                                          .positional(m_positional)
+                                          .run(),
+                                      m_settings.m_vm);
         if (m_settings.exit_with_usage()) {
             return m_settings;
         }
@@ -85,9 +72,7 @@ public:
         return m_settings;
     }
 
-    void usage() const {
-        std::cout << *this;
-    }
+    void usage() const { std::cout << *this; }
 
     void usage_error(const std::exception& e) const {
         std::cerr << "usage error: " << e.what() << '\n';
@@ -114,4 +99,4 @@ private:
     }
 };
 
-}
+} // namespace math::client

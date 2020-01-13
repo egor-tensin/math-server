@@ -8,7 +8,6 @@
 #include "token_type.hpp"
 
 #include <cstddef>
-
 #include <string_view>
 #include <utility>
 #include <variant>
@@ -39,8 +38,7 @@ private:
 class ParsedToken : public Token {
 public:
     ParsedToken(Token&& token, std::size_t pos, const std::string_view& view)
-        : Token{std::move(token)}, m_pos{pos}, m_view{view} {
-    }
+        : Token{std::move(token)}, m_pos{pos}, m_view{view} {}
 
     std::size_t get_pos() const { return m_pos; }
 
@@ -51,4 +49,4 @@ private:
     std::string_view m_view;
 };
 
-}
+} // namespace math::server::lexer

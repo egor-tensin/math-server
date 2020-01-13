@@ -6,8 +6,8 @@
 #include <server/parser/error.hpp>
 #include <server/parser/parser.hpp>
 
-#include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
+#include <boost/test/data/test_case.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <string>
@@ -83,7 +83,7 @@ const std::vector<double> expected{
     -3.9375,
 };
 
-}
+} // namespace exec::valid
 
 namespace exec::invalid {
 
@@ -111,29 +111,27 @@ const std::vector<std::string> error_msg{
     "server error: parser error: expected a binary operator",
 };
 
-}
-}
+} // namespace exec::invalid
+} // namespace
 
-BOOST_DATA_TEST_CASE(
-    test_exec_valid,
-    bdata::make(exec::valid::input) ^ exec::valid::expected,
-    input,
-    expected) {
-
+BOOST_DATA_TEST_CASE(test_exec_valid,
+                     bdata::make(exec::valid::input) ^ exec::valid::expected,
+                     input,
+                     expected) {
     Parser parser{input};
     BOOST_TEST(parser.exec() == expected);
 }
 
-BOOST_DATA_TEST_CASE(
-    test_exec_invalid,
-    bdata::make(exec::invalid::input) ^ exec::invalid::error_msg,
-    input,
-    error_msg) {
-
-    BOOST_REQUIRE_THROW(do {
-        Parser parser{input};
-        parser.exec();
-    } while (0), ParserError);
+BOOST_DATA_TEST_CASE(test_exec_invalid,
+                     bdata::make(exec::invalid::input) ^ exec::invalid::error_msg,
+                     input,
+                     error_msg) {
+    BOOST_REQUIRE_THROW(
+        do {
+            Parser parser{input};
+            parser.exec();
+        } while (0),
+        ParserError);
 
     try {
         Parser parser{input};

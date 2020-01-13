@@ -4,11 +4,11 @@
 // Distributed under the MIT License.
 
 #include "session.hpp"
-#include "session_manager.hpp"
 
 #include "../common/error.hpp"
 #include "../common/log.hpp"
 #include "../parser/parser.hpp"
+#include "session_manager.hpp"
 
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
@@ -16,7 +16,6 @@
 #include <boost/system/system_error.hpp>
 
 #include <cstddef>
-
 #include <exception>
 #include <string>
 #include <utility>
@@ -38,11 +37,10 @@ std::string calc_reply(const std::string& input) {
     return reply;
 }
 
-}
+} // namespace
 
 Session::Session(SessionManager& mgr, boost::asio::io_context& io_context)
-    : m_session_mgr{mgr}, m_strand{io_context}, m_socket{io_context}
-{ }
+    : m_session_mgr{mgr}, m_strand{io_context}, m_socket{io_context} {}
 
 boost::asio::ip::tcp::socket& Session::socket() {
     return m_socket;
@@ -69,10 +67,12 @@ void Session::read() {
     const auto self = shared_from_this();
 
     // Stop at LF
-    boost::asio::async_read_until(m_socket, m_buffer, '\n', boost::asio::bind_executor(m_strand,
-        [this, self] (const boost::system::error_code& ec, std::size_t bytes) {
-            handle_read(ec, bytes);
-        }));
+    boost::asio::async_read_until(
+        m_socket, m_buffer, '\n',
+        boost::asio::bind_executor(
+            m_strand, [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+                handle_read(ec, bytes);
+            }));
 }
 
 void Session::handle_read(const boost::system::error_code& ec, std::size_t bytes) {
@@ -99,10 +99,12 @@ void Session::write(const std::string& output) {
     // Include CR (so that Windows' telnet client works)
     os << output << "\r\n";
 
-    boost::asio::async_write(m_socket, m_buffer, boost::asio::bind_executor(m_strand,
-        [this, self] (const boost::system::error_code& ec, std::size_t bytes) {
-            handle_write(ec, bytes);
-        }));
+    boost::asio::async_write(
+        m_socket, m_buffer,
+        boost::asio::bind_executor(
+            m_strand, [this, self](const boost::system::error_code& ec, std::size_t bytes) {
+                handle_write(ec, bytes);
+            }));
 }
 
 void Session::handle_write(const boost::system::error_code& ec, std::size_t bytes) {
@@ -115,4 +117,4 @@ void Session::handle_write(const boost::system::error_code& ec, std::size_t byte
     read();
 }
 
-}
+} // namespace math::server

@@ -10,7 +10,6 @@
 #include <boost/system/error_code.hpp>
 
 #include <ctime>
-
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -23,7 +22,9 @@ namespace math::server::log {
 
 namespace details {
 
-inline std::thread::id get_tid() { return std::this_thread::get_id(); }
+inline std::thread::id get_tid() {
+    return std::this_thread::get_id();
+}
 
 inline std::string get_timestamp() {
     const auto now = boost::posix_time::second_clock::universal_time();
@@ -37,7 +38,7 @@ inline void log(const std::string& msg) {
     std::clog << get_timestamp() << " | " << get_tid() << " | " << msg << '\n';
 }
 
-}
+} // namespace details
 
 template <typename... Args>
 inline void log(const std::string_view& fmt, Args&&... args) {
@@ -53,4 +54,4 @@ inline void error(const boost::system::error_code& ec) {
     details::log(ec.message());
 }
 
-}
+} // namespace math::server::log

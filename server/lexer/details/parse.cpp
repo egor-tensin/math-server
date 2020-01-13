@@ -9,7 +9,6 @@
 #include <boost/regex.hpp>
 
 #include <cstddef>
-
 #include <exception>
 #include <optional>
 #include <regex>
@@ -20,7 +19,7 @@ namespace math::server::lexer::details {
 namespace {
 
 // This approach gives GCC on Travis an "internal compiler error":
-//template <template <typename> class MatchResultsT>
+// template <template <typename> class MatchResultsT>
 
 template <typename MatchResultsT>
 class RegexMatcher {
@@ -61,7 +60,8 @@ protected:
     // This is a hacky attempt to describe a C-like grammar for floating-point
     // numbers using a regex (the tests seem to pass though).
     // A proper NFA would be better, I guess.
-    static constexpr std::string_view NUMBER_REGEX{R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX"};
+    static constexpr std::string_view NUMBER_REGEX{
+        R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX"};
 
 private:
     bool matched_e() const { return this->m_match[1].matched; }
@@ -81,8 +81,7 @@ public:
 private:
     static const std::regex& get_regex() {
         static constexpr auto flags =
-            std::regex_constants::ECMAScript |
-            std::regex_constants::icase;
+            std::regex_constants::ECMAScript | std::regex_constants::icase;
         static const std::regex regex{NUMBER_REGEX.data(), NUMBER_REGEX.length(), flags};
         return regex;
     }
@@ -98,19 +97,16 @@ public:
 private:
     static const boost::regex& get_regex() {
         static constexpr boost::regex::flag_type flags =
-            boost::regex::ECMAScript |
-            boost::regex::icase;
+            boost::regex::ECMAScript | boost::regex::icase;
         static const boost::regex regex{NUMBER_REGEX.data(), NUMBER_REGEX.length(), flags};
         return regex;
     }
 };
 
 template <typename MatchResultsT>
-std::optional<double> parse_number(
-    const std::string_view& input,
-    RegexNumberMatcher<MatchResultsT>&& matcher,
-    std::string_view& token) {
-
+std::optional<double> parse_number(const std::string_view& input,
+                                   RegexNumberMatcher<MatchResultsT>&& matcher,
+                                   std::string_view& token) {
     if (!matcher.match(input)) {
         return {};
     }
@@ -162,10 +158,8 @@ private:
 };
 
 template <typename MatchResultsT>
-std::string_view parse_whitespace(
-    const std::string_view& input,
-    RegexWhitespaceMatcher<MatchResultsT>&& matcher) {
-
+std::string_view parse_whitespace(const std::string_view& input,
+                                  RegexWhitespaceMatcher<MatchResultsT>&& matcher) {
     if (matcher.match_regex(input)) {
         return matcher.to_view();
     }
@@ -173,11 +167,10 @@ std::string_view parse_whitespace(
 }
 
 bool starts_with(const std::string_view& a, const std::string_view& b) noexcept {
-    return a.length() >= b.length()
-        && a.compare(0, b.length(), b) == 0;
+    return a.length() >= b.length() && a.compare(0, b.length(), b) == 0;
 }
 
-}
+} // namespace
 
 namespace impl {
 
@@ -207,7 +200,7 @@ std::string_view boost_parse_whitespace(const std::string_view& input) {
     return parse_whitespace(input, BoostWhitespaceMatcher{});
 }
 
-}
+} // namespace impl
 
 std::optional<double> parse_number(const std::string_view& input, std::string_view& token) {
     return impl::boost_parse_number(input, token);
@@ -218,7 +211,8 @@ std::optional<double> parse_number(const std::string_view& input) {
     return parse_number(input, token);
 }
 
-std::optional<token::Type> parse_const_token(const std::string_view& input, std::string_view& token) {
+std::optional<token::Type> parse_const_token(const std::string_view& input,
+                                             std::string_view& token) {
     for (const auto type : token::const_tokens()) {
         const auto str = token::type_to_string(type);
         if (starts_with(input, str)) {
@@ -238,4 +232,4 @@ std::string_view parse_whitespace(const std::string_view& input) {
     return impl::boost_parse_whitespace(input);
 }
 
-}
+} // namespace math::server::lexer::details

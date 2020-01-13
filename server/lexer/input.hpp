@@ -8,16 +8,13 @@
 #include "error.hpp"
 
 #include <cstddef>
-
 #include <string_view>
 
 namespace math::server::lexer {
 
 class Input {
 public:
-    explicit Input(const std::string_view& input)
-        : m_pos{0}, m_input{input}
-    { }
+    explicit Input(const std::string_view& input) : m_pos{0}, m_input{input} {}
 
     const std::string_view& get_input() const { return m_input; }
 
@@ -35,13 +32,11 @@ public:
         m_input.remove_prefix(len);
     }
 
-    void consume(const std::string_view& sub) {
-        consume(sub.length());
-    }
+    void consume(const std::string_view& sub) { consume(sub.length()); }
 
 private:
     std::size_t m_pos;
     std::string_view m_input;
 };
 
-}
+} // namespace math::server::lexer

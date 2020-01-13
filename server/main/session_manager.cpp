@@ -3,10 +3,10 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
-#include "session.hpp"
 #include "session_manager.hpp"
 
 #include "../common/log.hpp"
+#include "session.hpp"
 
 #include <memory>
 #include <mutex>
@@ -40,4 +40,4 @@ void SessionManager::stop_all() {
     m_sessions.clear();
 }
 
-}
+} // namespace math::server

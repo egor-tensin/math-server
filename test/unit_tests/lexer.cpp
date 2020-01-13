@@ -9,8 +9,8 @@
 #include <server/lexer/token.hpp>
 #include <server/lexer/token_type.hpp>
 
-#include <boost/test/data/test_case.hpp>
 #include <boost/test/data/monomorphic.hpp>
+#include <boost/test/data/test_case.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <ostream>
@@ -135,7 +135,7 @@ const std::vector<Expected> expected{
     }},
 };
 
-}
+} // namespace get_tokens::valid
 
 namespace get_tokens::invalid {
 
@@ -149,32 +149,29 @@ const std::vector<std::string> error_msg{
     "server error: lexer error: invalid input at: & 456",
 };
 
-}
-}
+} // namespace get_tokens::invalid
+} // namespace
 
-BOOST_DATA_TEST_CASE(
-    test_get_tokens_valid,
-    bdata::make(get_tokens::valid::input) ^ get_tokens::valid::expected,
-    input,
-    expected) {
-
+BOOST_DATA_TEST_CASE(test_get_tokens_valid,
+                     bdata::make(get_tokens::valid::input) ^ get_tokens::valid::expected,
+                     input,
+                     expected) {
     Lexer lexer{input};
     const auto actual = lexer.get_tokens();
-    BOOST_CHECK_EQUAL_COLLECTIONS(actual.cbegin(), actual.cend(),
-        expected.m_tokens.cbegin(),
-        expected.m_tokens.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(actual.cbegin(), actual.cend(), expected.m_tokens.cbegin(),
+                                  expected.m_tokens.cend());
 }
 
-BOOST_DATA_TEST_CASE(
-    test_get_tokens_invalid,
-    bdata::make(get_tokens::invalid::input) ^ get_tokens::invalid::error_msg,
-    input,
-    error_msg) {
-
-    BOOST_REQUIRE_THROW(do {
-        Lexer lexer{input};
-        lexer.get_tokens();
-    } while (0), LexerError);
+BOOST_DATA_TEST_CASE(test_get_tokens_invalid,
+                     bdata::make(get_tokens::invalid::input) ^ get_tokens::invalid::error_msg,
+                     input,
+                     error_msg) {
+    BOOST_REQUIRE_THROW(
+        do {
+            Lexer lexer{input};
+            lexer.get_tokens();
+        } while (0),
+        LexerError);
 
     try {
         Lexer lexer{input};

@@ -9,7 +9,6 @@
 #include <boost/system/error_code.hpp>
 
 #include <cstddef>
-
 #include <memory>
 #include <string>
 
@@ -44,4 +43,4 @@ private:
     boost::asio::streambuf m_buffer;
 };
 
-}
+} // namespace math::server

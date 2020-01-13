@@ -19,18 +19,16 @@ namespace transport {
 
 class Error : public client::Error {
 public:
-    explicit Error(const std::string& msg)
-        : client::Error{"transport error: " + msg}
-    { }
+    explicit Error(const std::string& msg) : client::Error{"transport error: " + msg} {}
 };
 
-}
+} // namespace transport
 
 class Transport {
 public:
     virtual ~Transport() = default;
 
-    using ProcessResult = std::function<void (const std::string&)>;
+    using ProcessResult = std::function<void(const std::string&)>;
 
     virtual void send_query(const std::string&, const ProcessResult&) = 0;
 };
@@ -42,8 +40,7 @@ public:
     static constexpr auto DEFAULT_PORT = "18000";
 
     NetworkTransport(const std::string& host, const std::string& port)
-        : m_host{host}, m_port{port}
-    { }
+        : m_host{host}, m_port{port} {}
 
 protected:
     const std::string m_host;
@@ -52,7 +49,7 @@ protected:
 
 class BlockingNetworkTransport : public NetworkTransport {
 public:
-    BlockingNetworkTransport(const std::string &host, const std::string& port)
+    BlockingNetworkTransport(const std::string& host, const std::string& port)
         : NetworkTransport{host, port}, m_socket{m_io_context} {
         try {
             connect();
@@ -100,10 +97,9 @@ private:
     boost::asio::streambuf m_buffer;
 };
 
-inline TransportPtr make_blocking_network_transport(
-    const std::string& host, const std::string& port) {
-
+inline TransportPtr make_blocking_network_transport(const std::string& host,
+                                                    const std::string& port) {
     return std::make_unique<BlockingNetworkTransport>(host, port);
 }
 
-}
+} // namespace math::client

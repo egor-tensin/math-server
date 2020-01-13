@@ -5,10 +5,9 @@
 
 #pragma once
 
+#include "../lexer/lexer.hpp"
 #include "error.hpp"
 #include "operator.hpp"
-
-#include "../lexer/lexer.hpp"
 
 #include <optional>
 #include <string_view>
@@ -24,9 +23,7 @@ public:
     // a finer algorithm for parsing arithmetic expressions.
     // Reference: https://en.wikipedia.org/wiki/Operator-precedence_parser
 
-    explicit Parser(const std::string_view& input)
-        : m_lexer{input}
-    { }
+    explicit Parser(const std::string_view& input) : m_lexer{input} {}
 
     double exec() {
         const auto result = exec_dmas();
@@ -38,9 +35,7 @@ public:
 
 private:
     // DMAS as in Division, Multiplication, Addition and Subtraction
-    double exec_dmas() {
-        return exec_binary_op(exec_factor(), parser::BinaryOp::min_precedence());
-    }
+    double exec_dmas() { return exec_binary_op(exec_factor(), parser::BinaryOp::min_precedence()); }
 
     // Exponentiation operator
     double exec_exp() {
@@ -61,7 +56,8 @@ private:
 
                 {
                     const auto acc_left_assoc = next.is_left_associative() && next_prec > prev_prec;
-                    const auto acc_right_assoc = next.is_right_associative() && next_prec == prev_prec;
+                    const auto acc_right_assoc =
+                        next.is_right_associative() && next_prec == prev_prec;
                     const auto acc = acc_left_assoc || acc_right_assoc;
 
                     if (!acc) {
@@ -109,7 +105,8 @@ private:
 
         if (m_lexer.drop_token_of_type(Type::LEFT_PAREN).has_value()) {
             const auto inner = exec_dmas();
-            if (!m_lexer.has_token() || !m_lexer.drop_token_of_type(Type::RIGHT_PAREN).has_value()) {
+            if (!m_lexer.has_token() ||
+                !m_lexer.drop_token_of_type(Type::RIGHT_PAREN).has_value()) {
                 throw ParserError{"missing closing ')'"};
             }
             return inner;
@@ -125,4 +122,4 @@ private:
     Lexer m_lexer;
 };
 
-}
+} // namespace math::server

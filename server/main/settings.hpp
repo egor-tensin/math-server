@@ -9,7 +9,6 @@
 #include <boost/program_options.hpp>
 
 #include <cstddef>
-
 #include <exception>
 #include <iostream>
 #include <string>
@@ -33,29 +32,23 @@ struct Settings {
 
 class SettingsParser {
 public:
-    explicit SettingsParser(const std::string& argv0)
-        : m_prog_name{extract_filename(argv0)}
-    {
+    explicit SettingsParser(const std::string& argv0) : m_prog_name{extract_filename(argv0)} {
         m_visible.add_options()("help,h", "show this message and exit");
-        m_visible.add_options()(
-            "port,p",
-            boost::program_options::value(&m_settings.m_port)->default_value(Settings::DEFAULT_PORT),
-            "server port number");
-        m_visible.add_options()(
-            "threads,n",
-            boost::program_options::value(&m_settings.m_threads)->default_value(Settings::default_threads()),
-            "number of threads");
+        m_visible.add_options()("port,p",
+                                boost::program_options::value(&m_settings.m_port)
+                                    ->default_value(Settings::DEFAULT_PORT),
+                                "server port number");
+        m_visible.add_options()("threads,n",
+                                boost::program_options::value(&m_settings.m_threads)
+                                    ->default_value(Settings::default_threads()),
+                                "number of threads");
     }
 
-    static const char* get_short_description() {
-        return "[-h|--help] [-p|--port] [-n|--threads]";
-    }
+    static const char* get_short_description() { return "[-h|--help] [-p|--port] [-n|--threads]"; }
 
     Settings parse(int argc, char* argv[]) {
         boost::program_options::store(
-            boost::program_options::command_line_parser{argc, argv}
-                .options(m_visible)
-                .run(),
+            boost::program_options::command_line_parser{argc, argv}.options(m_visible).run(),
             m_settings.m_vm);
         if (m_settings.exit_with_usage()) {
             return m_settings;
@@ -64,9 +57,7 @@ public:
         return m_settings;
     }
 
-    void usage() const {
-        std::cout << *this;
-    }
+    void usage() const { std::cout << *this; }
 
     void usage_error(const std::exception& e) const {
         std::cerr << "usage error: " << e.what() << '\n';
@@ -91,4 +82,4 @@ private:
     }
 };
 
-}
+} // namespace math::server

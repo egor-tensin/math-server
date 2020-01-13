@@ -13,9 +13,7 @@ namespace math::server {
 
 class ParserError : public Error {
 public:
-    explicit ParserError(const std::string& what)
-        : Error{"parser error: " + what}
-    { }
+    explicit ParserError(const std::string& what) : Error{"parser error: " + what} {}
 };
 
-}
+} // namespace math::server

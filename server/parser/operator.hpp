@@ -5,10 +5,9 @@
 
 #pragma once
 
-#include "error.hpp"
-
 #include "../lexer/token.hpp"
 #include "../lexer/token_type.hpp"
+#include "error.hpp"
 
 #include <cmath>
 
@@ -72,9 +71,7 @@ public:
         }
     }
 
-    bool is_left_associative() const {
-        return !is_right_associative();
-    }
+    bool is_left_associative() const { return !is_right_associative(); }
 
     double exec(double lhs, double rhs) const {
         switch (m_type) {
@@ -103,11 +100,9 @@ public:
     }
 
 private:
-    explicit BinaryOp(const Token& token)
-        : m_type{token.get_type()}
-    { }
+    explicit BinaryOp(const Token& token) : m_type{token.get_type()} {}
 
     Type m_type;
 };
 
-}
+} // namespace math::server::parser

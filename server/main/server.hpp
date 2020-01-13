@@ -38,4 +38,4 @@ private:
     SessionManager m_session_mgr;
 };
 
-}
+} // namespace math::server

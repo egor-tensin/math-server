@@ -24,19 +24,15 @@ public:
     using Token = lexer::Token;
     using ParsedToken = lexer::ParsedToken;
     using Type = Token::Type;
-    using TokenProcessor = std::function<bool (const ParsedToken&)>;
+    using TokenProcessor = std::function<bool(const ParsedToken&)>;
 
     bool for_each_token(const TokenProcessor& process);
 
     std::vector<ParsedToken> get_tokens();
 
-    bool has_token() const {
-        return peek_token().has_value();
-    }
+    bool has_token() const { return peek_token().has_value(); }
 
-    std::optional<ParsedToken> peek_token() const {
-        return m_token_buffer;
-    }
+    std::optional<ParsedToken> peek_token() const { return m_token_buffer; }
 
     void drop_token();
     std::optional<ParsedToken> drop_token_of_type(Type type);
@@ -55,4 +51,4 @@ private:
     std::optional<ParsedToken> m_token_buffer;
 };
 
-}
+} // namespace math::server

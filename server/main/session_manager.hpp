@@ -7,8 +7,8 @@
 
 #include <boost/asio.hpp>
 
-#include <mutex>
 #include <memory>
+#include <mutex>
 #include <unordered_set>
 
 namespace math::server {
@@ -32,4 +32,4 @@ private:
     std::unordered_set<SessionPtr> m_sessions;
 };
 
-}
+} // namespace math::server

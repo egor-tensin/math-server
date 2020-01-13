@@ -18,19 +18,15 @@ namespace math::client {
 class Client {
 public:
     explicit Client(const Settings& settings)
-        : Client{make_input_reader(settings), make_transport(settings)}
-    { }
+        : Client{make_input_reader(settings), make_transport(settings)} {}
 
     Client(input::ReaderPtr&& input_reader, TransportPtr&& transport)
-        : m_input_reader{std::move(input_reader)}
-        , m_transport{std::move(transport)}
-    { }
+        : m_input_reader{std::move(input_reader)}, m_transport{std::move(transport)} {}
 
     void run() {
-        m_input_reader->for_each_input([this] (const std::string& input) {
-            m_transport->send_query(input, [] (const std::string& reply) {
-                std::cout << reply << '\n';
-            });
+        m_input_reader->for_each_input([this](const std::string& input) {
+            m_transport->send_query(input,
+                                    [](const std::string& reply) { std::cout << reply << '\n'; });
             return true;
         });
     }
@@ -54,4 +50,4 @@ private:
     TransportPtr m_transport;
 };
 
-}
+} // namespace math::client

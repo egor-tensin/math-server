@@ -3,9 +3,10 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
+#include "lexer.hpp"
+
 #include "details/parse.hpp"
 #include "error.hpp"
-#include "lexer.hpp"
 #include "token.hpp"
 #include "token_type.hpp"
 
@@ -17,13 +18,9 @@
 
 namespace math::server {
 
-Lexer::Lexer(const std::string_view& input)
-    : Lexer{lexer::Input{input}} {
-}
+Lexer::Lexer(const std::string_view& input) : Lexer{lexer::Input{input}} {}
 
-Lexer::Lexer(const lexer::Input& input)
-    : m_input{input} {
-
+Lexer::Lexer(const lexer::Input& input) : m_input{input} {
     consume_token();
 }
 
@@ -38,7 +35,7 @@ bool Lexer::for_each_token(const TokenProcessor& process) {
 
 std::vector<Lexer::ParsedToken> Lexer::get_tokens() {
     std::vector<ParsedToken> tokens;
-    for_each_token([&tokens] (const ParsedToken& token) {
+    for_each_token([&tokens](const ParsedToken& token) {
         tokens.emplace_back(token);
         return true;
     });
@@ -122,4 +119,4 @@ Lexer::ParsedToken Lexer::parse_token() const {
     throw LexerError{"invalid input at: " + std::string{m_input.get_input()}};
 }
 
-}
+} // namespace math::server

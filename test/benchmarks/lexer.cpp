@@ -34,7 +34,7 @@ protected:
     };
 };
 
-}
+} // namespace
 
 BENCHMARK_F(NumberExamples, StdParseNumber)(benchmark::State& state) {
     using namespace math::server::lexer::details;

@@ -23,7 +23,7 @@ std::optional<double> boost_parse_number(const std::string_view&);
 std::string_view std_parse_whitespace(const std::string_view&);
 std::string_view boost_parse_whitespace(const std::string_view&);
 
-}
+} // namespace impl
 
 // Exposed for testing:
 std::string_view parse_whitespace(const std::string_view&);
@@ -32,4 +32,4 @@ std::optional<double> parse_number(const std::string_view&);
 std::optional<token::Type> parse_const_token(const std::string_view&, std::string_view&);
 std::optional<token::Type> parse_const_token(const std::string_view&);
 
-}
+} // namespace math::server::lexer::details

@@ -13,9 +13,7 @@ namespace math::server {
 
 class LexerError : public Error {
 public:
-    explicit LexerError(const std::string &what)
-        : Error{"lexer error: " + what}
-    { }
+    explicit LexerError(const std::string& what) : Error{"lexer error: " + what} {}
 };
 
-}
+} // namespace math::server

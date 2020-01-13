@@ -3,8 +3,9 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
-#include "error.hpp"
 #include "token_type.hpp"
+
+#include "error.hpp"
 
 #include <functional>
 #include <map>
@@ -21,9 +22,7 @@ using FromStringMap = std::map<std::string, Type, std::greater<std::string>>;
 
 class ToStringConverter {
 public:
-    ToStringConverter() : m_map{to_string_map()} {
-        validate();
-    }
+    ToStringConverter() : m_map{to_string_map()} { validate(); }
 
     const ToStringMap& map() const { return m_map; }
 
@@ -43,16 +42,15 @@ private:
         return map;
     }
 
-    void validate() const {
-        check_for_duplicates();
-    }
+    void validate() const { check_for_duplicates(); }
 
     void check_for_duplicates() const {
         std::unordered_set<std::string> strings;
         for (const auto& [type, str] : m_map) {
             const auto [_, inserted] = strings.emplace(str);
             if (!inserted) {
-                throw std::logic_error{"multiple tokens have the same string representation: " + str};
+                throw std::logic_error{"multiple tokens have the same string representation: " +
+                                       str};
             }
         }
     }
@@ -67,9 +65,7 @@ const ToStringMap& to_string_map() {
 
 class FromStringConverter {
 public:
-    FromStringConverter(const ToStringMap& to_string)
-        : m_map{build_map(to_string)} {
-    }
+    FromStringConverter(const ToStringMap& to_string) : m_map{build_map(to_string)} {}
 
     const FromStringMap& map() const { return m_map; }
 
@@ -79,7 +75,8 @@ private:
         for (const auto& [type, str] : to_string) {
             const auto [_, inserted] = from_string.emplace(str, type);
             if (!inserted) {
-                throw std::logic_error{"multiple tokens have the same string representation: " + str};
+                throw std::logic_error{"multiple tokens have the same string representation: " +
+                                       str};
             }
         }
         return from_string;
@@ -110,7 +107,7 @@ private:
     TypeSet m_set;
 };
 
-}
+} // namespace
 
 TypeInt type_to_int(Type type) {
     return static_cast<TypeInt>(type);
@@ -167,4 +164,4 @@ std::ostream& operator<<(std::ostream& os, const Type& type) {
     return os;
 }
 
-}
+} // namespace math::server::lexer::token

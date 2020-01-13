@@ -40,4 +40,4 @@ Type type_from_string(const std::string&);
 
 std::ostream& operator<<(std::ostream&, const Type&);
 
-}
+} // namespace math::server::lexer::token

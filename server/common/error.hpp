@@ -12,9 +12,7 @@ namespace math::server {
 
 class Error : public std::runtime_error {
 public:
-    explicit Error(const std::string& what)
-        : std::runtime_error{"server error: " + what}
-    { }
+    explicit Error(const std::string& what) : std::runtime_error{"server error: " + what} {}
 };
 
-}
+} // namespace math::server
