@@ -25,8 +25,6 @@ env:
     - configuration=Release platform=x64
 
 before_script:
-  - ./cmake/tools/clang-format/clang-format.sh --clang-format clang-format-9 --diff
-
   - >-
     ./cmake/boost/build/ci/travis.py
     --link static
@@ -49,6 +47,13 @@ script:
 jobs:
   fast_finish: true
   include:
+    - name: Run clang-format
+      if: branch = master
+      # Clear before_script:
+      before_script:
+        - true
+      script:
+        - ./cmake/tools/clang-format/clang-format.sh --clang-format clang-format-9 --diff
     - name: Build Docker images
       language: minimal
       # Don't install the unnecessary dependencies:
