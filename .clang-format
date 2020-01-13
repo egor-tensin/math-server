@@ -1,0 +1,23 @@
+---
+Language: Cpp
+BasedOnStyle: Chromium
+
+AccessModifierOffset: -4
+BreakStringLiterals: false
+ColumnLimit: 100
+IncludeBlocks: Regroup
+IndentWidth: 4
+SpacesBeforeTrailingComments: 1
+
+IncludeCategories:
+  - Regex: '^".*'
+    Priority: 1
+  - Regex: '^<(server|lexer)/'
+    Priority: 2
+  - Regex: '^<benchmark/'
+    Priority: 3
+  - Regex: '^<boost/'
+    Priority: 4
+  - Regex: '*.'
+    Priority: 5
+...
