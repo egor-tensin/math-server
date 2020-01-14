@@ -58,7 +58,7 @@ jobs:
       before_script:
         - true
       script:
-        - ./cmake/tools/clang-format/clang-format.sh --clang-format clang-format-9 --diff
+        - ./cmake/tools/clang-format.py --clang-format clang-format-9
     - name: Build Docker images
       language: minimal
       # Don't install the unnecessary dependencies:
