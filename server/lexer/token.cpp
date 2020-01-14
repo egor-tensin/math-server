@@ -15,15 +15,15 @@
 namespace math::server::lexer {
 namespace {
 
-static constexpr double nan() {
+constexpr double nan() {
     return std::numeric_limits<double>::quiet_NaN();
 }
 
-static bool is_nan(double x) {
+bool is_nan(double x) {
     return std::isnan(x);
 }
 
-static bool numbers_equal(double x, double y) {
+bool numbers_equal(double x, double y) {
     if (is_nan(x) && is_nan(y)) {
         return true;
     }
