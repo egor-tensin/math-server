@@ -18,6 +18,6 @@ IncludeCategories:
     Priority: 3
   - Regex: '^<boost/'
     Priority: 4
-  - Regex: '*.'
+  - Regex: '.*'
     Priority: 5
 ...
