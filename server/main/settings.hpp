@@ -33,27 +33,28 @@ struct Settings {
 class SettingsParser {
 public:
     explicit SettingsParser(const std::string& argv0) : m_prog_name{extract_filename(argv0)} {
+        namespace po = boost::program_options;
+
         m_visible.add_options()("help,h", "show this message and exit");
-        m_visible.add_options()("port,p",
-                                boost::program_options::value(&m_settings.m_port)
-                                    ->default_value(Settings::DEFAULT_PORT),
-                                "server port number");
-        m_visible.add_options()("threads,n",
-                                boost::program_options::value(&m_settings.m_threads)
-                                    ->default_value(Settings::default_threads()),
-                                "number of threads");
+        m_visible.add_options()(
+            "port,p", po::value(&m_settings.m_port)->default_value(Settings::DEFAULT_PORT),
+            "server port number");
+        m_visible.add_options()(
+            "threads,n",
+            po::value(&m_settings.m_threads)->default_value(Settings::default_threads()),
+            "number of threads");
     }
 
     static const char* get_short_description() { return "[-h|--help] [-p|--port] [-n|--threads]"; }
 
     Settings parse(int argc, char* argv[]) {
-        boost::program_options::store(
-            boost::program_options::command_line_parser{argc, argv}.options(m_visible).run(),
-            m_settings.m_vm);
+        namespace po = boost::program_options;
+
+        po::store(po::command_line_parser{argc, argv}.options(m_visible).run(), m_settings.m_vm);
         if (m_settings.exit_with_usage()) {
             return m_settings;
         }
-        boost::program_options::notify(m_settings.m_vm);
+        po::notify(m_settings.m_vm);
         return m_settings;
     }
 
