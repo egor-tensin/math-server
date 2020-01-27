@@ -59,7 +59,32 @@ jobs:
         - true
       script:
         - ./cmake/tools/clang-format.py --clang-format clang-format-9
-    - name: Build Docker images
+    - name: Build and publish multi-arch images
+      language: minimal
+      addons:
+        apt:
+          update: true
+          # Newer docker for BuildKit/buildx support:
+          sources:
+            - key_url: 'https://download.docker.com/linux/ubuntu/gpg'
+              sourceline: 'deb https://download.docker.com/linux/ubuntu "$(lsb_release -cs)" stable'
+          packages:
+            - docker-ce
+      install:
+        # GCR & BuildKit don't work together, e.g.:
+        # https://github.com/moby/buildkit/issues/606
+        - echo '{}' | sudo tee /etc/docker/daemon.json
+        - sudo systemctl restart docker
+      # Clear before_script:
+      before_script:
+        - true
+      script: |-
+          if [ "$TRAVIS_BRANCH" = master ]; then
+              make login && make builder/create && make push
+          else
+              make builder/create && make buildx
+          fi
+    - name: Build native images using Compose
       language: minimal
       # Don't install the unnecessary dependencies:
       addons:
@@ -70,5 +95,16 @@ jobs:
       # Clear before_script:
       before_script:
         - true
-      script:
-        - docker-compose build
+      script: make compose-build
+    - name: Build native images using Docker
+      language: minimal
+      # Don't install the unnecessary dependencies:
+      addons:
+        apt:
+          update: false
+      services:
+        - docker
+      # Clear before_script:
+      before_script:
+        - true
+      script: make docker-build
