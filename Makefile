@@ -33,7 +33,7 @@ up:
 	docker-compose up -d server
 
 client:
-	docker-compose --rm run client
+	docker-compose run --rm client
 
 down:
 	docker-compose down --volumes
