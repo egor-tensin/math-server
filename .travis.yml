@@ -70,11 +70,11 @@ jobs:
       name: 'Docker: build native images'
       language: shell
       services: [docker]
-      script: make docker-build
+      script: make docker/build
 
     - <<: *docker
       name: 'Docker: build native images using Compose'
-      script: make compose-build
+      script: make compose/build
 
     - &buildx
       <<: *clear
@@ -95,9 +95,9 @@ jobs:
         # https://github.com/moby/buildkit/issues/606
         - echo '{}' | sudo tee /etc/docker/daemon.json
         - sudo systemctl restart docker
-      script: make builder/create && make buildx
+      script: make buildx/create && make buildx/build
 
     - <<: *buildx
       name: 'Docker: build & publish multi-arch images'
       if: branch = master
-      script: make login && make builder/create && make push
+      script: make login && make buildx/create && make buildx/push

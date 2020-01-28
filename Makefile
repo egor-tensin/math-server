@@ -17,75 +17,14 @@ ifndef DOCKER_PASSWORD
 endif
 	@echo "$(DOCKER_PASSWORD)" | docker login --username "$(DOCKER_USERNAME)" --password-stdin
 
-# Re-register binfmt_misc formats with the F flag (required i.e. on Bionic):
-fix-binfmt:
-	docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
-
-binfmt: fix-binfmt
-
-# `docker build` has week support for multiarch repos (you need to use multiple
-# Dockerfile's, create a manifest manually, etc.), so it's only here for
-# testing purposes, and native builds.
-docker-build/%:
-ifndef FORCE
-	$(warning Consider using `docker buildx` instead)
-endif
-	docker build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" .
-
-docker-build: docker-build/client docker-build/server
-
-# `docker-compose build` has the same problems as `docker build`.
-compose-build:
-ifndef FORCE
-	$(warning Consider using `docker buildx` instead)
-endif
-	docker-compose build
-
-# The simple way to build multiarch repos.
-builder/create: fix-binfmt
-	docker buildx create --use --name "$(PROJECT)_builder"
-
-builder/rm:
-	docker buildx rm "$(PROJECT)_builder"
-
-buildx/%:
-	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(platforms)" --progress plain .
-
-buildx: buildx/client buildx/server
-
 # Build natively by default.
-build: compose-build
+build: compose/build
 
-# `docker push` would replace the multiarch repo with a single image by default
-# (you'd have to create a manifest and push it instead), so it's only here for
-# testing purposes.
-check-docker-push:
-ifndef FORCE
-	$(error Please do not use `docker push`)
-endif
+clean:
+	docker system prune --all --force --volumes
 
-docker-push/%: check-docker-push docker-build/%
-	docker push "$(DOCKER_USERNAME)/math-$*"
-
-docker-push: check-docker-push docker-push/client docker-push/server
-
-# `docker-compose push` has the same problems as `docker push`.
-check-compose-push:
-ifndef FORCE
-	$(error Please do not use `docker-compose push`)
-endif
-
-compose-push: check-compose-push compose-build
-	docker-compose push
-
-# The simple way to push multiarch repos.
-buildx-push/%:
-	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(platforms)" --progress plain --push .
-
-buildx-push: buildx-push/client buildx-push/server
-
-# buildx is used by default.
-push: buildx-push
+# Push multi-arch images by default.
+push: buildx/push
 
 pull:
 	docker-compose pull
@@ -93,17 +32,70 @@ pull:
 up:
 	docker-compose up -d server
 
-run/client:
+client:
 	docker-compose --rm run client
 
 down:
 	docker-compose down --volumes
 
-clean:
-	docker system prune --all --force --volumes
+check-build:
+ifndef FORCE
+	$(warning Going to build natively; consider `docker buildx build` instead)
+endif
 
-.PHONY: all login clean
-.PHONY: fix-binfmt binfmt builder/create builder/rm
-.PHONY: docker-build compose-build buildx build
-.PHONY: check-docker-push docker-push check-compose-push compose-push buildx-push push
-.PHONY: pull up run/client down
+check-push:
+ifndef FORCE
+	$(error Please use `docker buildx build --push` instead)
+endif
+
+# `docker build` has week support for multiarch repos (you need to use multiple
+# Dockerfile's, create a manifest manually, etc.), so it's only here for
+# testing purposes, and native builds.
+docker/build/%: check-build
+	docker build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" .
+
+docker/build: docker/build/client docker/build/server
+
+# `docker push` would replace the multiarch repo with a single image by default
+# (you'd have to create a manifest and push it instead), so it's only here for
+# testing purposes.
+docker/push/%: check-push docker/build/%
+	docker push "$(DOCKER_USERNAME)/math-$*"
+
+docker/push: check-push docker/push/client docker/push/server
+
+# `docker-compose build` has the same problems as `docker build`.
+compose/build: check-build
+	docker-compose build
+
+# `docker-compose push` has the same problems as `docker push`.
+compose/push: check-push compose/build
+	docker-compose push
+
+# The simple way to build multiarch repos is `docker buildx`.
+
+# Re-register binfmt_misc formats with the F flag (required i.e. on Bionic):
+fix-binfmt:
+	docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
+
+buildx/create: fix-binfmt
+	docker buildx create --use --name "$(PROJECT)_builder"
+
+buildx/rm:
+	docker buildx rm "$(PROJECT)_builder"
+
+buildx/build/%:
+	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(platforms)" --progress plain .
+
+buildx/build: buildx/build/client buildx/build/server
+
+buildx/push/%:
+	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(platforms)" --progress plain --push .
+
+buildx/push: buildx/push/client buildx/push/server
+
+.PHONY: all login build clean push pull up client down
+.PHONY: check-build check-push
+.PHONY: docker/build docker/push
+.PHONY: compose/build compose/push
+.PHONY: fix-binfmt buildx/create buildx/rm buildx/build buildx/push
