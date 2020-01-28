@@ -14,7 +14,7 @@ addons:
 
 env:
   global:
-    - travis_boost_version=1.71.0
+    travis_boost_version=1.71.0
   jobs:
     - configuration=Debug   platform=x86
     - configuration=Release platform=x86
@@ -44,8 +44,15 @@ script:
 jobs:
   fast_finish: true
 
+  # Clear irrelevant matrix build settings:
+  _clear: &clear
+    addons: {apt: {packages: []}}
+    before_script: []
+    script: []
+
   include:
-    - name: Run clang-format
+    - <<: *clear
+      name: Run clang-format
       if: branch = master
       language: shell
       addons:
@@ -55,11 +62,25 @@ jobs:
           sources:
             - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
-      before_script: {}
       script: ./cmake/tools/clang-format.py --clang-format clang-format-9
 
-    - stage: Docker
-      name: 'Docker: build (and publish) multi-arch images'
+    - &docker
+      <<: *clear
+      stage: deploy
+      name: 'Docker: build native images'
+      language: shell
+      services: [docker]
+      script: make docker-build
+
+    - <<: *docker
+      name: 'Docker: build native images using Compose'
+      script: make compose-build
+
+    - &buildx
+      <<: *clear
+      stage: deploy
+      name: 'Docker: build multi-arch images'
+      if: branch != master
       language: shell
       addons:
         apt:
@@ -70,28 +91,13 @@ jobs:
             - key_url: 'https://download.docker.com/linux/ubuntu/gpg'
               sourceline: 'deb https://download.docker.com/linux/ubuntu "$(lsb_release -cs)" stable'
       install:
-        # GCR & BuildKit don't work together, e.g.:
+        # GCR & BuildKit don't play nice together, e.g.:
         # https://github.com/moby/buildkit/issues/606
         - echo '{}' | sudo tee /etc/docker/daemon.json
         - sudo systemctl restart docker
-      before_script: []
-      script: |-
-          if [ "$TRAVIS_BRANCH" = master ]; then
-              make login && make builder/create && make push
-          else
-              make builder/create && make buildx
-          fi
+      script: make builder/create && make buildx
 
-    - name: 'Docker: build native images using Compose'
-      language: shell
-      addons: {apt: {packages: []}}
-      before_script: []
-      services: [docker]
-      script: make compose-build
-
-    - name: 'Docker: build native images'
-      language: shell
-      addons: {apt: {packages: []}}
-      before_script: []
-      services: [docker]
-      script: make docker-build
+    - <<: *buildx
+      name: 'Docker: build & publish multi-arch images'
+      if: branch = master
+      script: make login && make builder/create && make push
