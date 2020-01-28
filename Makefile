@@ -102,4 +102,8 @@ down:
 clean:
 	docker system prune --all --force --volumes
 
-.PHONY: all login fix-binfmt binfmt docker-build compose-build builder/create builder/rm buildx build check-docker-push docker-push check-compose-push compose-push buildx-push push pull up run/client down clean
+.PHONY: all login clean
+.PHONY: fix-binfmt binfmt builder/create builder/rm
+.PHONY: docker-build compose-build buildx build
+.PHONY: check-docker-push docker-push check-compose-push compose-push buildx-push push
+.PHONY: pull up run/client down
