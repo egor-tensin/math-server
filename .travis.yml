@@ -46,15 +46,24 @@ jobs:
 
   # Clear irrelevant matrix build settings:
   _clear: &clear
+    language: shell
     addons: {apt: {packages: []}}
     before_script: []
     script: []
+
+  _docker: &docker
+    <<: *clear
+    services: [docker]
+    install:
+      # GCR & BuildKit don't play nice together, e.g.:
+      # https://github.com/moby/buildkit/issues/606
+      - echo '{}' | sudo tee /etc/docker/daemon.json
+      - sudo systemctl restart docker
 
   include:
     - <<: *clear
       name: Run clang-format
       if: branch = master
-      language: shell
       addons:
         apt:
           packages:
@@ -64,24 +73,18 @@ jobs:
               key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
       script: ./cmake/tools/clang-format.py --clang-format clang-format-9
 
-    - &docker
-      <<: *clear
-      stage: deploy
+    - <<: *docker
       name: 'Docker: build native images'
-      language: shell
-      services: [docker]
       script: make docker/build
 
     - <<: *docker
       name: 'Docker: build native images using Compose'
       script: make compose/build
 
-    - &buildx
-      <<: *clear
+    - <<: *docker
       stage: deploy
-      name: 'Docker: build multi-arch images'
-      if: branch != master
-      language: shell
+      name: 'Docker: build & publish multi-arch images'
+      if: branch = master
       addons:
         apt:
           # Newer docker for BuildKit/buildx support:
@@ -90,14 +93,4 @@ jobs:
           sources:
             - key_url: 'https://download.docker.com/linux/ubuntu/gpg'
               sourceline: 'deb https://download.docker.com/linux/ubuntu "$(lsb_release -cs)" stable'
-      install:
-        # GCR & BuildKit don't play nice together, e.g.:
-        # https://github.com/moby/buildkit/issues/606
-        - echo '{}' | sudo tee /etc/docker/daemon.json
-        - sudo systemctl restart docker
-      script: make buildx/create && make buildx/build
-
-    - <<: *buildx
-      name: 'Docker: build & publish multi-arch images'
-      if: branch = master
       script: make login && make buildx/create && make buildx/push
