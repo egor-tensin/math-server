@@ -1,6 +1,12 @@
 # Various one-liners which I'm too lazy to remember.
 # Basically a collection of really small shell scripts.
 
+MAKEFLAGS += --warn-undefined-variables
+SHELL := bash
+.SHELLFLAGS := -eu -o pipefail -c
+.DEFAULT_GOAL := all
+.SUFFIXES:
+
 PROJECT = math_server
 # Enable buildx support:
 export DOCKER_CLI_EXPERIMENTAL = enabled
@@ -10,6 +16,8 @@ platforms = linux/amd64,linux/armhf
 DOCKER_USERNAME = egortensin
 
 all: build
+
+DO:
 
 login:
 ifndef DOCKER_PASSWORD
@@ -51,7 +59,7 @@ endif
 # `docker build` has week support for multiarch repos (you need to use multiple
 # Dockerfile's, create a manifest manually, etc.), so it's only here for
 # testing purposes, and native builds.
-docker/build/%: check-build
+docker/build/%: DO check-build
 	docker build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" .
 
 docker/build: docker/build/client docker/build/server
@@ -59,7 +67,7 @@ docker/build: docker/build/client docker/build/server
 # `docker push` would replace the multiarch repo with a single image by default
 # (you'd have to create a manifest and push it instead), so it's only here for
 # testing purposes.
-docker/push/%: check-push docker/build/%
+docker/push/%: DO check-push docker/build/%
 	docker push "$(DOCKER_USERNAME)/math-$*"
 
 docker/push: check-push docker/push/client docker/push/server
@@ -84,12 +92,12 @@ buildx/create: fix-binfmt
 buildx/rm:
 	docker buildx rm "$(PROJECT)_builder"
 
-buildx/build/%:
+buildx/build/%: DO
 	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(platforms)" --progress plain .
 
 buildx/build: buildx/build/client buildx/build/server
 
-buildx/push/%:
+buildx/push/%: DO
 	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(platforms)" --progress plain --push .
 
 buildx/push: buildx/push/client buildx/push/server
