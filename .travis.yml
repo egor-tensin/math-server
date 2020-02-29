@@ -14,13 +14,14 @@ addons:
 
 env:
   global:
-    travis_boost_version=1.71.0
+    travis_boost_version=1.66.0
   jobs:
     - configuration=Debug   platform=x86
     - configuration=Release platform=x86
     - configuration=Debug   platform=x64
     - configuration=Release platform=x64
 
+# Bionic repositories have Boost 1.65, but 1.66 or higher is required.
 before_script:
   - >-
     ./cmake/boost/build/ci/travis.py
