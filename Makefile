@@ -7,13 +7,13 @@ SHELL := bash
 .DEFAULT_GOAL := all
 .SUFFIXES:
 
-PROJECT = math_server
+PROJECT := math_server
 # Enable buildx support:
-export DOCKER_CLI_EXPERIMENTAL = enabled
+export DOCKER_CLI_EXPERIMENTAL := enabled
 # Target platforms (used by buildx):
-platforms = linux/amd64,linux/armhf
+platforms := linux/amd64,linux/armhf
 # Docker Hub credentials:
-DOCKER_USERNAME = egortensin
+DOCKER_USERNAME := egortensin
 
 all: build
 
