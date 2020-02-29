@@ -85,7 +85,7 @@ jobs:
       script: make compose/build
 
     - <<: *docker
-      stage: deploy
+      stage: publish
       name: 'Docker: build & publish multi-arch images'
       if: branch = master
       addons:
