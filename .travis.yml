@@ -14,7 +14,7 @@ addons:
 
 env:
   global:
-    travis_boost_version=1.66.0
+    travis_boost_version=1.67.0
   jobs:
     - configuration=Debug   platform=x86
     - configuration=Release platform=x86
@@ -22,6 +22,8 @@ env:
     - configuration=Release platform=x64
 
 # Bionic repositories have Boost 1.65, but 1.66 or higher is required.
+# Tests fail to compile w/ Boost 1.66 also:
+# https://lists.boost.org/boost-bugs/2018/01/49711.php
 before_script:
   - >-
     ./cmake/boost/build/ci/travis.py
