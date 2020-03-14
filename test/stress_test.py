@@ -1,3 +1,15 @@
+#!/usr/bin/env python3
+
+# Copyright (c) 2019 Egor Tensin <Egor.Tensin@gmail.com>
+# This file is part of the "math-server" project.
+# For details, see https://github.com/egor-tensin/math-server.
+# Distributed under the MIT License.
+
+'''This is a crappy script to feed the server with somewhat random arithmetic
+expressions.
+It's throwaway, hence the poor quality.
+'''
+
 import argparse
 import ast
 from contextlib import contextmanager
@@ -8,10 +20,6 @@ import subprocess
 from subprocess import PIPE
 import sys
 from timeit import default_timer
-
-# This is a crappy script to feed the server with somewhat random arithmetic
-# expressions.
-# It's throwaway, hence the poor quality.
 
 DEFAULT_CLIENT_PATH = 'client'
 DEFAULT_HOST = 'localhost'
