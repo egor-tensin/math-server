@@ -154,7 +154,7 @@ def _run_client(client, stdin):
         cmd = client.get_command_line()
         with timer('Client invocation'):
             result = subprocess.run(cmd, stdout=PIPE, stderr=PIPE, input=stdin,
-                                    text=True, check=True)
+                                    universal_newlines=True, check=True)
         return Output(result.stdout)
 
 
