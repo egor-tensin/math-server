@@ -7,13 +7,45 @@
 
 set -o errexit -o nounset -o pipefail
 
+script_name="$( basename -- "${BASH_SOURCE[0]}" )"
+readonly script_name
+
+readonly server_path="$HOME/install/bin/math-server"
+readonly client_path="$HOME/install/bin/math-client"
+readonly stress_test_path="$TRAVIS_BUILD_DIR/test/stress_test.py"
+readonly server_port=16666
+server_pid=
+
+dump() {
+    local msg
+    for msg; do
+        echo "$script_name: $msg"
+    done
+}
+
+kill_server() {
+    dump "Killing the server with PID $server_pid..."
+    kill "$server_pid"
+    dump "Waiting for the server to terminate..."
+    wait "$server_pid"
+    dump "Done"
+}
+
 run_server() {
-    "$HOME/install/bin/math-server" --port 16666 &
-    trap "kill $?" EXIT
+    dump "Running the server..."
+    "$server_path" --port "$server_port" &
+    server_pid="$!"
+    dump "It's PID is $server_pid"
+    trap kill_server EXIT
 }
 
 run_stress_test() {
-    "$TRAVIS_BUILD_DIR/test/stress_test.py" --client "$HOME/install/bin/math-client" --port 16666 --processes 4 --expressions 1000
+    dump "Running stress_test.py..."
+    "$stress_test_path"         \
+        --client "$client_path" \
+        --port "$server_port"   \
+        --processes 4           \
+        --expressions 1000
 }
 
 main() {
