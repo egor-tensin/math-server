@@ -10,7 +10,8 @@ COPY [".", "$src_dir"]
 
 RUN build_deps='boost-dev cmake g++ make python3' && \
     apk add --no-cache $build_deps && \
-    "$src_dir/cmake/cmake/build/build.py" \
+    cd -- "$src_dir/cmake" && \
+    python3 -m project.cmake.build \
         --install /opt/math-server \
         --configuration Release \
         -- \

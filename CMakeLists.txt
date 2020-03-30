@@ -7,7 +7,7 @@ option(ENABLE_TESTS "build the tests")
 # C++17 is mandatory:
 set(CC_CXX_STANDARD 17)
 
-include(cmake/cmake/common.cmake)
+include(cmake/common.cmake)
 
 # AppVeyor builds w/ Visual Studio 2017 bombard me with stupid warnings otherwise:
 if(MSVC_VERSION GREATER_EQUAL "1910" AND MSVC_VERSION LESS "1920")

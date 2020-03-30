@@ -23,11 +23,12 @@ install:
   - git submodule update --init --recursive
 
 build_script:
+  - cd cmake
   - >-
-    "%python_exe%" cmake\cmake\build\ci\appveyor.py
+    "%python_exe%" -m project.ci.appveyor.cmake
     --install "%install_dir%"
+    --boost "%appveyor_boost_root%"
     --
-    -D "BOOST_ROOT=%appveyor_boost_root%"
     -D ENABLE_TESTS=ON
 
 after_build:

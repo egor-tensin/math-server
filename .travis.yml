@@ -14,7 +14,7 @@ addons:
 
 env:
   global:
-    travis_boost_version=1.67.0
+    boost_version=1.67.0
   jobs:
     - configuration=Debug   platform=x86
     - configuration=Release platform=x86
@@ -25,25 +25,25 @@ env:
 # Tests fail to compile w/ Boost 1.66 also:
 # https://lists.boost.org/boost-bugs/2018/01/49711.php
 before_script:
+  - cd cmake
   - >-
-    ./cmake/boost/build/ci/travis.py
-    --link static
+    python3 -m project.ci.travis.boost
     --
-    --with-filesystem --with-program_options --with-regex --with-test
+    --with-filesystem
+    --with-program_options
+    --with-regex
+    --with-test
 
 script:
   - >-
-    ./cmake/cmake/build/ci/travis.py
+    python3 -m project.ci.travis.cmake
     --install "$HOME/install"
     --
-    -D "CMAKE_TOOLCHAIN_FILE=cmake/cmake/toolchains/gcc-$platform.cmake"
-    -D "BOOST_ROOT=$HOME/boost"
-    -D "BOOST_LIBRARYDIR=$HOME/boost/stage/$platform/$configuration/lib"
     -D ENABLE_TESTS=ON
 
   - "$HOME/install/bin/math-server-unit-tests"
   - "$HOME/install/bin/math-server-benchmarks"
-  - ./.ci/stress_test.sh
+  - ../.ci/stress_test.sh
 
 jobs:
   fast_finish: true
