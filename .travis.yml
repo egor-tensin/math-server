@@ -72,9 +72,6 @@ jobs:
         apt:
           packages:
             - clang-format-9
-          sources:
-            - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
-              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
       script: ./cmake/tools/clang-format.py --clang-format clang-format-9
 
     - <<: *docker
