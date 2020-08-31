@@ -16,7 +16,7 @@ readonly script_dir
 install_dir="$HOME/install"
 readonly server_path='bin/math-server'
 readonly client_path='bin/math-client'
-readonly stress_test_path="$script_dir/../test/stress_test.py"
+readonly stress_test_path="$script_dir/stress_test.py"
 readonly server_port=16666
 server_pid=
 

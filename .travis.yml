@@ -43,7 +43,7 @@ script:
 
   - "$HOME/install/bin/math-server-unit-tests"
   - "$HOME/install/bin/math-server-benchmarks"
-  - ../.ci/stress_test.sh
+  - ../test/stress_test.sh
 
 jobs:
   fast_finish: true
