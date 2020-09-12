@@ -1,40 +1,22 @@
 language: cpp
 os: linux
-dist: bionic
+dist: focal
 
 addons:
   apt:
-    update: true
     packages:
-      - cmake
-      - g++-multilib
-    sources:
-      - sourceline: 'deb https://apt.kitware.com/ubuntu/ bionic main'
-        key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
+      - libboost-filesystem-dev
+      - libboost-program-options-dev
+      - libboost-regex-dev
+      - libboost-test-dev
 
 env:
-  global:
-    boost_version=1.67.0
   jobs:
-    - configuration=Debug   platform=x86
-    - configuration=Release platform=x86
     - configuration=Debug   platform=x64
     - configuration=Release platform=x64
 
-# Bionic repositories have Boost 1.65, but 1.66 or higher is required.
-# Tests fail to compile w/ Boost 1.66 also:
-# https://lists.boost.org/boost-bugs/2018/01/49711.php
-before_script:
-  - cd cmake
-  - >-
-    python3 -m project.ci.travis.boost
-    --
-    --with-filesystem
-    --with-program_options
-    --with-regex
-    --with-test
-
 script:
+  - cd cmake
   - >-
     python3 -m project.ci.travis.cmake
     --install "$HOME/install"
@@ -48,21 +30,14 @@ script:
 jobs:
   fast_finish: true
 
-  # Clear irrelevant matrix build settings:
   _clear: &clear
     language: shell
     addons: {apt: {packages: []}}
-    before_script: []
     script: []
 
   _docker: &docker
     <<: *clear
     services: [docker]
-    install:
-      # GCR & BuildKit don't play nice together, e.g.:
-      # https://github.com/moby/buildkit/issues/606
-      - echo '{}' | sudo tee /etc/docker/daemon.json
-      - sudo systemctl restart docker
 
   include:
     - <<: *clear
@@ -86,12 +61,6 @@ jobs:
       stage: publish
       name: 'Docker: build & publish multi-arch images'
       if: branch = master
-      addons:
-        apt:
-          # Newer docker for BuildKit/buildx support:
-          packages:
-            - docker-ce
-          sources:
-            - key_url: 'https://download.docker.com/linux/ubuntu/gpg'
-              sourceline: 'deb https://download.docker.com/linux/ubuntu "$(lsb_release -cs)" stable'
+      # buildx isn't installed on Focal.
+      before_install: make buildx/install
       script: make login && make buildx/create && make buildx/push

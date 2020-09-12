@@ -9,7 +9,10 @@ Development
 
 Build using CMake.
 Depends on Boost.{Filesystem,Program_options,Regex,Test}.
-Boost version 1.66 or higher is required.
+Boost version 1.67 or higher is required (it would be Boost 1.66 in a perfect
+world, but the tests [fail to compile] with that).
+
+[fail to compile]: https://lists.boost.org/boost-bugs/2018/01/49711.php
 
 Usage
 -----

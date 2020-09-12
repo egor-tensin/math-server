@@ -11,9 +11,11 @@ PROJECT := math-server
 # Enable buildx support:
 export DOCKER_CLI_EXPERIMENTAL := enabled
 # Target platforms (used by buildx):
-platforms := linux/amd64,linux/armhf
+PLATFORMS := linux/amd64,linux/armhf
 # Docker Hub credentials:
 DOCKER_USERNAME := egortensin
+# In case buildx isn't installed (e.g. on Ubuntu):
+BUILDX_VERSION := v0.4.2
 
 .PHONY: all
 all: build
@@ -103,6 +105,12 @@ compose/push: check-push compose/build
 fix-binfmt:
 	docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
 
+.PHONY: buildx/install
+buildx/install:
+	mkdir -p -- ~/.docker/cli-plugins/
+	curl --silent --show-error --location -- 'https://github.com/docker/buildx/releases/download/$(BUILDX_VERSION)/buildx-$(BUILDX_VERSION).linux-amd64' > ~/.docker/cli-plugins/docker-buildx
+	chmod +x -- ~/.docker/cli-plugins/docker-buildx
+
 .PHONY: buildx/create
 buildx/create: fix-binfmt
 	docker buildx create --use --name "$(PROJECT)_builder"
@@ -112,13 +120,13 @@ buildx/rm:
 	docker buildx rm "$(PROJECT)_builder"
 
 buildx/build/%: DO
-	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(platforms)" --progress plain .
+	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(PLATFORMS)" --progress plain .
 
 .PHONY: buildx/build
 buildx/build: buildx/build/client buildx/build/server
 
 buildx/push/%: DO
-	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(platforms)" --progress plain --push .
+	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(PLATFORMS)" --progress plain --push .
 
 .PHONY: buildx/push
 buildx/push: buildx/push/client buildx/push/server
