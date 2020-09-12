@@ -12,6 +12,8 @@ addons:
 
 env:
   jobs:
+    #- configuration=Debug   platform=x86
+    #- configuration=Release platform=x86
     - configuration=Debug   platform=x64
     - configuration=Release platform=x64
 
@@ -31,7 +33,7 @@ jobs:
   fast_finish: true
 
   _clear: &clear
-    language: shell
+    language: minimal
     addons: {apt: {packages: []}}
     script: []
 
