@@ -2,7 +2,7 @@ find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 
 add_executable(unit_tests main.cpp lexer.cpp parser.cpp)
 target_link_libraries(unit_tests PRIVATE lexer parser)
-target_link_libraries(unit_tests PRIVATE Boost::unit_test_framework)
+target_link_libraries(unit_tests PRIVATE Boost::disable_autolinking Boost::unit_test_framework)
 target_include_directories(unit_tests PRIVATE ../..)
 set_target_properties(unit_tests PROPERTIES OUTPUT_NAME math-server-unit-tests)
 
