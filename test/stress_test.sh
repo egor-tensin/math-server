@@ -39,7 +39,7 @@ run_server() {
     dump "Running the server..."
     "$install_dir/$server_path" --port "$server_port" &
     server_pid="$!"
-    dump "It's PID is $server_pid"
+    dump "Its PID is $server_pid"
     trap kill_server EXIT
 }
 
