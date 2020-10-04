@@ -25,6 +25,17 @@ using math::server::lexer::Token;
 using math::server::lexer::token::Type;
 namespace details = math::server::lexer::details;
 
+namespace std {
+
+ostream& operator<<(ostream& os, const vector<Token>& tokens) {
+    for (const auto& token : tokens) {
+        os << token;
+    }
+    return os;
+}
+
+} // namespace std
+
 namespace {
 namespace get_tokens::valid {
 
@@ -40,40 +51,26 @@ const std::vector<std::string_view> input{
 };
 // clang-format on
 
-// Some black magic-fuckery to resolve operator<< for std::vector<Token>.
-// See https://stackoverflow.com/a/18817428/514684.
-
-struct Expected {
-    std::vector<Token> m_tokens;
-};
-
-std::ostream& operator<<(std::ostream& os, const Expected& expected) {
-    for (const auto& token : expected.m_tokens) {
-        os << token;
-    }
-    return os;
-}
-
-const std::vector<Expected> expected{
-    {{}},
-    {{
+const std::vector<std::vector<Token>> expected{
+    {},
+    {
         Token{Type::PLUS},
         Token{Type::MINUS},
-    }},
-    {{
+    },
+    {
         Token{1},
         Token{Type::PLUS},
         Token{2},
-    }},
-    {{
+    },
+    {
         Token{.5},
         Token{Type::CARET},
         Token{Type::MINUS},
         Token{1},
         Token{Type::CARET},
         Token{4},
-    }},
-    {{
+    },
+    {
         Token{1},
         Token{Type::PLUS},
         Token{2},
@@ -83,8 +80,8 @@ const std::vector<Expected> expected{
         Token{Type::MINUS},
         Token{4e-2},
         Token{Type::RIGHT_PAREN},
-    }},
-    {{
+    },
+    {
         Token{2},
         Token{Type::ASTERISK},
         Token{Type::LEFT_PAREN},
@@ -99,7 +96,7 @@ const std::vector<Expected> expected{
         Token{3},
         Token{Type::RIGHT_PAREN},
         Token{Type::RIGHT_PAREN},
-    }},
+    },
 };
 
 } // namespace get_tokens::valid
@@ -158,8 +155,8 @@ BOOST_DATA_TEST_CASE(test_get_tokens_valid,
                      expected) {
     Lexer lexer{input};
     const auto actual = lexer.get_tokens();
-    BOOST_CHECK_EQUAL_COLLECTIONS(actual.cbegin(), actual.cend(), expected.m_tokens.cbegin(),
-                                  expected.m_tokens.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(actual.cbegin(), actual.cend(), expected.cbegin(),
+                                  expected.cend());
 }
 
 BOOST_DATA_TEST_CASE(test_get_tokens_invalid,
