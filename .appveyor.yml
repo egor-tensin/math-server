@@ -19,6 +19,11 @@ configuration:
 matrix:
   fast_finish: true
 
+  # On Win32, only build Debug to speed things up:
+  exclude:
+    - platform: Win32
+      configuration: Release
+
 install:
   - git submodule update --init --recursive
 
@@ -40,7 +45,7 @@ test_script:
   - '"%install_dir%\bin\math-server-benchmarks.exe"'
 
 for:
-# Only build Release builds for master to speed things up:
+# Build Release on master only to speed things up:
 - branches:
     except:
       - master
