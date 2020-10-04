@@ -14,8 +14,6 @@
 #include <string_view>
 #include <vector>
 
-BOOST_AUTO_TEST_SUITE(parser_tests)
-
 namespace bdata = boost::unit_test::data;
 using math::server::Parser;
 using math::server::ParserError;
@@ -113,6 +111,8 @@ const std::vector<std::string> error_msg{
 
 } // namespace exec::invalid
 } // namespace
+
+BOOST_AUTO_TEST_SUITE(parser_tests)
 
 BOOST_DATA_TEST_CASE(test_exec_valid,
                      bdata::make(exec::valid::input) ^ exec::valid::expected,
