@@ -16,7 +16,7 @@ RUN build_deps='boost-dev cmake g++ make python3' && \
         --configuration Release \
         -- \
         "$src_dir" \
-        -D ENABLE_TESTS=ON \
+        -D MATH_SERVER_TESTS=ON \
         -D Boost_USE_STATIC_LIBS=OFF
 
 FROM base

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8) # for C++17
 
 project(math_server CXX)
 
-option(ENABLE_TESTS "build the tests")
+option(MATH_SERVER_TESTS "build the tests")
 
 # C++17 is mandatory:
 set(CC_CXX_STANDARD 17)
@@ -30,7 +30,7 @@ endif()
 add_subdirectory(client)
 add_subdirectory(server)
 
-if(ENABLE_TESTS)
+if(MATH_SERVER_TESTS)
     set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Suppressing benchmark's tests" FORCE)
     set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "Don't install benchmark the library" FORCE)
     add_subdirectory("3rdparty/google/benchmark")

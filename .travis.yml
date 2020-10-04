@@ -23,7 +23,7 @@ script:
     python3 -m project.ci.travis.cmake
     --install "$HOME/install"
     --
-    -D ENABLE_TESTS=ON
+    -D MATH_SERVER_TESTS=ON
 
   - "$HOME/install/bin/math-server-unit-tests"
   - "$HOME/install/bin/math-server-benchmarks"

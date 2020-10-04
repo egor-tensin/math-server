@@ -29,7 +29,7 @@ build_script:
     --install "%install_dir%"
     --boost "%appveyor_boost_root%"
     --
-    -D ENABLE_TESTS=ON
+    -D MATH_SERVER_TESTS=ON
 
 after_build:
   - 7z.exe a "%APPVEYOR_PROJECT_NAME%-%PLATFORM%-%CONFIGURATION%.zip" "%install_dir%"
