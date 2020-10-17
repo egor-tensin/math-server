@@ -1,6 +1,5 @@
-file(GLOB_RECURSE lexer_cpp "*.cpp")
-file(GLOB_RECURSE lexer_hpp "*.hpp")
-add_library(lexer ${lexer_cpp} ${lexer_hpp})
+file(GLOB_RECURSE lexer_src "*.cpp" "*.hpp")
+add_library(lexer ${lexer_src})
 target_include_directories(lexer PUBLIC ..)
 
 target_link_libraries(lexer PUBLIC common)

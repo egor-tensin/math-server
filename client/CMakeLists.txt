@@ -1,6 +1,5 @@
-file(GLOB client_cpp "*.cpp")
-file(GLOB client_hpp "*.hpp")
-add_executable(client ${client_cpp} ${client_hpp})
+file(GLOB client_src "*.cpp" "*.hpp")
+add_executable(client ${client_src})
 set_target_properties(client PROPERTIES OUTPUT_NAME math-client)
 
 set(CMAKE_THREAD_PREFER_PTHREAD ON)

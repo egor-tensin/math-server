@@ -1,8 +1,7 @@
 option(DEBUG_ASIO "enable debug output for Boost.Asio" OFF)
 
-file(GLOB server_cpp "*.cpp")
-file(GLOB server_hpp "*.hpp")
-add_executable(server ${server_cpp} ${server_hpp})
+file(GLOB server_src "*.cpp" "*.hpp")
+add_executable(server ${server_src})
 set_target_properties(server PROPERTIES OUTPUT_NAME math-server)
 if(DEBUG_ASIO)
     target_compile_definitions(server PRIVATE BOOST_ASIO_ENABLE_HANDLER_TRACKING)
