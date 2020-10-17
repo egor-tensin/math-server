@@ -3,8 +3,12 @@ option(DEBUG_ASIO "enable debug output for Boost.Asio" OFF)
 file(GLOB server_cpp "*.cpp")
 file(GLOB server_hpp "*.hpp")
 add_executable(server ${server_cpp} ${server_hpp})
-target_link_libraries(server PRIVATE common parser)
 set_target_properties(server PROPERTIES OUTPUT_NAME math-server)
+if(DEBUG_ASIO)
+    target_compile_definitions(server PRIVATE BOOST_ASIO_ENABLE_HANDLER_TRACKING)
+endif()
+
+target_link_libraries(server PRIVATE common parser)
 
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -16,10 +20,6 @@ target_link_libraries(server PRIVATE
     Boost::disable_autolinking
     Boost::filesystem
     Boost::program_options)
-
-if(DEBUG_ASIO)
-    target_compile_definitions(server PRIVATE BOOST_ASIO_ENABLE_HANDLER_TRACKING)
-endif()
 
 install(TARGETS server RUNTIME DESTINATION bin)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")

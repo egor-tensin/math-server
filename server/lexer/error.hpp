@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "../common/error.hpp"
+#include <common/error.hpp>
 
 #include <string>
 

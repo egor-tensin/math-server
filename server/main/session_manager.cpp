@@ -5,8 +5,9 @@
 
 #include "session_manager.hpp"
 
-#include "../common/log.hpp"
 #include "session.hpp"
+
+#include <common/log.hpp>
 
 #include <memory>
 #include <mutex>

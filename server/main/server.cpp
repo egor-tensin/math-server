@@ -5,11 +5,12 @@
 
 #include "server.hpp"
 
-#include "../common/error.hpp"
-#include "../common/log.hpp"
 #include "session.hpp"
 #include "session_manager.hpp"
 #include "settings.hpp"
+
+#include <common/error.hpp>
+#include <common/log.hpp>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>

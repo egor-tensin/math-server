@@ -5,9 +5,10 @@
 
 #pragma once
 
-#include "../lexer/token.hpp"
-#include "../lexer/token_type.hpp"
 #include "error.hpp"
+
+#include <lexer/token.hpp>
+#include <lexer/token_type.hpp>
 
 #include <cmath>
 

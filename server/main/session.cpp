@@ -5,10 +5,11 @@
 
 #include "session.hpp"
 
-#include "../common/error.hpp"
-#include "../common/log.hpp"
-#include "../parser/parser.hpp"
 #include "session_manager.hpp"
+
+#include <common/error.hpp>
+#include <common/log.hpp>
+#include <parser/parser.hpp>
 
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>

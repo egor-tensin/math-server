@@ -1,8 +1,8 @@
 file(GLOB unit_tests_cpp "*.cpp")
 add_executable(unit_tests ${unit_tests_cpp})
-target_link_libraries(unit_tests PRIVATE lexer parser)
-target_include_directories(unit_tests PRIVATE ../..)
 set_target_properties(unit_tests PROPERTIES OUTPUT_NAME math-server-unit-tests)
+
+target_link_libraries(unit_tests PRIVATE lexer parser)
 
 find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 target_link_libraries(unit_tests PRIVATE Boost::disable_autolinking Boost::unit_test_framework)

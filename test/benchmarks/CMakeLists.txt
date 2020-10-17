@@ -3,7 +3,6 @@ add_executable(benchmarks ${benchmarks_cpp})
 set_target_properties(benchmarks PROPERTIES OUTPUT_NAME math-server-benchmarks)
 
 target_link_libraries(benchmarks PRIVATE lexer)
-target_include_directories(benchmarks PRIVATE ../..)
 
 target_link_libraries(benchmarks PRIVATE benchmark benchmark_main)
 

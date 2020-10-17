@@ -5,9 +5,10 @@
 
 #pragma once
 
-#include "../lexer/lexer.hpp"
 #include "error.hpp"
 #include "operator.hpp"
+
+#include <lexer/lexer.hpp>
 
 #include <optional>
 #include <string_view>

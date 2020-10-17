@@ -3,8 +3,8 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
-#include <server/parser/error.hpp>
-#include <server/parser/parser.hpp>
+#include <parser/error.hpp>
+#include <parser/parser.hpp>
 
 #include <boost/test/data/monomorphic.hpp>
 #include <boost/test/data/test_case.hpp>

@@ -3,7 +3,7 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
-#include <server/lexer/details/parse.hpp>
+#include <lexer/details/parse.hpp>
 
 #include <benchmark/benchmark.h>
 

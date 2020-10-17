@@ -3,9 +3,8 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
-#include "token_type.hpp"
-
-#include "error.hpp"
+#include <lexer/error.hpp>
+#include <lexer/token_type.hpp>
 
 #include <functional>
 #include <map>

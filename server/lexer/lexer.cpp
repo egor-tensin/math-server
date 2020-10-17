@@ -3,12 +3,11 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
-#include "lexer.hpp"
-
-#include "details/parse.hpp"
-#include "error.hpp"
-#include "token.hpp"
-#include "token_type.hpp"
+#include <lexer/details/parse.hpp>
+#include <lexer/error.hpp>
+#include <lexer/lexer.hpp>
+#include <lexer/token.hpp>
+#include <lexer/token_type.hpp>
 
 #include <optional>
 #include <string>

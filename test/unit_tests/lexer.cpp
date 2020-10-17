@@ -3,11 +3,11 @@
 // For details, see https://github.com/egor-tensin/math-server.
 // Distributed under the MIT License.
 
-#include <server/lexer/details/parse.hpp>
-#include <server/lexer/error.hpp>
-#include <server/lexer/lexer.hpp>
-#include <server/lexer/token.hpp>
-#include <server/lexer/token_type.hpp>
+#include <lexer/details/parse.hpp>
+#include <lexer/error.hpp>
+#include <lexer/lexer.hpp>
+#include <lexer/token.hpp>
+#include <lexer/token_type.hpp>
 
 #include <boost/test/data/monomorphic.hpp>
 #include <boost/test/data/test_case.hpp>
