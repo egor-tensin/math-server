@@ -10,13 +10,13 @@ IndentWidth: 4
 SpacesBeforeTrailingComments: 1
 
 IncludeCategories:
-  - Regex: '^".*'
+  - Regex: '^".+'
     Priority: 1
-  - Regex: '^<(server|lexer)/'
+  - Regex: '^<(common|lexer|parser)\/'
     Priority: 2
-  - Regex: '^<benchmark/'
+  - Regex: '^<benchmark\/'
     Priority: 3
-  - Regex: '^<boost/'
+  - Regex: '^<boost\/'
     Priority: 4
   - Regex: '.*'
     Priority: 5
