@@ -1,15 +1,21 @@
-find_package(Boost 1.66.0 REQUIRED COMPONENTS filesystem program_options)
+option(DEBUG_ASIO "enable debug output for Boost.Asio" OFF)
+
+file(GLOB server_cpp "*.cpp")
+file(GLOB server_hpp "*.hpp")
+add_executable(server ${server_cpp} ${server_hpp})
+target_link_libraries(server PRIVATE common parser)
+set_target_properties(server PROPERTIES OUTPUT_NAME math-server)
 
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
+target_link_libraries(server PRIVATE Threads::Threads)
 
-option(DEBUG_ASIO "enable debug output for Boost.Asio" OFF)
-
-add_executable(server main.cpp server.cpp session.cpp session_manager.cpp)
-target_link_libraries(server PRIVATE common parser)
-target_link_libraries(server PRIVATE Boost::disable_autolinking Boost::filesystem Boost::program_options Threads::Threads)
-set_target_properties(server PROPERTIES OUTPUT_NAME math-server)
+find_package(Boost 1.66.0 REQUIRED COMPONENTS filesystem program_options)
+target_link_libraries(server PRIVATE
+    Boost::disable_autolinking
+    Boost::filesystem
+    Boost::program_options)
 
 if(DEBUG_ASIO)
     target_compile_definitions(server PRIVATE BOOST_ASIO_ENABLE_HANDLER_TRACKING)

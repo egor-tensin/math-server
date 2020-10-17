@@ -1,4 +1,5 @@
-add_executable(benchmarks lexer.cpp)
+file(GLOB benchmarks_cpp "*.cpp")
+add_executable(benchmarks ${benchmarks_cpp})
 set_target_properties(benchmarks PROPERTIES OUTPUT_NAME math-server-benchmarks)
 
 target_link_libraries(benchmarks PRIVATE lexer)

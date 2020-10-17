@@ -1,12 +1,18 @@
-find_package(Boost 1.66.0 REQUIRED COMPONENTS filesystem program_options)
+file(GLOB client_cpp "*.cpp")
+file(GLOB client_hpp "*.hpp")
+add_executable(client ${client_cpp} ${client_hpp})
+set_target_properties(client PROPERTIES OUTPUT_NAME math-client)
 
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
+target_link_libraries(client PRIVATE Threads::Threads)
 
-add_executable(client main.cpp)
-target_link_libraries(client PRIVATE Boost::disable_autolinking Boost::filesystem Boost::program_options Threads::Threads)
-set_target_properties(client PROPERTIES OUTPUT_NAME math-client)
+find_package(Boost 1.66.0 REQUIRED COMPONENTS filesystem program_options)
+target_link_libraries(client PRIVATE
+    Boost::disable_autolinking
+    Boost::filesystem
+    Boost::program_options)
 
 install(TARGETS client RUNTIME DESTINATION bin)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
