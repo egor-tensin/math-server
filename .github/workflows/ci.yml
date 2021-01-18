@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Weekly, at 5:30 AM on Sunday (somewhat randomly chosen).
+    - cron: '30 5 * * 0'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, windows-2016, windows-2019]
+        platform: [x64, x86]
+        configuration: [Debug, Release]
+        include:
+          # Prettier run names.
+          - {os: windows-2016, name: VS 2017}
+          - {os: windows-2019, name: VS 2019}
+          - {os: ubuntu-18.04, name: Ubuntu}
+        exclude:
+          # 32-bit Linux builds, meh.
+          - {os: ubuntu-18.04, platform: x86}
+    runs-on: '${{ matrix.os }}'
+    name: 'Build: ${{ matrix.name }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
+    env:
+      platform: '${{ matrix.platform }}'
+      configuration: '${{ matrix.configuration }}'
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Build
+        run: |
+          cd cmake
+          python -m project.ci.github.cmake --boost $env:BOOST_ROOT_1_72_0 --install -- -D MATH_SERVER_TESTS=ON
+      - name: Upload the binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: 'math-server-${{ matrix.platform }}-${{ matrix.configuration }}'
+          path: '${{ runner.workspace }}/install/'
+      - name: Run unit tests
+        run: ../install/bin/math-server-unit-tests
+      - name: Run the benchmarks
+        run: ../install/bin/math-server-benchmarks
+      - name: Run the stress test
+        run: ./test/stress_test.sh ../install
+        if: runner.os == 'Linux'
+
+  native:
+    needs: [build]
+    runs-on: ubuntu-18.04
+    name: 'Docker: build native images'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Build native images
+        run: make docker/build
+
+  compose:
+    needs: [build]
+    runs-on: ubuntu-18.04
+    name: 'Docker: build using Compose'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Build using Compose
+        run: make compose/build
+
+  publish:
+    needs: [native, compose]
+    strategy:
+      matrix:
+        project: [client, server]
+    runs-on: ubuntu-18.04
+    name: 'Docker: publish math-${{ matrix.project }}'
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: '${{ secrets.DOCKERHUB_USERNAME }}'
+          password: '${{ secrets.DOCKERHUB_TOKEN }}'
+      - name: 'Publish math-${{ matrix.project }}'
+        uses: docker/build-push-action@v2
+        with:
+          file: '${{ matrix.project }}/Dockerfile'
+          platforms: linux/amd64,linux/armhf
+          push: true
+          tags: '${{ secrets.DOCKERHUB_USERNAME }}/math-${{ matrix.project }}:latest'
