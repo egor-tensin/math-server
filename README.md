@@ -1,8 +1,7 @@
 math-server
 ===========
 
-[![Travis (.com) branch](https://img.shields.io/travis/com/egor-tensin/math-server/master?label=Travis%20%28GCC,%20Docker%29)](https://travis-ci.com/egor-tensin/math-server)
-[![AppVeyor branch](https://img.shields.io/appveyor/ci/egor-tensin/math-server/master?label=AppVeyor%20%28Visual%20Studio%29)](https://ci.appveyor.com/project/egor-tensin/math-server/branch/master)
+[![CI](https://github.com/egor-tensin/math-server/workflows/CI/badge.svg)](https://github.com/egor-tensin/math-server/actions?query=workflow%3ACI)
 
 Development
 -----------
