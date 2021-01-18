@@ -59,7 +59,7 @@ jobs:
       - name: Upload the binaries
         uses: actions/upload-artifact@v2
         with:
-          name: 'math-server-${{ matrix.platform }}-${{ matrix.configuration }}'
+          name: 'math-server-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/install/'
       - name: Run unit tests
         run: ../install/bin/math-server-unit-tests
