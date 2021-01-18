@@ -9,6 +9,18 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-18.04
+    name: Linting
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Run clang-format
+        run: ./cmake/tools/clang-format.py --clang-format clang-format-9
+
   build:
     strategy:
       matrix:
@@ -82,7 +94,7 @@ jobs:
         run: make compose/build
 
   publish:
-    needs: [native, compose]
+    needs: [lint, native, compose]
     strategy:
       matrix:
         project: [client, server]
