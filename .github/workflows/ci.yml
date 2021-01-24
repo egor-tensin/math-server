@@ -28,15 +28,14 @@ jobs:
         platform: [x64, x86]
         configuration: [Debug, Release]
         include:
-          # Prettier run names.
-          - {os: windows-2016, name: VS 2017}
-          - {os: windows-2019, name: VS 2019}
-          - {os: ubuntu-18.04, name: Ubuntu}
+          - {os: windows-2016, toolset: msvc, toolset_id: vs2017}
+          - {os: windows-2019, toolset: msvc, toolset_id: vs2019}
+          - {os: ubuntu-18.04, toolset: gcc,  toolset_id: gcc}
         exclude:
           # 32-bit Linux builds, meh.
           - {os: ubuntu-18.04, platform: x86}
     runs-on: '${{ matrix.os }}'
-    name: 'Build: ${{ matrix.name }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
+    name: 'Build: ${{ matrix.toolset_id }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
     env:
       platform: '${{ matrix.platform }}'
       configuration: '${{ matrix.configuration }}'
@@ -55,11 +54,11 @@ jobs:
       - name: Build
         run: |
           cd cmake
-          python -m project.ci.github.cmake --boost $env:BOOST_ROOT_1_72_0 --install -- -D MATH_SERVER_TESTS=ON
+          python -m project.ci.github.cmake --toolset '${{ matrix.toolset }}' --boost $env:BOOST_ROOT_1_72_0 --install -- -D MATH_SERVER_TESTS=ON
       - name: Upload the binaries
         uses: actions/upload-artifact@v2
         with:
-          name: 'math-server-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.configuration }}'
+          name: 'math-server-${{ runner.os }}-${{ matrix.toolset_id }}-${{ matrix.platform }}-${{ matrix.configuration }}'
           path: '${{ runner.workspace }}/install/'
       - name: Run unit tests
         run: ../install/bin/math-server-unit-tests
