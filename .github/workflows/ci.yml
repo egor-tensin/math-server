@@ -68,32 +68,8 @@ jobs:
         run: ./test/stress_test.sh ../install
         if: runner.os == 'Linux'
 
-  native:
-    needs: [build]
-    runs-on: ubuntu-18.04
-    name: 'Docker: build native images'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - name: Build native images
-        run: make docker/build
-
-  compose:
-    needs: [build]
-    runs-on: ubuntu-18.04
-    name: 'Docker: build using Compose'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - name: Build using Compose
-        run: make compose/build
-
   publish:
-    needs: [lint, native, compose]
+    needs: [lint]
     strategy:
       matrix:
         project: [client, server]
