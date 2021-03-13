@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     name: Linting
     if: github.ref == 'refs/heads/master'
     steps:
@@ -19,21 +19,21 @@ jobs:
         with:
           submodules: recursive
       - name: Run clang-format
-        run: ./cmake/tools/clang-format.py --clang-format clang-format-9
+        run: ./cmake/tools/clang-format.py --clang-format clang-format-10
 
   build:
     strategy:
       matrix:
-        os: [ubuntu-18.04, windows-2016, windows-2019]
+        os: [ubuntu-20.04, windows-2016, windows-2019]
         platform: [x64, x86]
         configuration: [Debug, Release]
         include:
           - {os: windows-2016, toolset: msvc}
           - {os: windows-2019, toolset: msvc}
-          - {os: ubuntu-18.04, toolset: gcc}
+          - {os: ubuntu-20.04, toolset: gcc}
         exclude:
           # 32-bit Linux builds, meh.
-          - {os: ubuntu-18.04, platform: x86}
+          - {os: ubuntu-20.04, platform: x86}
     runs-on: '${{ matrix.os }}'
     name: 'Build: ${{ matrix.os }} / ${{ matrix.toolset }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
     env:
@@ -74,7 +74,7 @@ jobs:
     strategy:
       matrix:
         project: [client, server]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     name: 'Docker: publish math-${{ matrix.project }}'
     if: github.ref == 'refs/heads/master'
     steps:
