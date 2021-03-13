@@ -2,10 +2,11 @@
 # Basically a collection of really small shell scripts.
 
 MAKEFLAGS += --warn-undefined-variables
+.DEFAULT_GOAL := all
+.DELETE_ON_ERROR:
+.SUFFIXES:
 SHELL := bash
 .SHELLFLAGS := -eu -o pipefail -c
-.DEFAULT_GOAL := all
-.SUFFIXES:
 
 PROJECT := math-server
 # Enable buildx support:
@@ -16,6 +17,24 @@ PLATFORMS := linux/amd64,linux/armhf
 BUILDX_VERSION := v0.4.2
 # Docker Hub credentials:
 DOCKER_USERNAME := egortensin
+
+escape = $(subst ','\'',$(1))
+
+define noexpand
+ifeq ($$(origin $(1)),environment)
+    $(1) := $$(value $(1))
+endif
+ifeq ($$(origin $(1)),environment override)
+    $(1) := $$(value $(1))
+endif
+ifeq ($$(origin $(1)),command line)
+    override $(1) := $$(value $(1))
+endif
+endef
+
+ifdef DOCKER_PASSWORD
+$(eval $(call noexpand,DOCKER_PASSWORD))
+endif
 
 curl := curl --silent --show-error --location --dump-header - --connect-timeout 20
 
@@ -30,7 +49,7 @@ login:
 ifndef DOCKER_PASSWORD
 	$(error Please define DOCKER_PASSWORD)
 endif
-	@echo "$(DOCKER_PASSWORD)" | docker login --username "$(DOCKER_USERNAME)" --password-stdin
+	@echo '$(call escape,$(DOCKER_PASSWORD))' | docker login --username '$(call escape,$(DOCKER_USERNAME))' --password-stdin
 
 .PHONY: build
 # Build natively by default.
@@ -76,7 +95,7 @@ endif
 # Dockerfile's, create a manifest manually, etc.), so it's only here for
 # testing purposes, and native builds.
 docker/build/%: DO check-build
-	docker build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" .
+	docker build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' .
 
 .PHONY: docker/build
 docker/build: docker/build/client docker/build/server
@@ -85,7 +104,7 @@ docker/build: docker/build/client docker/build/server
 # (you'd have to create a manifest and push it instead), so it's only here for
 # testing purposes.
 docker/push/%: DO check-push docker/build/%
-	docker push "$(DOCKER_USERNAME)/math-$*"
+	docker push '$(call escape,$(DOCKER_USERNAME))/math-$*'
 
 .PHONY: docker/push
 docker/push: check-push docker/push/client docker/push/server
@@ -107,28 +126,30 @@ compose/push: check-push compose/build
 fix-binfmt:
 	docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
 
+buildx_url := https://github.com/docker/buildx/releases/download/$(BUILDX_VERSION)/buildx-$(BUILDX_VERSION).linux-amd64
+
 .PHONY: buildx/install
 buildx/install:
 	mkdir -p -- ~/.docker/cli-plugins/
-	$(curl) --output ~/.docker/cli-plugins/docker-buildx -- 'https://github.com/docker/buildx/releases/download/$(BUILDX_VERSION)/buildx-$(BUILDX_VERSION).linux-amd64'
+	$(curl) --output ~/.docker/cli-plugins/docker-buildx -- '$(call escape,$(buildx_url))'
 	chmod +x -- ~/.docker/cli-plugins/docker-buildx
 
 .PHONY: buildx/create
 buildx/create: fix-binfmt
-	docker buildx create --use --name "$(PROJECT)_builder"
+	docker buildx create --use --name '$(call escape,$(PROJECT))_builder'
 
 .PHONY: buildx/rm
 buildx/rm:
-	docker buildx rm "$(PROJECT)_builder"
+	docker buildx rm '$(call escape,$(PROJECT))_builder'
 
 buildx/build/%: DO
-	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(PLATFORMS)" --progress plain .
+	docker buildx build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' --platform '$(call escape,$(PLATFORMS))' --progress plain .
 
 .PHONY: buildx/build
 buildx/build: buildx/build/client buildx/build/server
 
 buildx/push/%: DO
-	docker buildx build -f "$*/Dockerfile" -t "$(DOCKER_USERNAME)/math-$*" --platform "$(PLATFORMS)" --progress plain --push .
+	docker buildx build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' --platform '$(call escape,$(PLATFORMS))' --progress plain --push .
 
 .PHONY: buildx/push
 buildx/push: buildx/push/client buildx/push/server
