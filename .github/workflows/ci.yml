@@ -53,9 +53,7 @@ jobs:
         with:
           python-version: '3.x'
       - name: Build
-        run: |
-          cd cmake
-          python -m project.ci.github.cmake --install -- -D MATH_SERVER_TESTS=ON
+        run: make build
       - name: Upload the binaries
         uses: actions/upload-artifact@v2
         with:
