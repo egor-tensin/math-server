@@ -10,3 +10,5 @@ install(TARGETS benchmarks RUNTIME DESTINATION bin)
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     install(FILES "$<TARGET_PDB_FILE:benchmarks>" DESTINATION bin OPTIONAL)
 endif()
+
+add_test(NAME benchmarks COMMAND benchmarks --benchmark_color=false)

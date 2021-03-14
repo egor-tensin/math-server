@@ -4,6 +4,7 @@
 !/3rdparty/**
 !/CMakeLists.txt
 !/LICENSE.txt
+!/Makefile
 !/README.md
 !/client/**
 !/cmake/**

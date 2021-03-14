@@ -8,22 +8,16 @@ FROM base AS builder
 ENV src_dir=/usr/src/math-server
 COPY [".", "$src_dir"]
 
-RUN build_deps='boost-dev cmake g++ make python3' && \
+RUN build_deps='bash boost-dev cmake g++ make python3' && \
     apk add --no-cache $build_deps && \
-    cd -- "$src_dir/cmake" && \
-    python3 -m project.cmake.build \
-        --install /opt/math-server \
-        --configuration Release \
-        -- \
-        "$src_dir" \
-        -D MATH_SERVER_TESTS=ON \
-        -D Boost_USE_STATIC_LIBS=OFF
+    cd -- "$src_dir" && \
+    make install CONFIGURATION=Release CMAKE_FLAGS='-D Boost_USE_STATIC_LIBS=OFF'
 
 FROM base
 
 LABEL maintainer="Egor Tensin <Egor.Tensin@gmail.com>"
 
-COPY --from=builder ["/opt/math-server", "/opt/math-server"]
+COPY --from=builder ["/usr/src/math-server/.build/install", "/opt/math-server"]
 
 RUN runtime_deps='boost-filesystem boost-program_options boost-regex boost-unit_test_framework libstdc++' && \
     apk add $runtime_deps && \

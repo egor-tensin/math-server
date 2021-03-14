@@ -37,9 +37,10 @@ jobs:
     runs-on: '${{ matrix.os }}'
     name: 'Build: ${{ matrix.os }} / ${{ matrix.toolset }} / ${{ matrix.platform }} / ${{ matrix.configuration }}'
     env:
-      toolset: '${{ matrix.toolset }}'
-      platform: '${{ matrix.platform }}'
-      configuration: '${{ matrix.configuration }}'
+      TOOLSET: '${{ matrix.toolset }}'
+      PLATFORM: '${{ matrix.platform }}'
+      CONFIGURATION: '${{ matrix.configuration }}'
+      BOOST_VERSION: 1.71.0
     defaults:
       run:
         shell: pwsh
@@ -52,22 +53,17 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+      - name: Build Boost
+        run: make deps
       - name: Build
-        run: |
-          cd cmake
-          python -m project.ci.github.cmake --install -- -D MATH_SERVER_TESTS=ON
-      - name: Upload the binaries
+        run: make install
+      - name: Upload binaries
         uses: actions/upload-artifact@v2
         with:
           name: 'math-server-${{ matrix.os }}-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
-          path: '${{ runner.workspace }}/install/'
-      - name: Run unit tests
-        run: ../install/bin/math-server-unit-tests
-      - name: Run the benchmarks
-        run: ../install/bin/math-server-benchmarks
-      - name: Run the stress test
-        run: ./test/stress_test.sh ../install
-        if: runner.os == 'Linux'
+          path: '${{ runner.workspace }}/build/install/'
+      - name: Test
+        run: make test
 
   publish:
     needs: [lint]

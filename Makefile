@@ -2,6 +2,7 @@
 # Basically a collection of really small shell scripts.
 
 MAKEFLAGS += --warn-undefined-variables
+unexport MAKEFLAGS
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
 .SUFFIXES:
@@ -10,16 +11,6 @@ SHELL := bash
 
 .PHONY: DO
 DO:
-
-PROJECT := math-server
-# Enable buildx support:
-export DOCKER_CLI_EXPERIMENTAL := enabled
-# Target platforms (used by buildx):
-PLATFORMS := linux/amd64,linux/armhf
-# In case buildx isn't installed (e.g. on Ubuntu):
-BUILDX_VERSION := v0.4.2
-# Docker Hub credentials:
-DOCKER_USERNAME := egortensin
 
 escape = $(subst ','\'',$(1))
 
@@ -35,14 +26,75 @@ ifeq ($$(origin $(1)),command line)
 endif
 endef
 
+PROJECT := math-server
+TOOLSET ?= auto
+CONFIGURATION ?= Debug
+BOOST_VERSION ?= 1.72.0
+BOOST_LIBRARIES := --with-filesystem --with-program_options --with-regex --with-test
+CMAKE_FLAGS ?=
+
+this_dir  := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+src_dir   := $(this_dir)
+ifdef CI
+build_dir := $(this_dir)../build
+else
+build_dir := $(this_dir).build
+endif
+boost_dir := $(build_dir)/boost
+cmake_dir := $(build_dir)/cmake
+DESTDIR   ?= $(build_dir)/install
+
+# Enable buildx support:
+export DOCKER_CLI_EXPERIMENTAL := enabled
+# Target platforms (used by buildx):
+DOCKER_PLATFORMS := linux/amd64,linux/armhf
+# In case buildx isn't installed (e.g. on Ubuntu):
+BUILDX_VERSION := v0.4.2
+# Docker Hub credentials:
+DOCKER_USERNAME := egortensin
+
+$(eval $(call noexpand,TOOLSET))
+$(eval $(call noexpand,CONFIGURATION))
+$(eval $(call noexpand,BOOST_VERSION))
+$(eval $(call noexpand,CMAKE_FLAGS))
 ifdef DOCKER_PASSWORD
 $(eval $(call noexpand,DOCKER_PASSWORD))
 endif
-
-curl := curl --silent --show-error --location --dump-header - --connect-timeout 20
+$(eval $(call noexpand,DESTDIR))
 
 .PHONY: all
-all: docker/build
+all: build
+
+.PHONY: clean
+clean:
+	rm -rf -- '$(call escape,$(build_dir))'
+
+$(boost_dir)/:
+	cd cmake && python3 -m project.boost.download --cache '$(call escape,$(build_dir))' -- '$(call escape,$(BOOST_VERSION))' '$(call escape,$(boost_dir))'
+
+.PHONY: deps
+ifdef CI
+deps:
+	cd cmake && python3 -m project.ci.boost -- $(BOOST_LIBRARIES)
+else
+deps: $(boost_dir)/
+	cd cmake && python3 -m project.boost.build --toolset '$(call escape,$(TOOLSET))' --configuration '$(call escape,$(CONFIGURATION))' -- '$(call escape,$(boost_dir))' $(BOOST_LIBRARIES)
+endif
+
+.PHONY: build
+build:
+ifdef CI
+	cd cmake && python3 -m project.ci.cmake --install -- -D MATH_SERVER_TESTS=ON $(CMAKE_FLAGS)
+else
+	cd cmake && python3 -m project.cmake.build --toolset '$(call escape,$(TOOLSET))' --configuration '$(call escape,$(CONFIGURATION))' --build '$(call escape,$(cmake_dir))' --install '$(call escape,$(DESTDIR))' --boost '$(call escape,$(boost_dir))' -- '$(call escape,$(src_dir))' -D MATH_SERVER_TESTS=ON $(CMAKE_FLAGS)
+endif
+
+.PHONY: install
+install: build
+
+.PHONY: test
+test:
+	cd -- '$(call escape,$(cmake_dir))' && ctest -C '$(call escape,$(CONFIGURATION))' --verbose
 
 .PHONY: docker/login
 docker/login:
@@ -109,10 +161,13 @@ compose/push: docker/check-push compose/build
 
 # The simple way to build multiarch repos is `docker buildx`.
 
+binfmt_image := docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
+
 .PHONY: fix-binfmt
-# Re-register binfmt_misc formats with the F flag (required e.g. on Bionic):
 fix-binfmt:
-	docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
+	docker run --rm --privileged '$(call escape,$(binfmt_image))'
+
+curl := curl --silent --show-error --location --dump-header - --connect-timeout 20
 
 buildx_url := https://github.com/docker/buildx/releases/download/$(BUILDX_VERSION)/buildx-$(BUILDX_VERSION).linux-amd64
 
@@ -131,13 +186,13 @@ buildx/rm:
 	docker buildx rm '$(call escape,$(PROJECT))_builder'
 
 buildx/build/%: DO
-	docker buildx build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' --platform '$(call escape,$(PLATFORMS))' --progress plain .
+	docker buildx build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' --platform '$(call escape,$(DOCKER_PLATFORMS))' --progress plain .
 
 .PHONY: buildx/build
 buildx/build: buildx/build/client buildx/build/server
 
 buildx/push/%: DO
-	docker buildx build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' --platform '$(call escape,$(PLATFORMS))' --progress plain --push .
+	docker buildx build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' --platform '$(call escape,$(DOCKER_PLATFORMS))' --progress plain --push .
 
 .PHONY: buildx/push
 buildx/push: buildx/push/client buildx/push/server
