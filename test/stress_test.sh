@@ -13,9 +13,8 @@ script_dir="$( dirname -- "${BASH_SOURCE[0]}" )"
 script_dir="$( cd -- "$script_dir" && pwd )"
 readonly script_dir
 
-install_dir="$HOME/install"
-readonly server_path='bin/math-server'
-readonly client_path='bin/math-client'
+server_path=
+client_path=
 readonly stress_test_path="$script_dir/stress_test.py"
 readonly server_port=16666
 server_pid=
@@ -37,7 +36,7 @@ kill_server() {
 
 run_server() {
     dump "Running the server..."
-    "$install_dir/$server_path" --port "$server_port" &
+    "$server_path" --port "$server_port" &
     server_pid="$!"
     dump "Its PID is $server_pid"
     trap kill_server EXIT
@@ -45,25 +44,24 @@ run_server() {
 
 run_stress_test() {
     dump "Running stress_test.py..."
-    "$stress_test_path"                      \
-        --client "$install_dir/$client_path" \
-        --port "$server_port"                \
-        --processes 4                        \
+    "$stress_test_path"         \
+        --client "$client_path" \
+        --port "$server_port"   \
+        --processes 4           \
         --expressions 1000
 }
 
 script_usage() {
-    echo "usage: $script_name [INSTALL_DIR]"
+    echo "usage: $script_name SERVER_PATH CLIENT_PATH"
 }
 
 parse_args() {
-    if [ "$#" -gt 1 ]; then
+    if [ "$#" -ne 2 ]; then
         script_usage >&2
         return 1
     fi
-    if [ "$#" -gt 0 ]; then
-        install_dir="$1"
-    fi
+    server_path="$1"
+    client_path="$2"
 }
 
 main() {
