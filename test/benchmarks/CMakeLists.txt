@@ -7,8 +7,6 @@ target_link_libraries(benchmarks PRIVATE lexer)
 target_link_libraries(benchmarks PRIVATE benchmark benchmark_main)
 
 install(TARGETS benchmarks RUNTIME DESTINATION bin)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    install(FILES "$<TARGET_PDB_FILE:benchmarks>" DESTINATION bin OPTIONAL)
-endif()
+install_pdbs(TARGETS benchmarks DESTINATION bin)
 
 add_test(NAME benchmarks COMMAND benchmarks --benchmark_color=false)

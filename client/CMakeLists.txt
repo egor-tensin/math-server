@@ -14,6 +14,4 @@ target_link_libraries(client PRIVATE
     Boost::program_options)
 
 install(TARGETS client RUNTIME DESTINATION bin)
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    install(FILES "$<TARGET_PDB_FILE:client>" DESTINATION bin OPTIONAL)
-endif()
+install_pdbs(TARGETS client DESTINATION bin)
