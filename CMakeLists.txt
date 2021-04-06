@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.8) # for C++17
 
 project(math_server CXX)
-
 enable_testing()
-option(MATH_SERVER_TESTS "build the tests")
 
 # C++17 is mandatory:
 set(CC_CXX_STANDARD 17)
