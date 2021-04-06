@@ -31,7 +31,7 @@ TOOLSET ?= auto
 CONFIGURATION ?= Debug
 BOOST_VERSION ?= 1.72.0
 BOOST_LIBRARIES := --with-filesystem --with-program_options --with-regex --with-test
-CMAKE_FLAGS ?=
+CMAKE_FLAGS ?= -D MATH_SERVER_TESTS=ON
 
 this_dir  := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 src_dir   := $(this_dir)
@@ -84,9 +84,9 @@ endif
 .PHONY: build
 build:
 ifdef CI
-	cd cmake && python3 -m project.ci.cmake --install -- -D MATH_SERVER_TESTS=ON $(CMAKE_FLAGS)
+	cd cmake && python3 -m project.ci.cmake --install -- $(CMAKE_FLAGS)
 else
-	cd cmake && python3 -m project.cmake.build --toolset '$(call escape,$(TOOLSET))' --configuration '$(call escape,$(CONFIGURATION))' --build '$(call escape,$(cmake_dir))' --install '$(call escape,$(DESTDIR))' --boost '$(call escape,$(boost_dir))' -- '$(call escape,$(src_dir))' -D MATH_SERVER_TESTS=ON $(CMAKE_FLAGS)
+	cd cmake && python3 -m project.cmake.build --toolset '$(call escape,$(TOOLSET))' --configuration '$(call escape,$(CONFIGURATION))' --build '$(call escape,$(cmake_dir))' --install '$(call escape,$(DESTDIR))' --boost '$(call escape,$(boost_dir))' -- '$(call escape,$(src_dir))' $(CMAKE_FLAGS)
 endif
 
 .PHONY: install

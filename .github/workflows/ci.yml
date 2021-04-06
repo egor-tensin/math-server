@@ -41,6 +41,7 @@ jobs:
       PLATFORM: '${{ matrix.platform }}'
       CONFIGURATION: '${{ matrix.configuration }}'
       BOOST_VERSION: 1.71.0
+      CMAKE_FLAGS: -D MATH_SERVER_TESTS=ON
     defaults:
       run:
         shell: pwsh

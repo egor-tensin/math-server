@@ -11,7 +11,7 @@ COPY [".", "$src_dir"]
 RUN build_deps='bash boost-dev cmake g++ make python3' && \
     apk add --no-cache $build_deps && \
     cd -- "$src_dir" && \
-    make install CONFIGURATION=Release CMAKE_FLAGS='-D Boost_USE_STATIC_LIBS=OFF'
+    make install CONFIGURATION=Release CMAKE_FLAGS='-D MATH_SERVER_TESTS=ON -D Boost_USE_STATIC_LIBS=OFF'
 
 FROM base
 
