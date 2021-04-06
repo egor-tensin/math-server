@@ -3,9 +3,11 @@
 
 FROM alpine:3.11 AS base
 
+ARG src_dir=/usr/src/math-server
+
 FROM base AS builder
 
-ENV src_dir=/usr/src/math-server
+ARG src_dir
 COPY [".", "$src_dir"]
 
 RUN build_deps='bash boost-dev cmake g++ make python3' && \
@@ -17,7 +19,8 @@ FROM base
 
 LABEL maintainer="Egor Tensin <Egor.Tensin@gmail.com>"
 
-COPY --from=builder ["/usr/src/math-server/.build/install", "/opt/math-server"]
+ARG src_dir
+COPY --from=builder ["$src_dir/.build/install", "/opt/math-server"]
 
 RUN runtime_deps='boost-filesystem boost-program_options boost-regex boost-unit_test_framework libstdc++' && \
     apk add $runtime_deps && \
