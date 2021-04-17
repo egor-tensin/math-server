@@ -1,7 +1,7 @@
 math-server
 ===========
 
-[![CI](https://github.com/egor-tensin/math-server/workflows/CI/badge.svg)](https://github.com/egor-tensin/math-server/actions?query=workflow%3ACI)
+[![CI](https://github.com/egor-tensin/math-server/actions/workflows/ci.yml/badge.svg)](https://github.com/egor-tensin/math-server/actions/workflows/ci.yml)
 
 Development
 -----------
