@@ -54,6 +54,11 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+      - name: Cache Boost
+        uses: actions/cache@v2
+        with:
+          path: '${{ runner.workspace }}/build/boost_*.tar.gz'
+          key: 'boost_${{ env.BOOST_VERSION }}'
       - name: Build Boost
         run: make deps
       - name: Build
