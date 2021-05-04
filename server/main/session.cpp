@@ -108,7 +108,7 @@ void Session::write(const std::string& output) {
             }));
 }
 
-void Session::handle_write(const boost::system::error_code& ec, std::size_t bytes) {
+void Session::handle_write(const boost::system::error_code& ec, std::size_t) {
     if (ec) {
         log::error("%1%: %2%", __func__, ec.message());
         m_session_mgr.stop(shared_from_this());
