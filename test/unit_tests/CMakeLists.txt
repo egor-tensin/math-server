@@ -12,6 +12,12 @@ target_link_libraries(unit_tests PRIVATE
 install(TARGETS unit_tests RUNTIME DESTINATION bin)
 install_pdbs(TARGETS unit_tests DESTINATION bin)
 
-add_test(NAME unit_tests COMMAND unit_tests --no_color_output)
-set_tests_properties(unit_tests PROPERTIES
-                     PASS_REGULAR_EXPRESSION "No errors detected")
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
+add_test(NAME unit_tests COMMAND Python3::Interpreter
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake/tools/ctest-driver.py"
+    run
+    --pass-regex [=[^\*\*\* No errors detected$]=]
+    --
+    "$<TARGET_FILE:unit_tests>"
+    --no_color_output)
