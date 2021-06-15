@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: Linting
     if: github.ref == 'refs/heads/master'
     steps:
@@ -28,7 +28,7 @@ jobs:
         platform: [x64, x86]
         configuration: [Debug, Release]
         include:
-          - {toolset: gcc, os: ubuntu-20.04}
+          - {toolset: gcc, os: ubuntu-latest}
           - {toolset: vs2017, os: windows-2016}
           - {toolset: vs2019, os: windows-2019}
         exclude:
@@ -75,7 +75,7 @@ jobs:
     strategy:
       matrix:
         project: [client, server]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: 'Docker: publish math-${{ matrix.project }}'
     if: github.ref == 'refs/heads/master'
     steps:
