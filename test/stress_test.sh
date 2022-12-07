@@ -6,6 +6,7 @@
 # Distributed under the MIT License.
 
 set -o errexit -o nounset -o pipefail
+shopt -s inherit_errexit lastpipe
 
 script_name="$( basename -- "${BASH_SOURCE[0]}" )"
 readonly script_name
