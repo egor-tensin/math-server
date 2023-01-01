@@ -24,12 +24,11 @@ jobs:
   build:
     strategy:
       matrix:
-        toolset: [gcc, vs2017, vs2019]
+        toolset: [gcc, vs2019]
         platform: [x64, x86]
         configuration: [Debug, Release]
         include:
           - {toolset: gcc, os: ubuntu-latest}
-          - {toolset: vs2017, os: windows-2016}
           - {toolset: vs2019, os: windows-2019}
         exclude:
           # 32-bit Linux builds, meh.
