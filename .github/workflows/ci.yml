@@ -9,7 +9,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     name: Linting
-    if: github.ref == 'refs/heads/master'
+    continue-on-error: ${{ github.ref != 'refs/heads/master' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -73,7 +73,6 @@ jobs:
         project: [client, server]
     runs-on: ubuntu-latest
     name: 'Docker: publish math-${{ matrix.project }}'
-    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -88,10 +87,19 @@ jobs:
         with:
           username: '${{ secrets.DOCKERHUB_USERNAME }}'
           password: '${{ secrets.DOCKERHUB_TOKEN }}'
+      - id: platforms
+        name: Which platforms?
+        # Building for ARM for every commit not in master is too time-consuming.
+        run: |
+          if [ '${{ github.ref }}' = 'refs/heads/master' ]; then
+              echo 'platforms=linux/amd64,linux/armhf' >> "$GITHUB_OUTPUT"
+          else
+              echo 'platforms=linux/amd64' >> "$GITHUB_OUTPUT"
+          fi
       - name: 'Publish math-${{ matrix.project }}'
         uses: docker/build-push-action@v2
         with:
           file: '${{ matrix.project }}/Dockerfile'
-          platforms: linux/amd64,linux/armhf
-          push: true
+          platforms: '${{ steps.platforms.outputs.platforms }}'
+          push: ${{ github.ref == 'refs/heads/master' }}
           tags: '${{ secrets.DOCKERHUB_USERNAME }}/math-${{ matrix.project }}:latest'
