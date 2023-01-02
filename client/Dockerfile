@@ -1,7 +1,7 @@
 # To build, run from the top-level directory:
 # docker build -f client/Dockerfile -t egortensin/math-client .
 
-FROM alpine:3.11 AS base
+FROM alpine:3.17 AS base
 
 ARG src_dir=/usr/src/math-server
 
