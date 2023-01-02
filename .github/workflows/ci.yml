@@ -21,12 +21,13 @@ jobs:
   build:
     strategy:
       matrix:
-        toolset: [gcc, vs2019]
+        toolset: [gcc, vs2019, vs2022]
         platform: [x64, x86]
         configuration: [Debug, Release]
         include:
           - {toolset: gcc, os: ubuntu-latest}
           - {toolset: vs2019, os: windows-2019}
+          - {toolset: vs2022, os: windows-2022}
         exclude:
           # 32-bit Linux builds, meh.
           - {toolset: gcc, platform: x86}
@@ -36,7 +37,7 @@ jobs:
       TOOLSET: '${{ matrix.toolset }}'
       PLATFORM: '${{ matrix.platform }}'
       CONFIGURATION: '${{ matrix.configuration }}'
-      BOOST_VERSION: 1.71.0
+      BOOST_VERSION: 1.81.0
       CMAKE_FLAGS: -D MATH_SERVER_TESTS=ON
     defaults:
       run:
