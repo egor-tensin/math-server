@@ -70,7 +70,11 @@ clean:
 	rm -rf -- '$(call escape,$(build_dir))'
 
 $(boost_dir)/:
-	cd cmake && python3 -m project.boost.download --cache '$(call escape,$(build_dir))' -- '$(call escape,$(BOOST_VERSION))' '$(call escape,$(boost_dir))'
+	cd cmake && python3 -m project.boost.download \
+		--cache '$(call escape,$(build_dir))' \
+		-- \
+		'$(call escape,$(BOOST_VERSION))' \
+		'$(call escape,$(boost_dir))'
 
 .PHONY: deps
 ifdef CI
@@ -78,7 +82,12 @@ deps:
 	cd cmake && python3 -m project.ci.boost -- $(BOOST_LIBRARIES)
 else
 deps: $(boost_dir)/
-	cd cmake && python3 -m project.boost.build --toolset '$(call escape,$(TOOLSET))' --configuration '$(call escape,$(CONFIGURATION))' -- '$(call escape,$(boost_dir))' $(BOOST_LIBRARIES)
+	cd cmake && python3 -m project.boost.build \
+		--toolset '$(call escape,$(TOOLSET))' \
+		--configuration '$(call escape,$(CONFIGURATION))' \
+		-- \
+		'$(call escape,$(boost_dir))' \
+		$(BOOST_LIBRARIES)
 endif
 
 .PHONY: build
@@ -86,7 +95,15 @@ build:
 ifdef CI
 	cd cmake && python3 -m project.ci.cmake --install -- $(CMAKE_FLAGS)
 else
-	cd cmake && python3 -m project.cmake.build --toolset '$(call escape,$(TOOLSET))' --configuration '$(call escape,$(CONFIGURATION))' --build '$(call escape,$(cmake_dir))' --install '$(call escape,$(DESTDIR))' --boost '$(call escape,$(boost_dir))' -- '$(call escape,$(src_dir))' $(CMAKE_FLAGS)
+	cd cmake && python3 -m project.cmake.build \
+		--toolset '$(call escape,$(TOOLSET))' \
+		--configuration '$(call escape,$(CONFIGURATION))' \
+		--build '$(call escape,$(cmake_dir))' \
+		--install '$(call escape,$(DESTDIR))' \
+		--boost '$(call escape,$(boost_dir))' \
+		-- \
+		'$(call escape,$(src_dir))' \
+		$(CMAKE_FLAGS)
 endif
 
 .PHONY: install
@@ -101,7 +118,8 @@ docker/login:
 ifndef DOCKER_PASSWORD
 	$(error Please define DOCKER_PASSWORD)
 endif
-	@echo '$(call escape,$(DOCKER_PASSWORD))' | docker login --username '$(call escape,$(DOCKER_USERNAME))' --password-stdin
+	@echo '$(call escape,$(DOCKER_PASSWORD))' \
+		| docker login --username '$(call escape,$(DOCKER_USERNAME))' --password-stdin
 
 .PHONY: docker/build
 # Build using Compose by default.
@@ -186,13 +204,22 @@ buildx/rm:
 	docker buildx rm '$(call escape,$(PROJECT))_builder'
 
 buildx/build/%: DO
-	docker buildx build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' --platform '$(call escape,$(DOCKER_PLATFORMS))' --progress plain .
+	docker buildx build \
+		-f '$*/Dockerfile' \
+		-t '$(call escape,$(DOCKER_USERNAME))/math-$*' \
+		--platform '$(call escape,$(DOCKER_PLATFORMS))' \
+		--progress plain .
 
 .PHONY: buildx/build
 buildx/build: buildx/build/client buildx/build/server
 
 buildx/push/%: DO
-	docker buildx build -f '$*/Dockerfile' -t '$(call escape,$(DOCKER_USERNAME))/math-$*' --platform '$(call escape,$(DOCKER_PLATFORMS))' --progress plain --push .
+	docker buildx build \
+		-f '$*/Dockerfile' \
+		-t '$(call escape,$(DOCKER_USERNAME))/math-$*' \
+		--platform '$(call escape,$(DOCKER_PLATFORMS))' \
+		--progress plain \
+		--push .
 
 .PHONY: buildx/push
 buildx/push: buildx/push/client buildx/push/server
