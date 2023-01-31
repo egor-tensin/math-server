@@ -102,6 +102,9 @@ jobs:
       - name: 'Publish math-${{ matrix.project }}'
         uses: docker/build-push-action@v3
         with:
+          # Without context, .dockerignore is not respected?
+          # https://stackoverflow.com/a/74552407/514684
+          context: .
           file: '${{ matrix.project }}/Dockerfile'
           platforms: '${{ steps.platforms.outputs.platforms }}'
           push: ${{ github.ref == 'refs/heads/master' }}
