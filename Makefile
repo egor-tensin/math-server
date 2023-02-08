@@ -42,7 +42,7 @@ cmake_dir := $(build_dir)/cmake
 DESTDIR   ?= $(build_dir)/install
 
 # Target platforms (used by buildx):
-DOCKER_PLATFORMS := linux/amd64,linux/armhf
+DOCKER_PLATFORMS := amd64,armhf,arm64
 # Docker Hub credentials:
 DOCKER_USERNAME := egortensin
 
