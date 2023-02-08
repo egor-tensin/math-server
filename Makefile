@@ -183,7 +183,8 @@ buildx/build/%: DO
 		-f '$*/Dockerfile' \
 		-t '$(call escape,$(DOCKER_USERNAME))/math-$*' \
 		--platform '$(call escape,$(DOCKER_PLATFORMS))' \
-		--progress plain .
+		--progress plain \
+		.
 
 .PHONY: buildx/build
 buildx/build: buildx/build/client buildx/build/server
@@ -194,7 +195,8 @@ buildx/push/%: DO
 		-t '$(call escape,$(DOCKER_USERNAME))/math-$*' \
 		--platform '$(call escape,$(DOCKER_PLATFORMS))' \
 		--progress plain \
-		--push .
+		--push \
+		.
 
 .PHONY: buildx/push
 buildx/push: buildx/push/client buildx/push/server
