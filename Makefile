@@ -163,7 +163,7 @@ endif
 .PHONY: compose/build
 # `docker-compose build` has the same problems as `docker build`.
 compose/build: docker/check-build
-	docker-compose build
+	docker-compose build --progress plain
 
 .PHONY: compose/push
 # `docker-compose push` has the same problems as `docker push`.
