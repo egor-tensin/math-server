@@ -11,7 +11,7 @@ ARG src_dir
 COPY [".", "$src_dir"]
 
 RUN build_deps='bash boost-dev cmake g++ make python3' && \
-    apk add --no-cache $build_deps && \
+    apk add -q --no-cache $build_deps && \
     cd -- "$src_dir" && \
     make install CONFIGURATION=Release CMAKE_FLAGS='-D MATH_SERVER_TESTS=ON -D Boost_USE_STATIC_LIBS=OFF'
 
@@ -23,7 +23,7 @@ ARG src_dir
 COPY --from=builder ["$src_dir/.build/install", "/opt/math-server"]
 
 RUN runtime_deps='boost-filesystem boost-program_options boost-regex boost-unit_test_framework libstdc++' && \
-    apk add $runtime_deps && \
+    apk add -q --no-cache $runtime_deps && \
     /opt/math-server/bin/math-server-unit-tests --log_level=all
 
 ENTRYPOINT ["/opt/math-server/bin/math-client"]
