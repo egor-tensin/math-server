@@ -5,6 +5,7 @@
 !/CMakeLists.txt
 !/LICENSE.txt
 !/Makefile
+!/prelude.mk
 !/README.md
 !/client/**
 !/cmake/**
