@@ -54,7 +54,7 @@ jobs:
       - name: Cache Boost
         uses: actions/cache@v3
         with:
-          path: '${{ runner.workspace }}/build/boost_*.tar.gz'
+          path: './build/boost_*.tar.gz'
           key: 'boost_${{ env.BOOST_VERSION }}'
       - name: Build Boost
         run: make deps
@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: 'math-server-${{ matrix.toolset }}-${{ matrix.platform }}-${{ matrix.configuration }}'
-          path: '${{ runner.workspace }}/build/install/'
+          path: './build/install/'
           if-no-files-found: error
       - name: Test
         run: make test

@@ -9,7 +9,7 @@ Development
 Build using CMake.
 Depends on Boost.{Filesystem,Program_options,Regex,Test}.
 
-There's a Makefile with useful shortcuts to build the project in the .build/
+There's a Makefile with useful shortcuts to build the project in the build/
 directory along with the dependencies:
 
     make deps

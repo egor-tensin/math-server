@@ -20,7 +20,7 @@ FROM base
 LABEL maintainer="Egor Tensin <Egor.Tensin@gmail.com>"
 
 ARG src_dir
-COPY --from=builder ["$src_dir/.build/install", "/opt/math-server"]
+COPY --from=builder ["$src_dir/build/install", "/opt/math-server"]
 
 RUN runtime_deps='boost-filesystem boost-program_options boost-regex boost-unit_test_framework libstdc++' && \
     apk add -q --no-cache $runtime_deps && \
