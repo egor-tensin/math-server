@@ -1,27 +1,25 @@
 include prelude.mk
 
-.PHONY: DO
-DO:
+this_dir    := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+src_dir     := $(this_dir)
+build_dir   := $(this_dir)build
+boost_dir   := $(build_dir)/boost
+cmake_dir   := $(build_dir)/cmake
+install_dir := $(build_dir)/install
 
-PROJECT := math-server
-TOOLSET ?= auto
-PLATFORM ?= auto
-CONFIGURATION ?= Debug
-BOOST_VERSION ?= 1.72.0
+PROJECT         := math-server
+TOOLSET         ?= auto
+PLATFORM        ?= auto
+CONFIGURATION   ?= Debug
+BOOST_VERSION   ?= 1.72.0
 BOOST_LIBRARIES := --with-filesystem --with-program_options --with-regex --with-test
-CMAKE_FLAGS ?= -D MATH_SERVER_TESTS=ON
-
-this_dir  := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
-src_dir   := $(this_dir)
-build_dir := $(this_dir)build
-boost_dir := $(build_dir)/boost
-cmake_dir := $(build_dir)/cmake
-DESTDIR   ?= $(build_dir)/install
+CMAKE_FLAGS     ?= -D MATH_SERVER_TESTS=ON
+INSTALL_PREFIX  ?= $(install_dir)
 
 # Target platforms (used by buildx):
 DOCKER_PLATFORMS := amd64,armhf,arm64
 # Docker Hub credentials:
-DOCKER_USERNAME := egortensin
+DOCKER_USERNAME  := egortensin
 
 $(eval $(call noexpand,TOOLSET))
 $(eval $(call noexpand,PLATFORM))
@@ -31,7 +29,10 @@ $(eval $(call noexpand,CMAKE_FLAGS))
 ifdef DOCKER_PASSWORD
 $(eval $(call noexpand,DOCKER_PASSWORD))
 endif
-$(eval $(call noexpand,DESTDIR))
+$(eval $(call noexpand,INSTALL_PREFIX))
+
+.PHONY: DO
+DO:
 
 .PHONY: all
 all: build
@@ -63,7 +64,7 @@ build:
 		--toolset '$(call escape,$(TOOLSET))' \
 		--platform '$(call escape,$(PLATFORM))' \
 		--configuration '$(call escape,$(CONFIGURATION))' \
-		--install '$(call escape,$(DESTDIR))' \
+		--install '$(call escape,$(INSTALL_PREFIX))' \
 		--boost '$(call escape,$(boost_dir))' \
 		-- \
 		'$(call escape,$(src_dir))' \
