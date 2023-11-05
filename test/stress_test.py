@@ -70,8 +70,8 @@ class ExprGen:
     _OPERATORS = '+', '-', '*', '/'
     _MIN_NUMOF_OPERATORS = 10
     _MAX_NUMOF_OPERATORS = 1000
-    _MIN_NUMBER = -10e10
-    _MAX_NUMBER = 10e10
+    _MIN_NUMBER = int(-10e10)
+    _MAX_NUMBER = int(10e10)
 
     @staticmethod
     def _random_operator():
