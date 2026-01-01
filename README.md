@@ -80,14 +80,14 @@ Consult `math-client --help` for more info.
 
 Start the server using
 
-    docker-compose pull && docker-compose up -d server
+    docker compose pull && docker compose up -d server
 
 Connect to localhost:18000 to query it or run the client:
 
-    > docker-compose run --rm client -c "69 * 420"
+    > docker compose run --rm client -c "69 * 420"
     28980
 
-    > docker-compose run --rm client
+    > docker compose run --rm client
     12 * 12
     144
     asdf

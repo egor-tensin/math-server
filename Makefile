@@ -100,19 +100,19 @@ docker/push: buildx/push
 
 .PHONY: pull
 pull:
-	docker-compose pull
+	docker compose pull
 
 .PHONY: up
 up:
-	docker-compose up -d server
+	docker compose up -d server
 
 .PHONY: client
 client:
-	docker-compose run --rm client
+	docker compose run --rm client
 
 .PHONY: down
 down:
-	docker-compose down --volumes
+	docker compose down --volumes
 
 # `docker build` has weak support for multiarch repos (you need to use multiple
 # Dockerfile's, create a manifest manually, etc.).
@@ -133,14 +133,14 @@ ifndef FORCE
 endif
 
 .PHONY: compose/build
-# `docker-compose build` has the same problems as `docker build`.
+# `docker compose build` has the same problems as `docker build`.
 compose/build: docker/check-build
-	docker-compose build --progress plain
+	docker compose build --progress plain
 
 .PHONY: compose/push
-# `docker-compose push` has the same problems as `docker push`.
+# `docker compose push` has the same problems as `docker push`.
 compose/push: docker/check-push compose/build
-	docker-compose push
+	docker compose push
 
 .PHONY: buildx/create
 buildx/create:
