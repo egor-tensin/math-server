@@ -231,7 +231,7 @@ def _parse_args(argv=None):
 def _logging():
     logging.basicConfig(
         format='%(asctime)s | %(levelname)s | %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
+        datefmt='%Y-%m-%d %H:%M:%S%z',
         level=logging.DEBUG)
     try:
         yield
