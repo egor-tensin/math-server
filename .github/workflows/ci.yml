@@ -108,5 +108,5 @@ jobs:
           context: .
           file: '${{ matrix.project }}/Dockerfile'
           platforms: '${{ steps.platforms.outputs.platforms }}'
-          push: ${{ github.ref == 'refs/heads/master' }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           tags: '${{ secrets.DOCKERHUB_USERNAME }}/math-${{ matrix.project }}:latest'
