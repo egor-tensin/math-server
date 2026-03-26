@@ -17,7 +17,7 @@ RUN build_deps='bash boost-dev cmake g++ make python3' && \
 
 FROM base
 
-LABEL maintainer="Egor Tensin <Egor.Tensin@gmail.com>"
+LABEL maintainer="Egor Tensin <egor@tensin.name>"
 
 ARG src_dir
 COPY --from=builder ["$src_dir/build/install", "/opt/math-server"]
