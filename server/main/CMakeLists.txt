@@ -18,4 +18,6 @@ target_link_libraries(server PRIVATE
     Boost::filesystem
     Boost::program_options)
 install(TARGETS server RUNTIME DESTINATION bin)
-install_pdbs(TARGETS server DESTINATION bin)
+if(MSVC)
+    install(FILES $<TARGET_PDB_FILE:server> DESTINATION bin OPTIONAL)
+endif()

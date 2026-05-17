@@ -12,4 +12,6 @@ target_link_libraries(client PRIVATE
     Boost::filesystem
     Boost::program_options)
 install(TARGETS client RUNTIME DESTINATION bin)
-install_pdbs(TARGETS client DESTINATION bin)
+if(MSVC)
+    install(FILES $<TARGET_PDB_FILE:client> DESTINATION bin OPTIONAL)
+endif()

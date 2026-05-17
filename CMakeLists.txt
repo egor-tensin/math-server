@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.8)
 project(math_server CXX)
 enable_testing()
 
-include(cmake/common.cmake)
-
 # AppVeyor builds w/ Visual Studio 2017 bombard me with stupid warnings otherwise:
 if(MSVC_VERSION GREATER_EQUAL "1910" AND MSVC_VERSION LESS "1920")
     add_definitions(/D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING)

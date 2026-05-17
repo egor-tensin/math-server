@@ -12,8 +12,8 @@ TOOLSET         ?= auto
 PLATFORM        ?= auto
 CONFIGURATION   ?= Debug
 BOOST_VERSION   ?= 1.72.0
-BOOST_LIBRARIES := --with-filesystem --with-program_options --with-regex --with-test
-CMAKE_FLAGS     ?= -D MATH_SERVER_TESTS=ON
+BOOST_LIBRARIES := filesystem program_options regex test
+CMAKE_FLAGS     ?= --cmake-arg=-DMATH_SERVER_TESTS=ON
 INSTALL_PREFIX  ?= $(install_dir)
 
 # Target platforms (used by buildx):
@@ -66,10 +66,10 @@ build:
 		--configuration '$(call escape,$(CONFIGURATION))' \
 		--install '$(call escape,$(INSTALL_PREFIX))' \
 		--boost '$(call escape,$(boost_dir))' \
+		$(CMAKE_FLAGS) \
 		-- \
 		'$(call escape,$(src_dir))' \
-		'$(call escape,$(cmake_dir))' \
-		$(CMAKE_FLAGS)
+		'$(call escape,$(cmake_dir))'
 
 .PHONY: install
 install: build
