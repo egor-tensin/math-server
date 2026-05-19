@@ -5,7 +5,7 @@ find_package(Threads REQUIRED)
 
 option(DEBUG_ASIO "enable debug output for Boost.Asio" OFF)
 
-file(GLOB server_src "*.cpp" "*.hpp")
+file(GLOB server_src CONFIGURE_DEPENDS "*.cpp" "*.hpp")
 add_executable(server ${server_src})
 set_target_properties(server PROPERTIES OUTPUT_NAME math-server)
 if(DEBUG_ASIO)

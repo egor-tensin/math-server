@@ -1,4 +1,7 @@
-cmake_minimum_required(VERSION 3.8)
+# oldstable as of May '26.
+# Plus, I'm pretty sure it's required for things like CONFIGURE_DEPENDS and
+# CMAKE_MSVC_RUNTIME_LIBRARY and stuff.
+cmake_minimum_required(VERSION 3.25)
 
 project(math_server CXX)
 enable_testing()

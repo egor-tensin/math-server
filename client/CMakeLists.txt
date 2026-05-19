@@ -3,7 +3,7 @@ set(CMAKE_THREAD_PREFER_PTHREAD ON)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-file(GLOB client_src "*.cpp" "*.hpp")
+file(GLOB client_src CONFIGURE_DEPENDS "*.cpp" "*.hpp")
 add_executable(client ${client_src})
 set_target_properties(client PROPERTIES OUTPUT_NAME math-client)
 target_link_libraries(client PRIVATE Threads::Threads)
