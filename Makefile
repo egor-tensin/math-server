@@ -11,7 +11,7 @@ PROJECT         := math-server
 TOOLSET         ?= auto
 PLATFORM        ?= auto
 CONFIGURATION   ?= Debug
-BOOST_VERSION   ?= 1.72.0
+BOOST_VERSION   ?= 1.81.0
 BOOST_LIBRARIES := filesystem program_options regex test
 CMAKE_FLAGS     ?= --cmake-arg=-DMATH_SERVER_TESTS=ON
 INSTALL_PREFIX  ?= $(install_dir)
