@@ -21,9 +21,13 @@ using FromStringMap = std::map<std::string, Type, std::greater<std::string>>;
 
 class ToStringConverter {
 public:
-    ToStringConverter() : m_map{to_string_map()} { validate(); }
+    ToStringConverter() : m_map{to_string_map()} {
+        validate();
+    }
 
-    const ToStringMap& map() const { return m_map; }
+    const ToStringMap& map() const {
+        return m_map;
+    }
 
 private:
     static const ToStringMap& to_string_map() {
@@ -41,7 +45,9 @@ private:
         return map;
     }
 
-    void validate() const { check_for_duplicates(); }
+    void validate() const {
+        check_for_duplicates();
+    }
 
     void check_for_duplicates() const {
         std::unordered_set<std::string> strings;
@@ -66,7 +72,9 @@ class FromStringConverter {
 public:
     FromStringConverter(const ToStringMap& to_string) : m_map{build_map(to_string)} {}
 
-    const FromStringMap& map() const { return m_map; }
+    const FromStringMap& map() const {
+        return m_map;
+    }
 
 private:
     static FromStringMap build_map(const ToStringMap& to_string) {
@@ -100,7 +108,9 @@ public:
         }
     }
 
-    const TypeSet& set() const { return m_set; }
+    const TypeSet& set() const {
+        return m_set;
+    }
 
 private:
     TypeSet m_set;

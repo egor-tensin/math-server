@@ -40,7 +40,9 @@ public:
         return BinaryOp{token};
     }
 
-    static constexpr unsigned min_precedence() { return 0; }
+    static constexpr unsigned min_precedence() {
+        return 0;
+    }
 
     static unsigned get_precedence(Type type) {
         switch (type) {
@@ -60,7 +62,9 @@ public:
         }
     }
 
-    unsigned get_precedence() const { return get_precedence(m_type); }
+    unsigned get_precedence() const {
+        return get_precedence(m_type);
+    }
 
     bool is_right_associative() const {
         switch (m_type) {
@@ -72,7 +76,9 @@ public:
         }
     }
 
-    bool is_left_associative() const { return !is_right_associative(); }
+    bool is_left_associative() const {
+        return !is_right_associative();
+    }
 
     double exec(double lhs, double rhs) const {
         switch (m_type) {

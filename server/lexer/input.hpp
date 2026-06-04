@@ -16,13 +16,21 @@ class Input {
 public:
     explicit Input(const std::string_view& input) : m_pos{0}, m_input{input} {}
 
-    const std::string_view& get_input() const { return m_input; }
+    const std::string_view& get_input() const {
+        return m_input;
+    }
 
-    std::size_t get_pos() const { return m_pos; }
+    std::size_t get_pos() const {
+        return m_pos;
+    }
 
-    std::size_t get_length() const { return m_input.length(); }
+    std::size_t get_length() const {
+        return m_input.length();
+    }
 
-    bool empty() const { return m_input.empty(); }
+    bool empty() const {
+        return m_input.empty();
+    }
 
     void consume(std::size_t len) {
         if (m_input.length() < len) {
@@ -32,7 +40,9 @@ public:
         m_input.remove_prefix(len);
     }
 
-    void consume(const std::string_view& sub) { consume(sub.length()); }
+    void consume(const std::string_view& sub) {
+        consume(sub.length());
+    }
 
 private:
     std::size_t m_pos;

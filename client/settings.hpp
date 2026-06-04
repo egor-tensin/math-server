@@ -23,13 +23,21 @@ struct Settings {
     std::string m_port;
     std::vector<std::string> m_files;
 
-    bool exit_with_usage() const { return m_vm.count("help"); }
+    bool exit_with_usage() const {
+        return m_vm.count("help");
+    }
 
-    bool input_from_string() const { return m_vm.count("command"); }
+    bool input_from_string() const {
+        return m_vm.count("command");
+    }
 
-    bool input_from_files() const { return !input_from_string() && !m_files.empty(); }
+    bool input_from_files() const {
+        return !input_from_string() && !m_files.empty();
+    }
 
-    bool input_from_console() const { return !input_from_string() && !input_from_files(); }
+    bool input_from_console() const {
+        return !input_from_string() && !input_from_files();
+    }
 
     boost::program_options::variables_map m_vm;
 };
@@ -70,7 +78,9 @@ public:
         return m_settings;
     }
 
-    void usage() const { std::cout << *this; }
+    void usage() const {
+        std::cout << *this;
+    }
 
     void usage_error(const std::exception& e) const {
         std::cerr << "usage error: " << e.what() << '\n';

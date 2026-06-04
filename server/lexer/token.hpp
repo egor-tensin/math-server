@@ -22,9 +22,13 @@ public:
     explicit Token(double value);
 
     bool operator==(const Token& other) const;
-    bool operator!=(const Token& other) const { return !(*this == other); }
+    bool operator!=(const Token& other) const {
+        return !(*this == other);
+    }
 
-    Type get_type() const { return m_type; }
+    Type get_type() const {
+        return m_type;
+    }
 
     double as_number() const;
 
@@ -40,9 +44,13 @@ public:
     ParsedToken(Token&& token, std::size_t pos, const std::string_view& view)
         : Token{std::move(token)}, m_pos{pos}, m_view{view} {}
 
-    std::size_t get_pos() const { return m_pos; }
+    std::size_t get_pos() const {
+        return m_pos;
+    }
 
-    std::size_t get_length() const { return m_view.length(); }
+    std::size_t get_length() const {
+        return m_view.length();
+    }
 
 private:
     std::size_t m_pos;

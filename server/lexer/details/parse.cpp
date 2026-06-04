@@ -33,7 +33,9 @@ public:
         //      ^ I fucking hate C++.
     }
 
-    std::string to_str() const { return m_match[0].str(); }
+    std::string to_str() const {
+        return m_match[0].str();
+    }
 
 protected:
     MatchResultsT m_match;
@@ -64,7 +66,9 @@ protected:
         R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX"};
 
 private:
-    bool matched_e() const { return this->m_match[1].matched; }
+    bool matched_e() const {
+        return this->m_match[1].matched;
+    }
 
     bool matched_e_power() const {
         return this->m_match[2].matched && this->m_match[2].length() != 0;

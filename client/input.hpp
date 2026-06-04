@@ -37,7 +37,9 @@ class FileReader : public Reader {
 public:
     explicit FileReader(const std::string& path) : m_path{path} {}
 
-    bool for_each_input(const InputHandler& process) const override { return enum_lines(process); }
+    bool for_each_input(const InputHandler& process) const override {
+        return enum_lines(process);
+    }
 
 private:
     bool enum_lines(const InputHandler& process) const {
@@ -95,7 +97,9 @@ class StringReader : public Reader {
 public:
     explicit StringReader(const std::string& input) : m_input{input} {}
 
-    bool for_each_input(const InputHandler& process) const override { return process(m_input); }
+    bool for_each_input(const InputHandler& process) const override {
+        return process(m_input);
+    }
 
 private:
     const std::string m_input;

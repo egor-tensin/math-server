@@ -20,12 +20,16 @@ namespace math::server {
 struct Settings {
     static constexpr unsigned short DEFAULT_PORT = 18000;
 
-    static std::size_t default_threads() { return std::thread::hardware_concurrency(); }
+    static std::size_t default_threads() {
+        return std::thread::hardware_concurrency();
+    }
 
     unsigned short m_port;
     std::size_t m_threads;
 
-    bool exit_with_usage() const { return m_vm.count("help"); }
+    bool exit_with_usage() const {
+        return m_vm.count("help");
+    }
 
     boost::program_options::variables_map m_vm;
 };
@@ -45,7 +49,9 @@ public:
             "number of threads");
     }
 
-    static const char* get_short_description() { return "[-h|--help] [-p|--port] [-n|--threads]"; }
+    static const char* get_short_description() {
+        return "[-h|--help] [-p|--port] [-n|--threads]";
+    }
 
     Settings parse(int argc, char* argv[]) {
         namespace po = boost::program_options;
@@ -58,7 +64,9 @@ public:
         return m_settings;
     }
 
-    void usage() const { std::cout << *this; }
+    void usage() const {
+        std::cout << *this;
+    }
 
     void usage_error(const std::exception& e) const {
         std::cerr << "usage error: " << e.what() << '\n';

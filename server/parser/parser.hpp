@@ -36,7 +36,9 @@ public:
 
 private:
     // DMAS as in Division, Multiplication, Addition and Subtraction
-    double exec_dmas() { return exec_binary_op(exec_factor(), parser::BinaryOp::min_precedence()); }
+    double exec_dmas() {
+        return exec_binary_op(exec_factor(), parser::BinaryOp::min_precedence());
+    }
 
     // Exponentiation operator
     double exec_exp() {

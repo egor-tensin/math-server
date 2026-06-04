@@ -30,9 +30,13 @@ public:
 
     std::vector<ParsedToken> get_tokens();
 
-    bool has_token() const { return peek_token().has_value(); }
+    bool has_token() const {
+        return peek_token().has_value();
+    }
 
-    std::optional<ParsedToken> peek_token() const { return m_token_buffer; }
+    std::optional<ParsedToken> peek_token() const {
+        return m_token_buffer;
+    }
 
     void drop_token();
     std::optional<ParsedToken> drop_token_of_type(Type type);
