@@ -41,12 +41,12 @@ inline void log(const std::string& msg) {
 } // namespace details
 
 template <typename... Args>
-inline void log(const std::string_view& fmt, Args&&... args) {
+inline void log(std::string_view fmt, Args&&... args) {
     details::log(boost::str((boost::format(fmt.data()) % ... % args)));
 }
 
 template <typename... Args>
-inline void error(const std::string_view& fmt, Args&&... args) {
+inline void error(std::string_view fmt, Args&&... args) {
     details::log(boost::str((boost::format(fmt.data()) % ... % args)));
 }
 

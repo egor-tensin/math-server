@@ -18,7 +18,7 @@ namespace math::server {
 
 class Lexer {
 public:
-    explicit Lexer(const std::string_view& input);
+    explicit Lexer(std::string_view input);
     explicit Lexer(const lexer::Input& input);
 
     using Token = lexer::Token;

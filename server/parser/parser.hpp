@@ -24,7 +24,7 @@ public:
     // a finer algorithm for parsing arithmetic expressions.
     // Reference: https://en.wikipedia.org/wiki/Operator-precedence_parser
 
-    explicit Parser(const std::string_view& input) : m_lexer{input} {}
+    explicit Parser(std::string_view input) : m_lexer{input} {}
 
     double exec() {
         const auto result = exec_dmas();

@@ -14,9 +14,9 @@ namespace math::server::lexer {
 
 class Input {
 public:
-    explicit Input(const std::string_view& input) : m_pos{0}, m_input{input} {}
+    explicit Input(std::string_view input) : m_pos{0}, m_input{input} {}
 
-    const std::string_view& get_input() const {
+    std::string_view get_input() const {
         return m_input;
     }
 
@@ -40,7 +40,7 @@ public:
         m_input.remove_prefix(len);
     }
 
-    void consume(const std::string_view& sub) {
+    void consume(std::string_view sub) {
         consume(sub.length());
     }
 

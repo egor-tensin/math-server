@@ -41,7 +41,7 @@ private:
 
 class ParsedToken : public Token {
 public:
-    ParsedToken(Token&& token, std::size_t pos, const std::string_view& view)
+    ParsedToken(Token&& token, std::size_t pos, std::string_view view)
         : Token{std::move(token)}, m_pos{pos}, m_view{view} {}
 
     std::size_t get_pos() const {

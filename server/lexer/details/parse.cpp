@@ -26,7 +26,7 @@ class RegexMatcher {
 public:
     virtual ~RegexMatcher() = default;
 
-    virtual bool match_regex(const std::string_view& input) = 0;
+    virtual bool match_regex(std::string_view input) = 0;
 
     std::string_view to_view() const {
         return {&*m_match[0].first, static_cast<std::size_t>(m_match[0].length())};
@@ -44,7 +44,7 @@ protected:
 template <typename MatchResultsT>
 class RegexNumberMatcher : public RegexMatcher<MatchResultsT> {
 public:
-    bool match(const std::string_view& input) {
+    bool match(std::string_view input) {
         if (!this->match_regex(input)) {
             return false;
         }
@@ -78,7 +78,7 @@ private:
 class StdNumberMatcher
     : public RegexNumberMatcher<std::match_results<std::string_view::const_iterator>> {
 public:
-    bool match_regex(const std::string_view& input) override {
+    bool match_regex(std::string_view input) override {
         return std::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
     }
 
@@ -94,7 +94,7 @@ private:
 class BoostNumberMatcher
     : public RegexNumberMatcher<boost::match_results<std::string_view::const_iterator>> {
 public:
-    bool match_regex(const std::string_view& input) override {
+    bool match_regex(std::string_view input) override {
         return boost::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
     }
 
@@ -108,7 +108,7 @@ private:
 };
 
 template <typename MatchResultsT>
-std::optional<double> parse_number(const std::string_view& input,
+std::optional<double> parse_number(std::string_view input,
                                    RegexNumberMatcher<MatchResultsT>&& matcher,
                                    std::string_view& token) {
     if (!matcher.match(input)) {
@@ -134,7 +134,7 @@ protected:
 class StdWhitespaceMatcher
     : public RegexWhitespaceMatcher<std::match_results<std::string_view::const_iterator>> {
 public:
-    bool match_regex(const std::string_view& input) override {
+    bool match_regex(std::string_view input) override {
         return std::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
     }
 
@@ -149,7 +149,7 @@ private:
 class BoostWhitespaceMatcher
     : public RegexWhitespaceMatcher<boost::match_results<std::string_view::const_iterator>> {
 public:
-    bool match_regex(const std::string_view& input) override {
+    bool match_regex(std::string_view input) override {
         return boost::regex_search(input.cbegin(), input.cend(), m_match, get_regex());
     }
 
@@ -162,7 +162,7 @@ private:
 };
 
 template <typename MatchResultsT>
-std::string_view parse_whitespace(const std::string_view& input,
+std::string_view parse_whitespace(std::string_view input,
                                   RegexWhitespaceMatcher<MatchResultsT>&& matcher) {
     if (matcher.match_regex(input)) {
         return matcher.to_view();
@@ -170,7 +170,7 @@ std::string_view parse_whitespace(const std::string_view& input,
     return {};
 }
 
-bool starts_with(const std::string_view& a, const std::string_view& b) noexcept {
+bool starts_with(std::string_view a, std::string_view b) noexcept {
     return a.length() >= b.length() && a.compare(0, b.length(), b) == 0;
 }
 
@@ -178,45 +178,44 @@ bool starts_with(const std::string_view& a, const std::string_view& b) noexcept 
 
 namespace impl {
 
-std::optional<double> std_parse_number(const std::string_view& input, std::string_view& token) {
+std::optional<double> std_parse_number(std::string_view input, std::string_view& token) {
     return parse_number(input, StdNumberMatcher{}, token);
 }
 
-std::optional<double> std_parse_number(const std::string_view& input) {
+std::optional<double> std_parse_number(std::string_view input) {
     std::string_view token;
     return std_parse_number(input, token);
 }
 
-std::optional<double> boost_parse_number(const std::string_view& input, std::string_view& token) {
+std::optional<double> boost_parse_number(std::string_view input, std::string_view& token) {
     return parse_number(input, BoostNumberMatcher{}, token);
 }
 
-std::optional<double> boost_parse_number(const std::string_view& input) {
+std::optional<double> boost_parse_number(std::string_view input) {
     std::string_view token;
     return boost_parse_number(input, token);
 }
 
-std::string_view std_parse_whitespace(const std::string_view& input) {
+std::string_view std_parse_whitespace(std::string_view input) {
     return parse_whitespace(input, StdWhitespaceMatcher{});
 }
 
-std::string_view boost_parse_whitespace(const std::string_view& input) {
+std::string_view boost_parse_whitespace(std::string_view input) {
     return parse_whitespace(input, BoostWhitespaceMatcher{});
 }
 
 } // namespace impl
 
-std::optional<double> parse_number(const std::string_view& input, std::string_view& token) {
+std::optional<double> parse_number(std::string_view input, std::string_view& token) {
     return impl::boost_parse_number(input, token);
 }
 
-std::optional<double> parse_number(const std::string_view& input) {
+std::optional<double> parse_number(std::string_view input) {
     std::string_view token;
     return parse_number(input, token);
 }
 
-std::optional<token::Type> parse_const_token(const std::string_view& input,
-                                             std::string_view& token) {
+std::optional<token::Type> parse_const_token(std::string_view input, std::string_view& token) {
     for (const auto type : token::const_tokens()) {
         const auto str = token::type_to_string(type);
         if (starts_with(input, str)) {
@@ -227,12 +226,12 @@ std::optional<token::Type> parse_const_token(const std::string_view& input,
     return {};
 }
 
-std::optional<token::Type> parse_const_token(const std::string_view& input) {
+std::optional<token::Type> parse_const_token(std::string_view input) {
     std::string_view token;
     return parse_const_token(input, token);
 }
 
-std::string_view parse_whitespace(const std::string_view& input) {
+std::string_view parse_whitespace(std::string_view input) {
     return impl::boost_parse_whitespace(input);
 }
 

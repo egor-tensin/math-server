@@ -17,7 +17,7 @@
 
 namespace math::server {
 
-Lexer::Lexer(const std::string_view& input) : Lexer{lexer::Input{input}} {}
+Lexer::Lexer(std::string_view input) : Lexer{lexer::Input{input}} {}
 
 Lexer::Lexer(const lexer::Input& input) : m_input{input} {
     consume_token();
