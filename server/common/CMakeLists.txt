@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED)
+find_package(Boost CONFIG REQUIRED)
 
 add_library(common INTERFACE)
 target_include_directories(common INTERFACE ..)

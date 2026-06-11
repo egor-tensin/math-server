@@ -1,6 +1,4 @@
-find_package(Boost 1.67.0 REQUIRED COMPONENTS unit_test_framework)
-# It would be Boost 1.66 in a perfect world, but the tests fail to compile with
-# that: https://lists.boost.org/boost-bugs/2018/01/49711.php.
+find_package(Boost 1.70.0 CONFIG REQUIRED COMPONENTS unit_test_framework)
 
 file(GLOB unit_tests_src CONFIGURE_DEPENDS "*.cpp")
 add_executable(unit_tests ${unit_tests_src})

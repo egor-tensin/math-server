@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED COMPONENTS regex)
+find_package(Boost CONFIG REQUIRED COMPONENTS regex)
 
 file(GLOB_RECURSE lexer_src CONFIGURE_DEPENDS "*.cpp" "*.hpp")
 add_library(lexer ${lexer_src})
