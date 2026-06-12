@@ -48,14 +48,18 @@ public:
         namespace po = boost::program_options;
 
         m_visible.add_options()("help,h", "show this message and exit");
-        m_visible.add_options()("command,c", po::value(&m_settings.m_input),
+        m_visible.add_options()("command,c",
+                                po::value(&m_settings.m_input),
                                 "evaluate the argument expression and exit");
-        m_visible.add_options()("host,H", po::value(&m_settings.m_host)->default_value("localhost"),
+        m_visible.add_options()("host,H",
+                                po::value(&m_settings.m_host)->default_value("localhost"),
                                 "server host address");
         m_visible.add_options()(
-            "port,p", po::value(&m_settings.m_port)->default_value(NetworkTransport::DEFAULT_PORT),
+            "port,p",
+            po::value(&m_settings.m_port)->default_value(NetworkTransport::DEFAULT_PORT),
             "server port number");
-        m_hidden.add_options()("files", po::value<std::vector<std::string>>(&m_settings.m_files),
+        m_hidden.add_options()("files",
+                               po::value<std::vector<std::string>>(&m_settings.m_files),
                                "shouldn't be visible");
         m_positional.add("files", -1);
     }

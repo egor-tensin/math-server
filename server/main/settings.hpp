@@ -41,7 +41,8 @@ public:
 
         m_visible.add_options()("help,h", "show this message and exit");
         m_visible.add_options()(
-            "port,p", po::value(&m_settings.m_port)->default_value(Settings::DEFAULT_PORT),
+            "port,p",
+            po::value(&m_settings.m_port)->default_value(Settings::DEFAULT_PORT),
             "server port number");
         m_visible.add_options()(
             "threads,n",

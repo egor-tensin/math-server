@@ -155,8 +155,8 @@ BOOST_DATA_TEST_CASE(test_get_tokens_valid,
                      expected) {
     Lexer lexer{input};
     const auto actual = lexer.get_tokens();
-    BOOST_CHECK_EQUAL_COLLECTIONS(actual.cbegin(), actual.cend(), expected.cbegin(),
-                                  expected.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(
+        actual.cbegin(), actual.cend(), expected.cbegin(), expected.cend());
 }
 
 BOOST_DATA_TEST_CASE(test_get_tokens_invalid,

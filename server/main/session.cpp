@@ -69,7 +69,9 @@ void Session::read() {
 
     // Stop at LF
     boost::asio::async_read_until(
-        m_socket, m_buffer, '\n',
+        m_socket,
+        m_buffer,
+        '\n',
         boost::asio::bind_executor(
             m_strand, [this, self](const boost::system::error_code& ec, std::size_t bytes) {
                 handle_read(ec, bytes);
@@ -101,7 +103,8 @@ void Session::write(const std::string& output) {
     os << output << "\r\n";
 
     boost::asio::async_write(
-        m_socket, m_buffer,
+        m_socket,
+        m_buffer,
         boost::asio::bind_executor(
             m_strand, [this, self](const boost::system::error_code& ec, std::size_t bytes) {
                 handle_write(ec, bytes);
