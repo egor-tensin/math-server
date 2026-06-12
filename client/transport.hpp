@@ -86,8 +86,8 @@ private:
 
     std::string read_line() {
         const auto bytes = boost::asio::read_until(m_socket, m_buffer, "\r\n");
-        const auto data = boost::asio::buffer_cast<const char*>(m_buffer.data());
-        const std::string result{data, bytes - 2}; // Skip \r\n
+        const auto data = boost::asio::buffers_begin(m_buffer.data());
+        const std::string result{data, data + (bytes - 2)}; // Skip \r\n
         m_buffer.consume(bytes);
         return result;
     }

@@ -89,8 +89,8 @@ void Session::handle_read(const boost::system::error_code& ec, std::size_t bytes
 }
 
 std::string Session::consume_input(std::size_t bytes) {
-    const auto data = boost::asio::buffer_cast<const char*>(m_buffer.data());
-    const std::string input{data, bytes - 1};
+    const auto data = boost::asio::buffers_begin(m_buffer.data());
+    const std::string input{data, data + (bytes - 1)};
     m_buffer.consume(bytes);
     return input;
 }
