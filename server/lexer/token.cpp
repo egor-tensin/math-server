@@ -49,8 +49,9 @@ bool Token::operator==(const Token& other) const {
     if (m_type == Type::NUMBER) {
         return numbers_equal(as_number(), other.as_number());
     }
-    throw LexerError{"internal: can't compare tokens of type: " +
-                     token::type_to_int_string(m_type)};
+    throw LexerError{
+        "internal: can't compare tokens of type: " + token::type_to_int_string(m_type)
+    };
 }
 
 double Token::as_number() const {

@@ -63,7 +63,8 @@ protected:
     // numbers using a regex (the tests seem to pass though).
     // A proper NFA would be better, I guess.
     static constexpr std::string_view NUMBER_REGEX{
-        R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX"};
+        R"REGEX(^(?:\d+(?:\.\d*)?|\.\d+)(e[+-]?(\d*))?)REGEX"
+    };
 
 private:
     bool matched_e() const {
@@ -108,9 +109,11 @@ private:
 };
 
 template <typename MatchResultsT>
-std::optional<double> parse_number(std::string_view input,
-                                   RegexNumberMatcher<MatchResultsT>&& matcher,
-                                   std::string_view& token) {
+std::optional<double> parse_number(
+    std::string_view input,
+    RegexNumberMatcher<MatchResultsT>&& matcher,
+    std::string_view& token
+) {
     if (!matcher.match(input)) {
         return {};
     }
@@ -162,8 +165,10 @@ private:
 };
 
 template <typename MatchResultsT>
-std::string_view parse_whitespace(std::string_view input,
-                                  RegexWhitespaceMatcher<MatchResultsT>&& matcher) {
+std::string_view parse_whitespace(
+    std::string_view input,
+    RegexWhitespaceMatcher<MatchResultsT>&& matcher
+) {
     if (matcher.match_regex(input)) {
         return matcher.to_view();
     }

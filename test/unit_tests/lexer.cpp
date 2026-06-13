@@ -149,26 +149,32 @@ BOOST_AUTO_TEST_CASE(test_parse_const_token) {
     BOOST_TEST(!details::parse_const_token("&+").has_value());
 }
 
-BOOST_DATA_TEST_CASE(test_get_tokens_valid,
-                     bdata::make(get_tokens::valid::input) ^ get_tokens::valid::expected,
-                     input,
-                     expected) {
+BOOST_DATA_TEST_CASE(
+    test_get_tokens_valid,
+    bdata::make(get_tokens::valid::input) ^ get_tokens::valid::expected,
+    input,
+    expected
+) {
     Lexer lexer{input};
     const auto actual = lexer.get_tokens();
     BOOST_CHECK_EQUAL_COLLECTIONS(
-        actual.cbegin(), actual.cend(), expected.cbegin(), expected.cend());
+        actual.cbegin(), actual.cend(), expected.cbegin(), expected.cend()
+    );
 }
 
-BOOST_DATA_TEST_CASE(test_get_tokens_invalid,
-                     bdata::make(get_tokens::invalid::input) ^ get_tokens::invalid::error_msg,
-                     input,
-                     error_msg) {
+BOOST_DATA_TEST_CASE(
+    test_get_tokens_invalid,
+    bdata::make(get_tokens::invalid::input) ^ get_tokens::invalid::error_msg,
+    input,
+    error_msg
+) {
     BOOST_REQUIRE_THROW(
         do {
             Lexer lexer{input};
             lexer.get_tokens();
         } while (0),
-        LexerError);
+        LexerError
+    );
 
     try {
         Lexer lexer{input};

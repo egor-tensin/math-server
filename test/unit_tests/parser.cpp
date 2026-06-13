@@ -114,24 +114,29 @@ const std::vector<std::string> error_msg{
 
 BOOST_AUTO_TEST_SUITE(parser_tests)
 
-BOOST_DATA_TEST_CASE(test_exec_valid,
-                     bdata::make(exec::valid::input) ^ exec::valid::expected,
-                     input,
-                     expected) {
+BOOST_DATA_TEST_CASE(
+    test_exec_valid,
+    bdata::make(exec::valid::input) ^ exec::valid::expected,
+    input,
+    expected
+) {
     Parser parser{input};
     BOOST_TEST(parser.exec() == expected);
 }
 
-BOOST_DATA_TEST_CASE(test_exec_invalid,
-                     bdata::make(exec::invalid::input) ^ exec::invalid::error_msg,
-                     input,
-                     error_msg) {
+BOOST_DATA_TEST_CASE(
+    test_exec_invalid,
+    bdata::make(exec::invalid::input) ^ exec::invalid::error_msg,
+    input,
+    error_msg
+) {
     BOOST_REQUIRE_THROW(
         do {
             Parser parser{input};
             parser.exec();
         } while (0),
-        ParserError);
+        ParserError
+    );
 
     try {
         Parser parser{input};

@@ -48,19 +48,24 @@ public:
         namespace po = boost::program_options;
 
         m_visible.add_options()("help,h", "show this message and exit");
-        m_visible.add_options()("command,c",
-                                po::value(&m_settings.m_input),
-                                "evaluate the argument expression and exit");
-        m_visible.add_options()("host,H",
-                                po::value(&m_settings.m_host)->default_value("localhost"),
-                                "server host address");
+        m_visible.add_options()(
+            "command,c", po::value(&m_settings.m_input), "evaluate the argument expression and exit"
+        );
+        m_visible.add_options()(
+            "host,H",
+            po::value(&m_settings.m_host)->default_value("localhost"),
+            "server host address"
+        );
         m_visible.add_options()(
             "port,p",
             po::value(&m_settings.m_port)->default_value(NetworkTransport::DEFAULT_PORT),
-            "server port number");
-        m_hidden.add_options()("files",
-                               po::value<std::vector<std::string>>(&m_settings.m_files),
-                               "shouldn't be visible");
+            "server port number"
+        );
+        m_hidden.add_options()(
+            "files",
+            po::value<std::vector<std::string>>(&m_settings.m_files),
+            "shouldn't be visible"
+        );
         m_positional.add("files", -1);
     }
 
@@ -73,8 +78,10 @@ public:
 
         po::options_description all;
         all.add(m_hidden).add(m_visible);
-        po::store(po::command_line_parser{argc, argv}.options(all).positional(m_positional).run(),
-                  m_settings.m_vm);
+        po::store(
+            po::command_line_parser{argc, argv}.options(all).positional(m_positional).run(),
+            m_settings.m_vm
+        );
         if (m_settings.exit_with_usage()) {
             return m_settings;
         }

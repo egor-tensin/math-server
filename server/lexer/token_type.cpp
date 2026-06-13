@@ -54,8 +54,9 @@ private:
         for (const auto& [type, str] : m_map) {
             const auto [_, inserted] = strings.emplace(str);
             if (!inserted) {
-                throw std::logic_error{"multiple tokens have the same string representation: " +
-                                       str};
+                throw std::logic_error{
+                    "multiple tokens have the same string representation: " + str
+                };
             }
         }
     }
@@ -82,8 +83,9 @@ private:
         for (const auto& [type, str] : to_string) {
             const auto [_, inserted] = from_string.emplace(str, type);
             if (!inserted) {
-                throw std::logic_error{"multiple tokens have the same string representation: " +
-                                       str};
+                throw std::logic_error{
+                    "multiple tokens have the same string representation: " + str
+                };
             }
         }
         return from_string;

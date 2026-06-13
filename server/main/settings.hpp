@@ -43,11 +43,13 @@ public:
         m_visible.add_options()(
             "port,p",
             po::value(&m_settings.m_port)->default_value(Settings::DEFAULT_PORT),
-            "server port number");
+            "server port number"
+        );
         m_visible.add_options()(
             "threads,n",
             po::value(&m_settings.m_threads)->default_value(Settings::default_threads()),
-            "number of threads");
+            "number of threads"
+        );
     }
 
     static const char* get_short_description() {

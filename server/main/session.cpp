@@ -75,7 +75,9 @@ void Session::read() {
         boost::asio::bind_executor(
             m_strand, [this, self](const boost::system::error_code& ec, std::size_t bytes) {
                 handle_read(ec, bytes);
-            }));
+            }
+        )
+    );
 }
 
 void Session::handle_read(const boost::system::error_code& ec, std::size_t bytes) {
@@ -108,7 +110,9 @@ void Session::write(const std::string& output) {
         boost::asio::bind_executor(
             m_strand, [this, self](const boost::system::error_code& ec, std::size_t bytes) {
                 handle_write(ec, bytes);
-            }));
+            }
+        )
+    );
 }
 
 void Session::handle_write(const boost::system::error_code& ec, std::size_t) {

@@ -68,8 +68,9 @@ void Server::wait_for_signal() {
         m_signals.add(SIGINT);
         m_signals.add(SIGTERM);
 
-        m_signals.async_wait(
-            [this](const boost::system::error_code& ec, int signo) { handle_signal(ec, signo); });
+        m_signals.async_wait([this](const boost::system::error_code& ec, int signo) {
+            handle_signal(ec, signo);
+        });
     } catch (const boost::system::system_error& e) {
         throw Error{e.what()};
     }
@@ -94,7 +95,8 @@ void Server::accept() {
     const auto session = m_session_mgr.make_session(m_io_context);
     m_acceptor.async_accept(
         session->socket(),
-        [session, this](const boost::system::error_code& ec) { handle_accept(session, ec); });
+        [session, this](const boost::system::error_code& ec) { handle_accept(session, ec); }
+    );
 }
 
 void Server::handle_accept(SessionPtr session, const boost::system::error_code& ec) {

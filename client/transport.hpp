@@ -97,8 +97,10 @@ private:
     boost::asio::streambuf m_buffer;
 };
 
-inline TransportPtr make_blocking_network_transport(const std::string& host,
-                                                    const std::string& port) {
+inline TransportPtr make_blocking_network_transport(
+    const std::string& host,
+    const std::string& port
+) {
     return std::make_unique<BlockingNetworkTransport>(host, port);
 }
 

@@ -25,8 +25,9 @@ public:
 
     void run() {
         m_input_reader->for_each_input([this](const std::string& input) {
-            m_transport->send_query(input,
-                                    [](const std::string& reply) { std::cout << reply << '\n'; });
+            m_transport->send_query(input, [](const std::string& reply) {
+                std::cout << reply << '\n';
+            });
             return true;
         });
     }
