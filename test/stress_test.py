@@ -48,7 +48,7 @@ def timer(description):
         yield
     finally:
         duration = default_timer() - start
-        logging.info('%s: %s', description, duration)
+        logging.info('%s: %.03f seconds', description, duration)
 
 
 class Expr:
