@@ -6,9 +6,7 @@ cmake_minimum_required(VERSION 3.25)
 project(math_server CXX)
 enable_testing()
 
-# Required at least for <variant>, etc.
-# Plus, quite frankly, I think it is mature enough.
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # AppVeyor builds w/ Visual Studio 2017 bombard me with stupid warnings otherwise:

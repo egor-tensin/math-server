@@ -6,10 +6,11 @@
 #pragma once
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/format.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <ctime>
+#include <exception>
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -22,8 +23,10 @@ namespace math::server::log {
 
 namespace details {
 
-inline std::thread::id get_tid() {
-    return std::this_thread::get_id();
+inline std::string get_tid() {
+    std::ostringstream oss;
+    oss << std::this_thread::get_id();
+    return oss.str();
 }
 
 inline std::string get_timestamp() {
@@ -35,23 +38,27 @@ inline std::string get_timestamp() {
 }
 
 inline void log(const std::string& msg) {
-    std::clog << get_timestamp() << " | " << get_tid() << " | " << msg << '\n';
+    std::clog << std::format("{} | {} | {}\n", get_timestamp(), get_tid(), msg);
 }
 
 } // namespace details
 
 template <typename... Args>
-inline void log(std::string_view fmt, Args&&... args) {
-    details::log(boost::str((boost::format(fmt.data()) % ... % args)));
+inline void log(std::format_string<Args...> fmt, Args&&... args) {
+    details::log(std::format(fmt, std::forward<Args>(args)...));
 }
 
 template <typename... Args>
-inline void error(std::string_view fmt, Args&&... args) {
-    details::log(boost::str((boost::format(fmt.data()) % ... % args)));
+inline void error(std::format_string<Args...> fmt, Args&&... args) {
+    details::log(std::format(fmt, std::forward<Args>(args)...));
 }
 
 inline void error(const boost::system::error_code& ec) {
-    details::log(ec.message());
+    log("{}", ec.message());
+}
+
+inline void error(const std::exception& e) {
+    log("{}", e.what());
 }
 
 } // namespace math::server::log

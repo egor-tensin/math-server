@@ -9,6 +9,7 @@
 #include "settings.hpp"
 #include "transport.hpp"
 
+#include <format>
 #include <iostream>
 #include <string>
 #include <utility>
@@ -26,7 +27,7 @@ public:
     void run() {
         m_input_reader->for_each_input([this](const std::string& input) {
             m_transport->send_query(input, [](const std::string& reply) {
-                std::cout << reply << '\n';
+                std::cout << std::format("{}\n", reply);
             });
             return true;
         });

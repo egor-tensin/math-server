@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <exception>
 #include <filesystem>
+#include <format>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -72,7 +73,7 @@ public:
     }
 
     void usage_error(const std::exception& e) const {
-        std::cerr << "usage error: " << e.what() << '\n';
+        std::cerr << std::format("usage error: {}\n", e.what());
         std::cerr << *this;
     }
 
@@ -88,7 +89,7 @@ private:
     Settings m_settings;
 
     friend std::ostream& operator<<(std::ostream& os, const SettingsParser& parser) {
-        os << "usage: " << parser.m_prog_name << ' ' << get_short_description() << '\n';
+        os << std::format("usage: {} {}\n", parser.m_prog_name, get_short_description());
         os << parser.m_visible;
         return os;
     }

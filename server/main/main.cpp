@@ -9,6 +9,7 @@
 #include <boost/program_options.hpp>
 
 #include <exception>
+#include <format>
 #include <iostream>
 
 int main(int argc, char* argv[]) {
@@ -29,7 +30,7 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     } catch (const std::exception& e) {
-        std::cerr << "An error occured: " << e.what() << "\n";
+        std::cerr << std::format("An error occured: {}\n", e.what());
         return 1;
     } catch (...) {
         std::cerr << "An unknown error occured\n";

@@ -78,16 +78,16 @@ void Server::wait_for_signal() {
 
 void Server::handle_signal(const boost::system::error_code& ec, int signo) {
     if (ec) {
-        log::error("%1%: %2%", __func__, ec.message());
+        log::error("{}: {}", __func__, ec.message());
     }
 
-    log::log("Caught signal %1%", signo);
+    log::log("Caught signal {}", signo);
 
     try {
         m_acceptor.close();
         m_session_mgr.stop_all();
     } catch (const std::exception& e) {
-        log::error(e.what());
+        log::error(e);
     }
 }
 
@@ -101,7 +101,7 @@ void Server::accept() {
 
 void Server::handle_accept(SessionPtr session, const boost::system::error_code& ec) {
     if (ec) {
-        log::error("%1%: %2%", __func__, ec.message());
+        log::error("{}: {}", __func__, ec.message());
         return;
     }
 

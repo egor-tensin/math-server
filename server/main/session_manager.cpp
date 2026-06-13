@@ -34,7 +34,7 @@ void SessionManager::stop(const SessionPtr& session) {
 
 void SessionManager::stop_all() {
     std::lock_guard<std::mutex> lck{m_mtx};
-    log::log("Closing the remaining %1% session(s)...", m_sessions.size());
+    log::log("Closing the remaining {} session(s)...", m_sessions.size());
     for (const auto& session : m_sessions) {
         session->stop();
     }
