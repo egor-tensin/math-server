@@ -7,11 +7,16 @@
 
 #include <boost/system/error_code.hpp>
 
+#ifdef WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
 #include <exception>
 #include <format>
 #include <iomanip>
 #include <iostream>
-#include <sstream>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -20,10 +25,12 @@
 namespace math::server::log {
 namespace details {
 
-inline std::string get_tid() {
-    std::ostringstream oss;
-    oss << std::this_thread::get_id();
-    return oss.str();
+inline std::size_t get_tid() {
+#ifdef WIN32
+    return GetCurrentThreadId();
+#else
+    return gettid();
+#endif
 }
 
 inline std::string get_timestamp() {
