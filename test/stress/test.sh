@@ -16,7 +16,7 @@ readonly script_dir
 
 server_path=
 client_path=
-readonly stress_test_path="$script_dir/stress_test.py"
+readonly stress_test_path="$script_dir/test.py"
 readonly server_port=16666
 server_pid=
 
