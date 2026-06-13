@@ -24,7 +24,7 @@ LABEL maintainer="Egor Tensin <egor@tensin.name>"
 ARG src_dir
 COPY --from=builder ["$src_dir/build/install", "/opt/math-server"]
 
-RUN runtime_deps='libboost-filesystem1.83.0 libboost-program-options1.83.0 libboost-regex1.83.0 libboost-test1.83.0' && \
+RUN runtime_deps='libboost-program-options1.83.0 libboost-regex1.83.0 libboost-test1.83.0' && \
     apt update && \
     DEBIAN_FRONTEND=noninteractive \
         apt install -y --no-install-recommends $runtime_deps && \

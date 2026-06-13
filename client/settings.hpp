@@ -7,10 +7,10 @@
 
 #include "transport.hpp"
 
-#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 
 #include <exception>
+#include <filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -100,7 +100,7 @@ public:
 
 private:
     static std::string extract_filename(const std::string& path) {
-        return boost::filesystem::path{path}.filename().string();
+        return std::filesystem::path{path}.filename().string();
     }
 
     const std::string m_prog_name;
