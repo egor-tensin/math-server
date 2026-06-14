@@ -9,6 +9,14 @@ enable_testing()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(MSVC)
+    add_compile_options(/MP /W4)
+else()
+    add_compile_options(-Wall -Wextra)
+endif()
+
+add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX)
+
 # AppVeyor builds w/ Visual Studio 2017 bombard me with stupid warnings otherwise:
 if(MSVC_VERSION GREATER_EQUAL "1910" AND MSVC_VERSION LESS "1920")
     add_definitions(/D_SILENCE_CXX17_ALLOCATOR_VOID_DEPRECATION_WARNING)
