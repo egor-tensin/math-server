@@ -83,8 +83,9 @@ class ExprGen:
 
     @staticmethod
     def gen_expression():
-        numof_operators = random.randrange(ExprGen._MIN_NUMOF_OPERATORS,
-                                           ExprGen._MAX_NUMOF_OPERATORS + 1)
+        numof_operators = random.randrange(
+            ExprGen._MIN_NUMOF_OPERATORS, ExprGen._MAX_NUMOF_OPERATORS + 1
+        )
         expr = ''
         for _ in range(numof_operators):
             expr += f"{ExprGen._random_number()} {ExprGen._random_operator()} "
@@ -153,14 +154,22 @@ def _run_client(client, stdin):
     with _logging():
         cmd = client.get_command_line()
         with timer('Client invocation'):
-            result = subprocess.run(cmd, stdout=PIPE, stderr=PIPE, input=stdin,
-                                    universal_newlines=True, check=True)
+            result = subprocess.run(
+                cmd,
+                stdout=PIPE,
+                stderr=PIPE,
+                input=stdin,
+                universal_newlines=True,
+                check=True,
+            )
         return Output(result.stdout)
 
 
 def _run_clients(numof_clients, client, stdin):
     with Pool(numof_clients) as pool:
-        results = pool.starmap(_run_client, [(client, stdin) for _ in range(numof_clients)])
+        results = pool.starmap(
+            _run_client, [(client, stdin) for _ in range(numof_clients)]
+        )
         if len(results) != numof_clients:
             raise RuntimeError(f'expected {numof_clients} results, got {len(results)}')
         return results
@@ -203,26 +212,45 @@ def _parse_args(argv=None):
         argv = sys.argv[1:]
 
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter)
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
 
-    parser.add_argument('--host', '-H', metavar='HOST',
-                        default=Client.DEFAULT_HOST,
-                        help='server host')
-    parser.add_argument('--port', '-p', metavar='PORT',
-                        type=int, default=Client.DEFAULT_PORT,
-                        help='server port')
-    parser.add_argument('--processes', '-n', metavar='N',
-                        dest='numof_processes',
-                        type=_parse_positive_int, default=1,
-                        help='number of processes')
-    parser.add_argument('--expressions', '-e', metavar='N',
-                        dest='numof_expressions',
-                        type=_parse_positive_int, default=1,
-                        help='number of expressions')
-    parser.add_argument('--client', '-c', metavar='PATH',
-                        default=Client.DEFAULT_PATH,
-                        help='path to the client executable')
+    parser.add_argument(
+        '--host', '-H', metavar='HOST', default=Client.DEFAULT_HOST, help='server host'
+    )
+    parser.add_argument(
+        '--port',
+        '-p',
+        metavar='PORT',
+        type=int,
+        default=Client.DEFAULT_PORT,
+        help='server port',
+    )
+    parser.add_argument(
+        '--processes',
+        '-n',
+        metavar='N',
+        dest='numof_processes',
+        type=_parse_positive_int,
+        default=1,
+        help='number of processes',
+    )
+    parser.add_argument(
+        '--expressions',
+        '-e',
+        metavar='N',
+        dest='numof_expressions',
+        type=_parse_positive_int,
+        default=1,
+        help='number of expressions',
+    )
+    parser.add_argument(
+        '--client',
+        '-c',
+        metavar='PATH',
+        default=Client.DEFAULT_PATH,
+        help='path to the client executable',
+    )
 
     return parser.parse_args(argv)
 
@@ -232,7 +260,8 @@ def _logging():
     logging.basicConfig(
         format='%(asctime)s | %(levelname)s | %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S%z',
-        level=logging.DEBUG)
+        level=logging.DEBUG,
+    )
     try:
         yield
     except Exception as e:
