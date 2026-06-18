@@ -5,9 +5,9 @@
 # For details, see https://github.com/egor-tensin/math-server.
 # Distributed under the MIT License.
 
-'''This is a stupid script to feed the server with somewhat random arithmetic
+"""This is a stupid script to feed the server with somewhat random arithmetic
 expressions.
-'''
+"""
 
 import argparse
 from contextlib import contextmanager
@@ -22,8 +22,8 @@ from timeit import default_timer
 
 
 class Client:
-    DEFAULT_PATH = 'math-client'
-    DEFAULT_HOST = 'localhost'
+    DEFAULT_PATH = "math-client"
+    DEFAULT_HOST = "localhost"
     DEFAULT_PORT = 18000
 
     def __init__(self, path=None, host=None, port=None):
@@ -38,7 +38,7 @@ class Client:
         self._port = port
 
     def get_command_line(self):
-        return [self._path, '--host', self._host, '--port', str(self._port)]
+        return [self._path, "--host", self._host, "--port", str(self._port)]
 
 
 @contextmanager
@@ -48,7 +48,7 @@ def timer(description):
         yield
     finally:
         duration = default_timer() - start
-        logging.info('%s: %.03f seconds', description, duration)
+        logging.info("%s: %.03f seconds", description, duration)
 
 
 class Expr:
@@ -67,7 +67,7 @@ class Expr:
 
 
 class ExprGen:
-    _OPERATORS = '+', '-', '*', '/'
+    _OPERATORS = "+", "-", "*", "/"
     _MIN_NUMOF_OPERATORS = 10
     _MAX_NUMOF_OPERATORS = 1000
     _MIN_NUMBER = int(-10e10)
@@ -86,7 +86,7 @@ class ExprGen:
         numof_operators = random.randrange(
             ExprGen._MIN_NUMOF_OPERATORS, ExprGen._MAX_NUMOF_OPERATORS + 1
         )
-        expr = ''
+        expr = ""
         for _ in range(numof_operators):
             expr += f"{ExprGen._random_number()} {ExprGen._random_operator()} "
         expr += str(ExprGen._random_number())
@@ -100,11 +100,11 @@ class Input:
     @staticmethod
     def generate(n):
         if n < 1:
-            raise ValueError('input length must be positive')
+            raise ValueError("input length must be positive")
         return Input([ExprGen.gen_expression() for i in range(n)])
 
     def stdin(self):
-        return '\n'.join(map(str, self._expr_lst)) + '\n'
+        return "\n".join(map(str, self._expr_lst)) + "\n"
 
     def expected_output(self):
         return [expr.eval() for expr in self._expr_lst]
@@ -131,11 +131,11 @@ class Output:
 
     def parse(self):
         values = []
-        for line in self._stdout.split('\n')[:-1]:
+        for line in self._stdout.split("\n")[:-1]:
             try:
                 n = float(line)
             except ValueError:
-                logging.error('Not a number: %s', line)
+                logging.error("Not a number: %s", line)
                 raise
             values.append(n)
         return values
@@ -144,8 +144,8 @@ class Output:
         this = self.parse()
         if not _float_lists_equal(this, expected):
             logging.error("Actual output doesn't match expected output")
-            logging.error('Expected output (length %d):\n%s', len(expected), expected)
-            logging.error('Actual output (length %d):\n%s', len(this), this)
+            logging.error("Expected output (length %d):\n%s", len(expected), expected)
+            logging.error("Actual output (length %d):\n%s", len(this), this)
             return False
         return True
 
@@ -153,7 +153,7 @@ class Output:
 def _run_client(client, stdin):
     with _logging():
         cmd = client.get_command_line()
-        with timer('Client invocation'):
+        with timer("Client invocation"):
             result = subprocess.run(
                 cmd,
                 stdout=PIPE,
@@ -171,7 +171,7 @@ def _run_clients(numof_clients, client, stdin):
             _run_client, [(client, stdin) for _ in range(numof_clients)]
         )
         if len(results) != numof_clients:
-            raise RuntimeError(f'expected {numof_clients} results, got {len(results)}')
+            raise RuntimeError(f"expected {numof_clients} results, got {len(results)}")
         return results
 
 
@@ -189,8 +189,8 @@ def _run_stress_test(args):
         if actual_output == other:
             continue
         logging.error("Client outputs don't match, this should never happen")
-        logging.error('For example, this:\n%s', actual_output)
-        logging.error('... is not equal to this:\n%s', other)
+        logging.error("For example, this:\n%s", actual_output)
+        logging.error("... is not equal to this:\n%s", other)
         return False
 
     # Check that the first output is equal to the expected output:
@@ -201,9 +201,9 @@ def _parse_positive_int(s):
     try:
         n = int(s)
     except ValueError:
-        raise argparse.ArgumentTypeError(f'must be a positive integer: {s}')
+        raise argparse.ArgumentTypeError(f"must be a positive integer: {s}")
     if n < 1:
-        raise argparse.ArgumentTypeError(f'must be a positive integer: {s}')
+        raise argparse.ArgumentTypeError(f"must be a positive integer: {s}")
     return n
 
 
@@ -216,40 +216,40 @@ def _parse_args(argv=None):
     )
 
     parser.add_argument(
-        '--host', '-H', metavar='HOST', default=Client.DEFAULT_HOST, help='server host'
+        "--host", "-H", metavar="HOST", default=Client.DEFAULT_HOST, help="server host"
     )
     parser.add_argument(
-        '--port',
-        '-p',
-        metavar='PORT',
+        "--port",
+        "-p",
+        metavar="PORT",
         type=int,
         default=Client.DEFAULT_PORT,
-        help='server port',
+        help="server port",
     )
     parser.add_argument(
-        '--processes',
-        '-n',
-        metavar='N',
-        dest='numof_processes',
+        "--processes",
+        "-n",
+        metavar="N",
+        dest="numof_processes",
         type=_parse_positive_int,
         default=1,
-        help='number of processes',
+        help="number of processes",
     )
     parser.add_argument(
-        '--expressions',
-        '-e',
-        metavar='N',
-        dest='numof_expressions',
+        "--expressions",
+        "-e",
+        metavar="N",
+        dest="numof_expressions",
         type=_parse_positive_int,
         default=1,
-        help='number of expressions',
+        help="number of expressions",
     )
     parser.add_argument(
-        '--client',
-        '-c',
-        metavar='PATH',
+        "--client",
+        "-c",
+        metavar="PATH",
         default=Client.DEFAULT_PATH,
-        help='path to the client executable',
+        help="path to the client executable",
     )
 
     return parser.parse_args(argv)
@@ -258,8 +258,8 @@ def _parse_args(argv=None):
 @contextmanager
 def _logging():
     logging.basicConfig(
-        format='%(asctime)s | %(levelname)s | %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S%z',
+        format="%(asctime)s | %(levelname)s | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S%z",
         level=logging.DEBUG,
     )
     try:
@@ -276,5 +276,5 @@ def main(argv=None):
             sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
