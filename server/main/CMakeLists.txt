@@ -15,7 +15,8 @@ target_link_libraries(server PRIVATE common parser)
 target_link_libraries(server PRIVATE Threads::Threads)
 target_link_libraries(server PRIVATE
     Boost::disable_autolinking
-    Boost::program_options)
+    Boost::program_options
+)
 install(TARGETS server RUNTIME DESTINATION bin)
 if(MSVC)
     install(FILES $<TARGET_PDB_FILE:server> DESTINATION bin OPTIONAL)

@@ -6,7 +6,8 @@ set_target_properties(unit_tests PROPERTIES OUTPUT_NAME math-server-unit-tests)
 target_link_libraries(unit_tests PRIVATE lexer parser)
 target_link_libraries(unit_tests PRIVATE
     Boost::disable_autolinking
-    Boost::unit_test_framework)
+    Boost::unit_test_framework
+)
 install(TARGETS unit_tests RUNTIME DESTINATION bin)
 if(MSVC)
     install(FILES $<TARGET_PDB_FILE:unit_tests> DESTINATION bin OPTIONAL)
@@ -20,4 +21,5 @@ add_test(NAME unit_tests COMMAND Python3::Interpreter
     --pass-regex [=[^\*\*\* No errors detected$]=]
     --
     "$<TARGET_FILE:unit_tests>"
-    --no_color_output)
+    --no_color_output
+)

@@ -9,7 +9,8 @@ set_target_properties(client PROPERTIES OUTPUT_NAME math-client)
 target_link_libraries(client PRIVATE Threads::Threads)
 target_link_libraries(client PRIVATE
     Boost::disable_autolinking
-    Boost::program_options)
+    Boost::program_options
+)
 install(TARGETS client RUNTIME DESTINATION bin)
 if(MSVC)
     install(FILES $<TARGET_PDB_FILE:client> DESTINATION bin OPTIONAL)
