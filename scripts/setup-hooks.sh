@@ -18,9 +18,14 @@ setup_clang_format_hook() {
 	ln -fs -- "$symlink_dest" "$hooks_dir/pre-commit"
 }
 
+setup_git_blame() {
+	git config blame.ignoreRevsFile .git-blame-ignore-revs
+}
+
 main() {
 	cd -- "$script_dir"
 	setup_clang_format_hook
+	setup_git_blame
 }
 
 main
