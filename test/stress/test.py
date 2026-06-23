@@ -151,7 +151,7 @@ class Output:
 
 
 def _run_client(client, stdin):
-    with _logging():
+    with _setup_logging():
         cmd = client.get_command_line()
         with timer("Client invocation"):
             result = subprocess.run(
@@ -256,24 +256,24 @@ def _parse_args(argv=None):
 
 
 @contextmanager
-def _logging():
+def _setup_logging():
     logging.basicConfig(
-        format="%(asctime)s | %(levelname)s | %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S%z",
         level=logging.DEBUG,
+        datefmt="%Y-%m-%d %H:%M:%S%z",
+        # The 8 below is for "CRITICAL"
+        format="%(asctime)s | %(levelname)8s | %(message)s",
     )
     try:
         yield
     except Exception as e:
         logging.exception(e)
-        raise
+        sys.exit(1)
 
 
 def main(argv=None):
-    with _logging():
-        args = _parse_args(argv)
-        if not _run_stress_test(args):
-            sys.exit(1)
+    args = _parse_args(argv)
+    with _setup_logging():
+        sys.exit(0 if _run_stress_test(args) else 1)
 
 
 if __name__ == "__main__":
