@@ -2,7 +2,7 @@
 
 # Copyright (c) 2020 Egor Tensin <egor@tensin.name>
 # This file is part of the "math-server" project.
-# For details, see https://github.com/egor-tensin/math-server.
+# For details, see https://github.com/egor-tensin/math-server
 # Distributed under the MIT License.
 
 set -o errexit -o nounset -o pipefail
