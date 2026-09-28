@@ -23,9 +23,6 @@ $(eval $(call noexpand,BOOST_VERSION))
 $(eval $(call noexpand,CMAKE_FLAGS))
 $(eval $(call noexpand,INSTALL_PREFIX))
 
-.PHONY: DO
-DO:
-
 .PHONY: all
 all: build
 
